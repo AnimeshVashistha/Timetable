@@ -1,0 +1,69 @@
+.customButtonNoFill{
+    -fx-background-color:transparent;
+    -fx-border-color:#888888;
+    -fx-border-radius:7;
+    -fx-border-width:2;
+    -fx-cursor:hand;
+}
+
+.subjectButton{
+    -fx-background-color:#dddddd;
+    -fx-border-radius:7;
+    -fx-background-radius:7;
+    -fx-cursor:hand;
+}
+
+.timeButton{
+    -fx-background-color:#cccccc;
+    -fx-border-radius:7;
+    -fx-background-radius:7;
+    -fx-cursor:hand;
+}
+
+.dayButton{
+    -fx-background-color:#bbbbbb;
+    -fx-border-radius:7;
+    -fx-background-radius:7;
+    -fx-cursor:hand;
+}
+
+.nameButton{
+    -fx-background-color: #FFAe00;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+    -fx-cursor:hand;
+}
+
+.customButtonBottom{
+    -fx-background-color: #dddddd;
+    -fx-border-radius: 0 0 7 7;
+    -fx-background-radius: 0 0 7 7;
+    -fx-cursor:hand;
+}
+
+.roundedTopButton{
+    -fx-border-radius: 7 7 0 0;
+    -fx-background-radius: 7 7 0 0;
+}
+
+.notRoundedButton{
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+}
+
+.customTextfield{
+    -fx-prompt-text-fill: #aaaaaa;
+}
+
+.customtogglebutton{
+    -jfx-toggle-color: #FFAe00;
+    -jfx-untoggle-color: #ffffff;
+    -jfx-toggle-line-color: #fe8e00;
+    -jfx-untoggle-line-color: #888888;
+}
+
+.customPanel{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 7;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
