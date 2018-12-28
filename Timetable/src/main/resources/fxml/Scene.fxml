@@ -6,6 +6,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -15,7 +17,7 @@
     <children>
         <GridPane fx:id="subjectGrid" hgap="2.0" prefHeight="530.0" prefWidth="700.0" vgap="2.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
             <columnConstraints>
-                <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -38,7 +40,6 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <JFXButton fx:id="name" minHeight="40.0" minWidth="100.0" onAction="#menu" prefHeight="150.0" prefWidth="500.0" styleClass="nameButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <JFXButton fx:id="time00" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <JFXButton fx:id="time01" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <JFXButton fx:id="time02" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="3" />
@@ -49,7 +50,6 @@
                 <JFXButton fx:id="time07" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="8" />
                 <JFXButton fx:id="time08" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="9" />
                 <JFXButton fx:id="time09" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="10" />
-                <JFXButton fx:id="day00" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Monday" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 <JFXButton fx:id="subject0000" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <JFXButton fx:id="subject0001" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <JFXButton fx:id="subject0002" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -60,7 +60,6 @@
                 <JFXButton fx:id="subject0007" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                 <JFXButton fx:id="subject0008" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                 <JFXButton fx:id="subject0009" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                <JFXButton fx:id="day01" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Tuesday" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                 <JFXButton fx:id="subject0100" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                 <JFXButton fx:id="subject0101" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                 <JFXButton fx:id="subject0102" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="2" GridPane.rowIndex="3" />
@@ -71,7 +70,6 @@
                 <JFXButton fx:id="subject0107" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                 <JFXButton fx:id="subject0108" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                 <JFXButton fx:id="subject0109" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-                <JFXButton fx:id="day02" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Wednesday" GridPane.columnIndex="3" GridPane.rowIndex="0" />
                 <JFXButton fx:id="subject0200" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                 <JFXButton fx:id="subject0201" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                 <JFXButton fx:id="subject0202" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="3" GridPane.rowIndex="3" />
@@ -82,7 +80,6 @@
                 <JFXButton fx:id="subject0207" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="3" GridPane.rowIndex="8" />
                 <JFXButton fx:id="subject0208" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="3" GridPane.rowIndex="9" />
                 <JFXButton fx:id="subject0209" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="3" GridPane.rowIndex="10" />
-                <JFXButton fx:id="day03" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Thursday" GridPane.columnIndex="4" GridPane.rowIndex="0" />
                 <JFXButton fx:id="subject0300" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                 <JFXButton fx:id="subject0301" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                 <JFXButton fx:id="subject0302" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="4" GridPane.rowIndex="3" />
@@ -93,7 +90,6 @@
                 <JFXButton fx:id="subject0307" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="4" GridPane.rowIndex="8" />
                 <JFXButton fx:id="subject0308" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="4" GridPane.rowIndex="9" />
                 <JFXButton fx:id="subject0309" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="4" GridPane.rowIndex="10" />
-                <JFXButton fx:id="day04" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Friday" GridPane.columnIndex="5" GridPane.rowIndex="0" />
                 <JFXButton fx:id="subject0400" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                 <JFXButton fx:id="subject0401" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                 <JFXButton fx:id="subject0402" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="5" GridPane.rowIndex="3" />
@@ -104,7 +100,6 @@
                 <JFXButton fx:id="subject0407" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="5" GridPane.rowIndex="8" />
                 <JFXButton fx:id="subject0408" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="5" GridPane.rowIndex="9" />
                 <JFXButton fx:id="subject0409" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="5" GridPane.rowIndex="10" />
-                <JFXButton fx:id="day05" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Saturday" GridPane.columnIndex="6" GridPane.rowIndex="0" />
                 <JFXButton fx:id="subject0500" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                 <JFXButton fx:id="subject0501" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                 <JFXButton fx:id="subject0502" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="3" />
@@ -114,8 +109,7 @@
                 <JFXButton fx:id="subject0506" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="7" />
                 <JFXButton fx:id="subject0507" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="8" />
                 <JFXButton fx:id="subject0508" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="9" />
-                <JFXButton fx:id="subject0509" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="10" />
-                <JFXButton fx:id="day06" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Sunday" GridPane.columnIndex="7" GridPane.rowIndex="0" />      
+                <JFXButton fx:id="subject0509" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="6" GridPane.rowIndex="10" />      
                 <JFXButton fx:id="subject0600" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="7" GridPane.rowIndex="1" />
                 <JFXButton fx:id="subject0601" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                 <JFXButton fx:id="subject0602" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="7" GridPane.rowIndex="3" />
@@ -126,6 +120,45 @@
                 <JFXButton fx:id="subject0607" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="7" GridPane.rowIndex="8" /> 
                 <JFXButton fx:id="subject0608" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="7" GridPane.rowIndex="9" /> 
                 <JFXButton fx:id="subject0609" minHeight="40.0" minWidth="100.0" onAction="#showSubjectOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="subjectButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="7" GridPane.rowIndex="10" />
+                <JFXButton fx:id="day06" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Sunday" GridPane.columnIndex="7" GridPane.rowIndex="0">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></JFXButton>
+                <JFXButton fx:id="day05" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Saturday" GridPane.columnIndex="6" GridPane.rowIndex="0">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></JFXButton>
+                <JFXButton fx:id="day04" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Friday" GridPane.columnIndex="5" GridPane.rowIndex="0">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></JFXButton>
+                <JFXButton fx:id="day03" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Thursday" GridPane.columnIndex="4" GridPane.rowIndex="0">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></JFXButton>
+                <JFXButton fx:id="day02" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Wednesday" GridPane.columnIndex="3" GridPane.rowIndex="0">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></JFXButton>
+                <JFXButton fx:id="day01" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Tuesday" GridPane.columnIndex="2" GridPane.rowIndex="0">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></JFXButton>
+                <JFXButton fx:id="day00" minHeight="40.0" minWidth="100.0" onMousePressed="#showDayOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="dayButton" stylesheets="@../styles/Styles.css" text="Monday" GridPane.columnIndex="1" GridPane.rowIndex="0">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </JFXButton>
+                  <JFXButton fx:id="name" minHeight="40.0" minWidth="100.0" onAction="#menu" onMouseEntered="#showMenuIcon" onMouseExited="#hideMenuIcon" prefHeight="150.0" prefWidth="500.0" styleClass="nameButton" stylesheets="@../styles/Styles.css" text="name">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </JFXButton>
+                  <ImageView fx:id="menuIcon" fitHeight="54.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../images/MenuIcon.png" />
+                      </image>
+                  </ImageView>
             </children>
         </GridPane>
         <AnchorPane fx:id="subjectOverlay" prefHeight="200.0" prefWidth="160.0" styleClass="customPanel" stylesheets="@../styles/Styles.css" visible="false">

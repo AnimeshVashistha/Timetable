@@ -25,6 +25,7 @@
     -fx-border-radius:7;
     -fx-background-radius:7;
     -fx-cursor:hand;
+    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
 }
 
 .nameButton{
@@ -32,6 +33,7 @@
     -fx-border-radius: 7;
     -fx-background-radius: 7;
     -fx-cursor:hand;
+    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
 }
 
 .customButtonBottom{
