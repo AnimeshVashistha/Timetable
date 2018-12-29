@@ -26,7 +26,7 @@
 }
 
 .nameButton{
-    -fx-background-color: #99CC22;
+    -fx-background-color: #66DD77;
     -fx-border-radius: 7;
     -fx-background-radius: 7;
     -fx-cursor:hand;
@@ -52,19 +52,25 @@
 
 .customTextfield{
     -fx-prompt-text-fill: #888888;
-    -jfx-focus-color: #99CC22;
+    -jfx-focus-color: #66DD77;
     -jfx-unfocus-color: #888888;
 }
 
 .customtogglebutton{
-    -jfx-toggle-color: #99CC22;
+    -jfx-toggle-color: #66DD77;
     -jfx-untoggle-color: #ffffff;
-    -jfx-toggle-line-color: #88BB11;
+    -jfx-toggle-line-color: #44CC55;
     -jfx-untoggle-line-color: #888888;
 }
 
 .customPanel{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 7;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.menuPanel{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 0 7 7 0;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
 }

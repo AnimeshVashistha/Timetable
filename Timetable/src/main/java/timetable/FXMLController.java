@@ -41,6 +41,9 @@ public class FXMLController implements Initializable {
     JFXButton selectedTime;
     JFXButton selectedSubject;
 
+    TranslateTransition menuPaneSlideIn;
+    TranslateTransition menuPaneSlideOut;
+
     FadeTransition menuIconFadeIn;
     TranslateTransition menuIconSlideIn;
     FadeTransition menuIconFadeOut;
@@ -339,6 +342,8 @@ public class FXMLController implements Initializable {
     private Label nameLabel;
     @FXML
     private Label nameBackground;
+    @FXML
+    private AnchorPane menuPane;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -351,6 +356,13 @@ public class FXMLController implements Initializable {
         menuIcon.toFront();
 
         menuIcon.setTranslateX(-animationDistance);
+
+        //menu pane transitions
+        menuPaneSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuPane);
+        menuPaneSlideIn.setToX(0);
+
+        menuPaneSlideOut = new TranslateTransition(Duration.millis(animationDuration), menuPane);
+        menuPaneSlideOut.setToX(-200);
 
         //menu icon transitions
         menuIconSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuIcon);
@@ -460,14 +472,20 @@ public class FXMLController implements Initializable {
             subjectOverlay.setVisible(false);
             timeOverlay.setVisible(false);
             dayOverlay.setVisible(false);
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1), e -> resizeFonts()));
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(1), e -> resizeFonts()),
+                    new KeyFrame(Duration.millis(50), e -> menuPane.setTranslateX(-menuPane.getWidth()))
+            );
             timeline.play();
         });
         bg.heightProperty().addListener(n -> {
             subjectOverlay.setVisible(false);
             timeOverlay.setVisible(false);
             dayOverlay.setVisible(false);
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1), e -> resizeFonts()));
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(1), e -> resizeFonts()),
+                    new KeyFrame(Duration.millis(50), e -> menuPane.setTranslateX(-menuPane.getWidth()))
+            );
             timeline.play();
         });
 
@@ -475,6 +493,8 @@ public class FXMLController implements Initializable {
         menuIcon.fitWidthProperty().bind(nameBackground.heightProperty());
         name.prefHeightProperty().bind(nameBackground.heightProperty());
         name.prefWidthProperty().bind(nameBackground.widthProperty());
+
+        menuPane.prefWidthProperty().bind(nameBackground.widthProperty().multiply(1.2));
 
     }
 
@@ -648,6 +668,7 @@ public class FXMLController implements Initializable {
     }
 
     public void cancelOverlays() {
+        menuPane.setTranslateX(-menuPane.getWidth());
         dayOverlay.setVisible(false);
         timeOverlay.setVisible(false);
         subjectOverlay.setVisible(false);
@@ -695,60 +716,64 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    private void showSubjectOverlay(ActionEvent event) {
+    private void showSubjectOverlay(MouseEvent event) {
 
         cancelOverlays();
 
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                if (event.getSource() == subjects[i][j]) {
-                    selectedSubject = subjects[i][j];
-                    sIndexI = i;
-                    sIndexJ = j;
-                    break;
+        if (!event.isSecondaryButtonDown()) {
+            for (int i = 0; i < subjects.length; i++) {
+                for (int j = 0; j < subjects[0].length; j++) {
+                    if (event.getSource() == subjects[i][j]) {
+                        selectedSubject = subjects[i][j];
+                        sIndexI = i;
+                        sIndexJ = j;
+                        break;
+                    }
                 }
             }
+
+            currentTable.updateReferences();
+
+            double hf = 3;
+            double x = selectedSubject.getLayoutX() + 1;
+            double y = selectedSubject.getLayoutY() + 1;
+            double w = selectedSubject.getWidth() * 1.2;
+            double h = selectedSubject.getHeight() * hf;
+
+            subjectOverlay.setPrefWidth(w);
+            subjectOverlay.setPrefHeight(h);
+
+            if (subjectGrid.getWidth() - x > w) {
+                subjectOverlay.setLayoutX(x);
+            } else {
+                subjectOverlay.setLayoutX(subjectGrid.getWidth() - w);
+            }
+
+            if (subjectGrid.getHeight() - y > h) {
+                subjectOverlay.setLayoutY(y);
+            } else {
+                subjectOverlay.setLayoutY(subjectGrid.getHeight() - h);
+            }
+
+            sOverlaySubject.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
+            sOverlayRoom.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
+            sOverlayTeacher.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
+
+            sOverlaySubject.setFont(new Font(h / hf * 0.22));
+            sOverlayRoom.setFont(new Font(h / hf * 0.22));
+            sOverlayTeacher.setFont(new Font(h / hf * 0.22));
+            sOverlayDone.setFont(new Font(h / hf * 0.22));
+
+            sOverlaySubject.setText(currentTable.getSubjectText(sIndexI, sIndexJ));
+            sOverlayRoom.setText(currentTable.getRoomText(sIndexI, sIndexJ));
+            sOverlayTeacher.setText(currentTable.getTeacherText(sIndexI, sIndexJ));
+            subjectOverlay.setVisible(true);
+            Timeline focus = new Timeline(new KeyFrame(
+                    Duration.millis(animationDuration * 0.7),
+                    e -> sOverlaySubject.requestFocus()));
+            focus.play();
+            showSubjectOverlay.play();
         }
-
-        currentTable.updateReferences();
-
-        double hf = 3;
-        double x = selectedSubject.getLayoutX() + 1;
-        double y = selectedSubject.getLayoutY() + 1;
-        double w = selectedSubject.getWidth() * 1.2;
-        double h = selectedSubject.getHeight() * hf;
-
-        subjectOverlay.setPrefWidth(w);
-        subjectOverlay.setPrefHeight(h);
-
-        if (subjectGrid.getWidth() - x > w) {
-            subjectOverlay.setLayoutX(x);
-        } else {
-            subjectOverlay.setLayoutX(subjectGrid.getWidth() - w);
-        }
-
-        if (subjectGrid.getHeight() - y > h) {
-            subjectOverlay.setLayoutY(y);
-        } else {
-            subjectOverlay.setLayoutY(subjectGrid.getHeight() - h);
-        }
-
-        sOverlaySubject.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
-        sOverlayRoom.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
-        sOverlayTeacher.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
-
-        sOverlaySubject.setFont(new Font(h / hf * 0.22));
-        sOverlayRoom.setFont(new Font(h / hf * 0.22));
-        sOverlayTeacher.setFont(new Font(h / hf * 0.22));
-        sOverlayDone.setFont(new Font(h / hf * 0.22));
-
-        sOverlaySubject.setText(currentTable.getSubjectText(sIndexI, sIndexJ));
-        sOverlayRoom.setText(currentTable.getRoomText(sIndexI, sIndexJ));
-        sOverlayTeacher.setText(currentTable.getTeacherText(sIndexI, sIndexJ));
-        subjectOverlay.setVisible(true);
-        Timeline focus = new Timeline(new KeyFrame(Duration.millis(animationDuration * 0.7), e -> sOverlaySubject.requestFocus()));
-        focus.play();
-        showSubjectOverlay.play();
     }
 
     @FXML
@@ -762,7 +787,8 @@ public class FXMLController implements Initializable {
         if (event.getCode() == KeyCode.ENTER) {
             hideSubjectOverlay();
         } else if (sOverlaySubject.getText().length() > 0 || event.getText().length() > 0) {
-            List<Subject> options = currentTable.getAutocompleteOptions(sOverlaySubject.getText() + event.getText());
+            List<Subject> options = currentTable.getAutocompleteOptions(
+                    sOverlaySubject.getText() + event.getText());
             if (options.size() > 0) {
                 for (Subject s : options) {
                     System.out.println(s.getSubject());
@@ -891,10 +917,6 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    private void menu(ActionEvent event) {
-    }
-
-    @FXML
     private void callHideTimeOverlay(ActionEvent event) {
         hideTimeOverlay();
     }
@@ -952,5 +974,13 @@ public class FXMLController implements Initializable {
     @FXML
     private void showMenuIcon(MouseEvent event) {
         showMenuIcon.play();
+    }
+
+    @FXML
+    private void menu(MouseEvent event) {
+        cancelOverlays();
+
+        menuPaneSlideIn.play();
+
     }
 }
