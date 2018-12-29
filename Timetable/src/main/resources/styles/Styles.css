@@ -1,8 +1,5 @@
 .customButtonNoFill{
-    -fx-background-color:transparent;
-    -fx-border-color:#888888;
-    -fx-border-radius:7;
-    -fx-border-width:2;
+    -fx-background-color: transparent;
     -fx-cursor:hand;
 }
 
@@ -29,7 +26,7 @@
 }
 
 .nameButton{
-    -fx-background-color: #FFAe00;
+    -fx-background-color: #99CC22;
     -fx-border-radius: 7;
     -fx-background-radius: 7;
     -fx-cursor:hand;
@@ -54,13 +51,15 @@
 }
 
 .customTextfield{
-    -fx-prompt-text-fill: #aaaaaa;
+    -fx-prompt-text-fill: #888888;
+    -jfx-focus-color: #99CC22;
+    -jfx-unfocus-color: #888888;
 }
 
 .customtogglebutton{
-    -jfx-toggle-color: #FFAe00;
+    -jfx-toggle-color: #99CC22;
     -jfx-untoggle-color: #ffffff;
-    -jfx-toggle-line-color: #fe8e00;
+    -jfx-toggle-line-color: #88BB11;
     -jfx-untoggle-line-color: #888888;
 }
 

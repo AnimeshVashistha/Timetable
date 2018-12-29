@@ -15,6 +15,15 @@
 
 <AnchorPane id="AnchorPane" fx:id="bg" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetable.FXMLController">
     <children>
+            <JFXButton fx:id="name" layoutX="-164.0" layoutY="14.0" minHeight="40.0" minWidth="100.0" onAction="#menu" onMouseEntered="#showMenuIcon" onMouseExited="#hideMenuIcon" prefHeight="52.0" prefWidth="110.0" styleClass="customButtonNoFill" stylesheets="@../styles/Styles.css" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="2.0">
+         <graphic>
+                  <ImageView fx:id="menuIcon" fitHeight="50.0" fitWidth="85.0" opacity="0.0" smooth="false">
+                      <image>
+                          <Image url="@../images/MenuIcon.png" />
+                      </image>
+                  </ImageView>
+         </graphic>
+      </JFXButton>
         <GridPane fx:id="subjectGrid" hgap="2.0" prefHeight="530.0" prefWidth="700.0" vgap="2.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -40,17 +49,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                  <JFXButton fx:id="name" minHeight="40.0" minWidth="100.0" onAction="#menu" onMouseEntered="#showMenuIcon" onMouseExited="#hideMenuIcon" prefHeight="150.0" prefWidth="500.0" styleClass="nameButton" stylesheets="@../styles/Styles.css" text="name" />
-            <Label prefHeight="52.0" prefWidth="96.0" GridPane.halignment="CENTER">
-               <graphic>
-                        <ImageView fx:id="menuIcon" opacity="0.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/MenuIcon.png" />
-                            </image>
-                        </ImageView>
-               </graphic>
-            </Label>
-                <JFXButton fx:id="time00" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="nameBackground" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" prefHeight="150.0" prefWidth="500.0" styleClass="nameButton" stylesheets="@../styles/Styles.css" />
+            <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" minHeight="40.0" minWidth="100.0" prefHeight="150.0" prefWidth="500.0" text="name" />
+                <JFXButton fx:id="time00" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.rowIndex="1" />
                 <JFXButton fx:id="time01" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <JFXButton fx:id="time02" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                 <JFXButton fx:id="time03" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="4" />
