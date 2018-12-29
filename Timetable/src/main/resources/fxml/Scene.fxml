@@ -40,6 +40,16 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
+                  <JFXButton fx:id="name" minHeight="40.0" minWidth="100.0" onAction="#menu" onMouseEntered="#showMenuIcon" onMouseExited="#hideMenuIcon" prefHeight="150.0" prefWidth="500.0" styleClass="nameButton" stylesheets="@../styles/Styles.css" text="name" />
+            <Label prefHeight="52.0" prefWidth="96.0" GridPane.halignment="CENTER">
+               <graphic>
+                        <ImageView fx:id="menuIcon" opacity="0.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/MenuIcon.png" />
+                            </image>
+                        </ImageView>
+               </graphic>
+            </Label>
                 <JFXButton fx:id="time00" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <JFXButton fx:id="time01" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <JFXButton fx:id="time02" minHeight="40.0" minWidth="100.0" onMousePressed="#showTimeOverlay" prefHeight="150.0" prefWidth="500.0" styleClass="timeButton" stylesheets="@../styles/Styles.css" GridPane.columnIndex="0" GridPane.rowIndex="3" />
@@ -149,16 +159,6 @@
                   <Insets />
                </GridPane.margin>
             </JFXButton>
-                  <JFXButton fx:id="name" minHeight="40.0" minWidth="100.0" onAction="#menu" onMouseEntered="#showMenuIcon" onMouseExited="#hideMenuIcon" prefHeight="150.0" prefWidth="500.0" styleClass="nameButton" stylesheets="@../styles/Styles.css" text="name">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </JFXButton>
-                  <ImageView fx:id="menuIcon" fitHeight="54.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
-                      <image>
-                          <Image url="@../images/MenuIcon.png" />
-                      </image>
-                  </ImageView>
             </children>
         </GridPane>
         <AnchorPane fx:id="subjectOverlay" prefHeight="200.0" prefWidth="160.0" styleClass="customPanel" stylesheets="@../styles/Styles.css" visible="false">

@@ -339,6 +339,7 @@ public class FXMLController implements Initializable {
 
         initControlArrays();
         initNewTimetable();
+        name.toBack();
 
         //menu icon transition
         menuIconSlideIn = new TranslateTransition();
@@ -593,6 +594,7 @@ public class FXMLController implements Initializable {
     public void resizeFonts() {
 
         double scaleFactor = 0.075;
+        name.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor));
         for (JFXButton b : days) {
             b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor));
         }
