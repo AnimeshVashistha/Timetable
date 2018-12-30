@@ -42,7 +42,11 @@ public class FXMLController implements Initializable {
     JFXButton selectedSubject;
 
     TranslateTransition menuPaneSlideIn;
+    FadeTransition menuBackgroundPaneFadeIn;
     TranslateTransition menuPaneSlideOut;
+    FadeTransition menuBackgroundPaneFadeOut;
+    ParallelTransition showMenuPane;
+    ParallelTransition hideMenuPane;
 
     FadeTransition menuIconFadeIn;
     TranslateTransition menuIconSlideIn;
@@ -344,6 +348,8 @@ public class FXMLController implements Initializable {
     private Label nameBackground;
     @FXML
     private AnchorPane menuPane;
+    @FXML
+    private AnchorPane menuBackgroundPane;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -361,8 +367,22 @@ public class FXMLController implements Initializable {
         menuPaneSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuPane);
         menuPaneSlideIn.setToX(0);
 
+        menuBackgroundPaneFadeIn = new FadeTransition(Duration.millis(animationDuration), menuBackgroundPane);
+        menuBackgroundPaneFadeIn.setToValue(1);
+
         menuPaneSlideOut = new TranslateTransition(Duration.millis(animationDuration), menuPane);
         menuPaneSlideOut.setToX(-200);
+
+        menuBackgroundPaneFadeOut = new FadeTransition(Duration.millis(animationDuration), menuBackgroundPane);
+        menuBackgroundPaneFadeOut.setToValue(0);
+
+        showMenuPane = new ParallelTransition();
+        showMenuPane.getChildren().add(menuPaneSlideIn);
+        showMenuPane.getChildren().add(menuBackgroundPaneFadeIn);
+
+        hideMenuPane = new ParallelTransition();
+        hideMenuPane.getChildren().add(menuPaneSlideOut);
+        hideMenuPane.getChildren().add(menuBackgroundPaneFadeOut);
 
         //menu icon transitions
         menuIconSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuIcon);
@@ -469,9 +489,7 @@ public class FXMLController implements Initializable {
         hideSubjectOverlay.getChildren().add(subjectOverlayFadeOut);
 
         bg.widthProperty().addListener(n -> {
-            subjectOverlay.setVisible(false);
-            timeOverlay.setVisible(false);
-            dayOverlay.setVisible(false);
+            cancelOverlays();
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.millis(1), e -> resizeFonts()),
                     new KeyFrame(Duration.millis(50), e -> menuPane.setTranslateX(-menuPane.getWidth()))
@@ -479,9 +497,7 @@ public class FXMLController implements Initializable {
             timeline.play();
         });
         bg.heightProperty().addListener(n -> {
-            subjectOverlay.setVisible(false);
-            timeOverlay.setVisible(false);
-            dayOverlay.setVisible(false);
+            cancelOverlays();
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.millis(1), e -> resizeFonts()),
                     new KeyFrame(Duration.millis(50), e -> menuPane.setTranslateX(-menuPane.getWidth()))
@@ -655,7 +671,9 @@ public class FXMLController implements Initializable {
             for (int j = 0; j < subjects[0].length; j++) {
                 if (j < currentTable.getLessons() && currentTable.isDayDisplayed(i)) {
                     subjectGrid.add(subjects[i][j], pos + 1, j + 1, 1, 1);
-                    subjects[i][j].setText(currentTable.getSubjectText(i, j) + "\n" + currentTable.getRoomText(i, j));
+                    subjects[i][j].setText(
+                            currentTable.getSubjectText(i, j) + "\n" + currentTable.getRoomText(i, j)
+                    );
                 }
             }
             if (currentTable.isDayDisplayed(i)) {
@@ -663,15 +681,34 @@ public class FXMLController implements Initializable {
             }
         }
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1), e -> resizeFonts()));
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(1), e -> resizeFonts())
+        );
         timeline.play();
     }
 
     public void cancelOverlays() {
         menuPane.setTranslateX(-menuPane.getWidth());
+        menuPane.setVisible(false);
+        menuBackgroundPane.setVisible(false);
         dayOverlay.setVisible(false);
         timeOverlay.setVisible(false);
         subjectOverlay.setVisible(false);
+    }
+
+    public void hideMenuPane() {
+
+        menuPaneSlideOut.setToX(-menuPane.getWidth());
+
+        hideMenuPane.play();
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(animationDuration),
+                        e -> menuPane.setVisible(false)),
+                new KeyFrame(Duration.millis(animationDuration),
+                        e -> menuBackgroundPane.setVisible(false))
+        );
+        timeline.play();
     }
 
     public void hideDayOverlay() {
@@ -683,7 +720,10 @@ public class FXMLController implements Initializable {
         }
         initNewTimetable();
         hideDayOverlay.play();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(animationDuration), e -> dayOverlay.setVisible(false)));
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(animationDuration),
+                        e -> dayOverlay.setVisible(false))
+        );
         timeline.play();
     }
 
@@ -692,7 +732,10 @@ public class FXMLController implements Initializable {
             selectedTime.requestFocus();
         }
         hideTimeOverlay.play();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(animationDuration), e -> timeOverlay.setVisible(false)));
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(animationDuration),
+                        e -> timeOverlay.setVisible(false))
+        );
         timeline.play();
     }
 
@@ -702,7 +745,10 @@ public class FXMLController implements Initializable {
             selectedSubject.requestFocus();
         }
         hideSubjectOverlay.play();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(animationDuration), e -> subjectOverlay.setVisible(false)));
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(animationDuration),
+                        e -> subjectOverlay.setVisible(false))
+        );
         timeline.play();
     }
 
@@ -980,7 +1026,15 @@ public class FXMLController implements Initializable {
     private void menu(MouseEvent event) {
         cancelOverlays();
 
-        menuPaneSlideIn.play();
+        if (!event.isSecondaryButtonDown()) {
+            menuPane.setVisible(true);
+            menuBackgroundPane.setVisible(true);
+            showMenuPane.play();
+        }
+    }
 
+    @FXML
+    private void callHideMenuPane(MouseEvent event) {
+        hideMenuPane();
     }
 }

@@ -1,13 +1,18 @@
+* {
+    -accent-color-primary: #66DD77;
+    -accent-color-secondary: #44CC55;
+}
+
 .customButtonNoFill{
     -fx-background-color: transparent;
     -fx-cursor:hand;
 }
 
 .subjectButton{
-    -fx-background-color:#dddddd;
-    -fx-border-radius:7;
-    -fx-background-radius:7;
+    -fx-background-color:#e8e8e8;
+    -fx-background-radius: 7;
     -fx-cursor:hand;
+    -jfx-focus-color:#dddddd;
 }
 
 .timeButton{
@@ -26,7 +31,7 @@
 }
 
 .nameButton{
-    -fx-background-color: #66DD77;
+    -fx-background-color: -accent-color-primary;
     -fx-border-radius: 7;
     -fx-background-radius: 7;
     -fx-cursor:hand;
@@ -52,14 +57,14 @@
 
 .customTextfield{
     -fx-prompt-text-fill: #888888;
-    -jfx-focus-color: #66DD77;
+    -jfx-focus-color: -accent-color-primary;
     -jfx-unfocus-color: #888888;
 }
 
 .customtogglebutton{
-    -jfx-toggle-color: #66DD77;
+    -jfx-toggle-color: -accent-color-primary;
     -jfx-untoggle-color: #ffffff;
-    -jfx-toggle-line-color: #44CC55;
+    -jfx-toggle-line-color: -accent-color-secondary;
     -jfx-untoggle-line-color: #888888;
 }
 
@@ -73,4 +78,8 @@
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 7 7 0;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.menuBackgroundPanel{
+    -fx-background-color: #00000055;
 }
