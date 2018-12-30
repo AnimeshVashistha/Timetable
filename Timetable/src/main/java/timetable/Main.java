@@ -2,17 +2,12 @@ package timetable;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
-    @FXML
-    private AnchorPane bg;
 
     @Override
     public void start(Stage stage) throws Exception {
