@@ -6,6 +6,8 @@
 package timetable;
 
 import java.io.Serializable;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,14 +16,15 @@ import java.util.List;
  *
  * @author Tobias
  */
-public class Timetable implements Serializable{
+public class Timetable implements Serializable {
 
     List<Subject> references = new LinkedList<Subject>();
-    String name = "";
+    String name = "new Timetable";
     int lessons = 8;
     Subject[][] subjects = new Subject[7][10];
-    int[] times = new int[10];
+    LocalTime[] times = new LocalTime[10];
     boolean[] days = new boolean[7];
+    DateTimeFormatter HoursAndMinutes = DateTimeFormatter.ofPattern("HH:mm");
 
     public Timetable() {
         init();
@@ -30,6 +33,20 @@ public class Timetable implements Serializable{
     public Timetable(String name) {
         init();
         this.name = name;
+    }
+
+    public void init() {
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                subjects[i][j] = new Subject("");
+            }
+        }
+
+        for (int i = 0; i < times.length; i++) {
+            times[i] = LocalTime.MIDNIGHT;
+        }
+
+        days = new boolean[]{true, true, true, true, true, false, false};
     }
 
     public void updateReferences() {
@@ -57,26 +74,12 @@ public class Timetable implements Serializable{
         List<Subject> options = new ArrayList<Subject>();
 
         for (Subject s : references) {
-            if (s.getSubject().startsWith(subject)) {
+            if (s.getSubject().toLowerCase().startsWith(subject.toLowerCase())) {
                 options.add(s);
             }
         }
 
         return options;
-    }
-
-    public void init() {
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                subjects[i][j] = new Subject("");
-            }
-        }
-
-        for (int i = 0; i < times.length; i++) {
-            times[i] = 0;
-        }
-
-        days = new boolean[]{true, true, true, true, true, false, false};
     }
 
     public String getSubjectText(int i, int j) {
@@ -104,15 +107,14 @@ public class Timetable implements Serializable{
     }
 
     public String getTimeText(int i) {
-        System.out.println(times[i]);
-        String temp = String.format("%04d", times[i]);
-        System.out.println(temp);
-        String b = "" + temp.charAt(0) + temp.charAt(1) + ':' + temp.charAt(2) + temp.charAt(3);
-        System.out.println(b);
-        return b;
+        return times[i].format(HoursAndMinutes);
     }
 
-    public void setTime(int time, int i) {
+    public LocalTime getTime(int i) {
+        return times[i];
+    }
+
+    public void setTime(LocalTime time, int i) {
         times[i] = time;
     }
 
