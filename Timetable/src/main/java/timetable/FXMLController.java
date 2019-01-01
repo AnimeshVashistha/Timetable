@@ -2,6 +2,7 @@ package timetable;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXTimePicker;
 import com.jfoenix.controls.JFXToggleButton;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.image.ImageView;
@@ -87,6 +87,11 @@ public class FXMLController implements Initializable {
     int tIndexI = 0;
     int sIndexI = 0;
     int sIndexJ = 0;
+
+    boolean menuPaneHidden = true;
+    boolean dayOverlayHidden = true;
+    boolean timeOverlayHidden = true;
+    boolean subjectOverlayHidden = true;
 
     @FXML
     private AnchorPane subjectOverlay;
@@ -356,6 +361,10 @@ public class FXMLController implements Initializable {
     private GridPane menuPaneGrid;
     @FXML
     private AnchorPane timePickerOverlay;
+    @FXML
+    private JFXTimePicker timepicker;
+    @FXML
+    private GridPane autoCompletePanel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -488,6 +497,8 @@ public class FXMLController implements Initializable {
 
         menuIcon.setTranslateX(-animationDistance);
 
+        timepicker.setIs24HourView(true);
+
         name.setRipplerFill(Color.web("#888888"));
         for (int i = 0; i < days.length; i++) {
             days[i].setRipplerFill(Color.web("000000"));
@@ -503,7 +514,7 @@ public class FXMLController implements Initializable {
         tOverlayDelete.setRipplerFill(Color.web("#66DD77"));
         tOverlayAddAbove.setRipplerFill(Color.web("#66DD77"));
         tOverlayAddBelow.setRipplerFill(Color.web("#66DD77"));
-        
+
         bg.widthProperty().addListener(n -> {
             cancelOverlays();
             Timeline timeline = new Timeline(
@@ -536,6 +547,12 @@ public class FXMLController implements Initializable {
         name.prefWidthProperty().bind(nameBackground.widthProperty());
 
         menuPane.prefWidthProperty().bind(nameBackground.widthProperty().multiply(1.2));
+
+        Timeline unfocus = new Timeline(
+                new KeyFrame(Duration.millis(1), e -> bg.requestFocus())
+        );
+
+        unfocus.play();
     }
 
     public void initControlArrays() {
@@ -815,7 +832,7 @@ public class FXMLController implements Initializable {
 
     public void hideOtherOverlays(int num) {
         if (num != 0) {
-            hideMenuPane(false);
+            hideMenuPane();
         }
         if (num != 1) {
             hideDayOverlay(false, false);
@@ -828,67 +845,81 @@ public class FXMLController implements Initializable {
         }
     }
 
-    public void hideMenuPane(boolean refocus) {
-        if (refocus) {
-            name.requestFocus();
+    public void hideMenuPane() {
+        if (menuPaneHidden == false) {
+            menuPaneHidden = true;
+
+            bg.requestFocus();
+
+            menuPaneSlideOut.setToX(-menuPane.getWidth());
+
+            hideMenuPane.play();
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(animationDuration),
+                            e -> menuPane.setVisible(false)),
+                    new KeyFrame(Duration.millis(animationDuration),
+                            e -> menuBackgroundPane.setVisible(false))
+            );
+            timeline.play();
         }
-
-        menuPaneSlideOut.setToX(-menuPane.getWidth());
-
-        hideMenuPane.play();
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(animationDuration),
-                        e -> menuPane.setVisible(false)),
-                new KeyFrame(Duration.millis(animationDuration),
-                        e -> menuBackgroundPane.setVisible(false))
-        );
-        timeline.play();
     }
 
     public void hideDayOverlay(boolean writeData, boolean refocus) {
-        if (selectedDay != null && refocus) {
-            selectedDay.requestFocus();
-        }
-        if (writeData) {
-            for (int i = 0; i < 7; i++) {
-                currentTable.setDayDisplayed(dayToggles[i].isSelected(), i);
+        if (dayOverlayHidden == false) {
+            dayOverlayHidden = true;
+
+            if (selectedDay != null && refocus) {
+                selectedDay.requestFocus();
             }
-            initNewTimetable();
+            if (writeData) {
+                for (int i = 0; i < 7; i++) {
+                    currentTable.setDayDisplayed(dayToggles[i].isSelected(), i);
+                }
+                initNewTimetable();
+            }
+            hideDayOverlay.play();
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(animationDuration),
+                            e -> dayOverlay.setVisible(false))
+            );
+            timeline.play();
         }
-        hideDayOverlay.play();
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(animationDuration),
-                        e -> dayOverlay.setVisible(false))
-        );
-        timeline.play();
     }
 
     public void hideTimeOverlay(boolean refocus) {
-        if (selectedTime != null && refocus) {
-            selectedTime.requestFocus();
+        if (timeOverlayHidden == false) {
+            timeOverlayHidden = true;
+
+            if (selectedTime != null && refocus) {
+                selectedTime.requestFocus();
+            }
+            hideTimeOverlay.play();
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(animationDuration),
+                            e -> timeOverlay.setVisible(false))
+            );
+            timeline.play();
         }
-        hideTimeOverlay.play();
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(animationDuration),
-                        e -> timeOverlay.setVisible(false))
-        );
-        timeline.play();
     }
 
     public void hideSubjectOverlay(boolean writeData, boolean refocus) {
-        if (selectedSubject != null && refocus) {
-            selectedSubject.requestFocus();
+        if (subjectOverlayHidden == false) {
+            subjectOverlayHidden = true;
+
+            if (selectedSubject != null && refocus) {
+                selectedSubject.requestFocus();
+            }
+            if (writeData) {
+                writeSOverlayData();
+            }
+            hideSubjectOverlay.play();
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(animationDuration),
+                            e -> subjectOverlay.setVisible(false))
+            );
+            timeline.play();
         }
-        if (writeData) {
-            writeSOverlayData();
-        }
-        hideSubjectOverlay.play();
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(animationDuration),
-                        e -> subjectOverlay.setVisible(false))
-        );
-        timeline.play();
     }
 
     private void writeSOverlayData() {
@@ -907,6 +938,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void menu(ActionEvent event) {
+        menuPaneHidden = false;
+
         hideOtherOverlays(0);
 
         double h = menuPaneName.getHeight();
@@ -927,6 +960,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void showDayOverlay(MouseEvent event) {
+        dayOverlayHidden = false;
+
         if (event.isSecondaryButtonDown()) {
             selectedDay = (JFXButton) event.getSource();
             double x = event.getSceneX();
@@ -939,6 +974,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void showTimeOverlay(MouseEvent event) {
+        timeOverlayHidden = false;
+
         for (int i = 0; i < times.length; i++) {
             if (event.getSource() == times[i]) {
                 selectedTime = times[i];
@@ -962,6 +999,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void showSubjectOverlay(ActionEvent event) {
+        subjectOverlayHidden = false;
+
         hideOtherOverlays(3);
 
         for (int i = 0; i < subjects.length; i++) {
@@ -983,20 +1022,19 @@ public class FXMLController implements Initializable {
         double w = selectedSubject.getWidth() * 1.2;
         double h = selectedSubject.getHeight() * hf;
 
+        if (subjectGrid.getWidth() - x < w) {
+            x = subjectGrid.getWidth() - w;
+        }
+
+        if (subjectGrid.getHeight() - y < h) {
+            y = subjectGrid.getHeight() - h;
+        }
+
         subjectOverlay.setPrefWidth(w);
         subjectOverlay.setPrefHeight(h);
 
-        if (subjectGrid.getWidth() - x > w) {
-            subjectOverlay.setLayoutX(x);
-        } else {
-            subjectOverlay.setLayoutX(subjectGrid.getWidth() - w);
-        }
-
-        if (subjectGrid.getHeight() - y > h) {
-            subjectOverlay.setLayoutY(y);
-        } else {
-            subjectOverlay.setLayoutY(subjectGrid.getHeight() - h);
-        }
+        subjectOverlay.setLayoutX(x);
+        subjectOverlay.setLayoutY(y);
 
         sOverlaySubject.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
         sOverlayRoom.setPadding(new Insets(h / hf * 0.35, h / hf * 0.4, 0, h / hf * 0.4));
@@ -1012,6 +1050,17 @@ public class FXMLController implements Initializable {
         sOverlayTeacher.setText(currentTable.getTeacherText(sIndexI, sIndexJ));
         subjectOverlay.setVisible(true);
 
+        autoCompletePanel.setLayoutX(x + h / hf * 0.4);
+        autoCompletePanel.setPrefWidth(w - h / hf * 0.8);
+        autoCompletePanel.setPrefHeight(20);
+
+        Timeline t = new Timeline(new KeyFrame(
+                Duration.millis(1),
+                e -> autoCompletePanel.setLayoutY(subjectOverlay.getLayoutY() + sOverlaySubject.getHeight() + 10)));
+        t.play();
+
+        autoCompletePanel.toFront();
+
         showSubjectOverlay.play();
 
         selectedSubject.requestFocus();
@@ -1023,15 +1072,15 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    private void callCancelOverlays(MouseEvent event) {
+    private void callCancelOverlaysM(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
-            hideOtherOverlays(Integer.MAX_VALUE);
+            hideOtherOverlays(-1);
         }
     }
 
     @FXML
-    private void callCancelOverlays(ActionEvent event) {
-        hideOtherOverlays(Integer.MAX_VALUE);
+    private void callCancelOverlaysA(ActionEvent event) {
+        hideOtherOverlays(-1);
     }
 
     @FXML
@@ -1041,7 +1090,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void callHideMenuPane(MouseEvent event) {
-        hideMenuPane(true);
+        hideMenuPane();
     }
 
     @FXML
@@ -1074,12 +1123,18 @@ public class FXMLController implements Initializable {
         } else if (event.getCode() == KeyCode.ESCAPE) {
             hideSubjectOverlay(false, true);
         } else if (sOverlaySubject.getText().length() > 0) {
+            autoCompletePanel.getChildren().removeIf(e -> (e.getClass() == JFXButton.class));
             List<Subject> options = currentTable.getAutocompleteOptions(sOverlaySubject.getText());
             if (options.size() > 0) {
+                int row = 0;
                 for (Subject s : options) {
-                    System.out.println(s.getSubject());
+                    autoCompletePanel.add(new JFXButton(s.getSubject()), 0, row, 1, 1);
+                    row++;
                 }
+                autoCompletePanel.setPrefHeight(selectedSubject.getHeight() * 0.3 * options.size());
+                autoCompletePanel.setVisible(true);
             }
+            autoCompletePanel.setVisible(options.size() > 0);
         }
     }
 
@@ -1103,22 +1158,25 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void deleteRow(ActionEvent event) {
+        bg.requestFocus();
         timeOverlay.setVisible(false);
         currentTable.removeLessonRow(tIndexI);
         initNewTimetable();
     }
 
     @FXML
-    private void addRowBelow(ActionEvent event) {
+    private void addRowAbove(ActionEvent event) {
+        bg.requestFocus();
         timeOverlay.setVisible(false);
-        currentTable.addLessonRowBelow(tIndexI);
+        currentTable.addLessonRowAbove(tIndexI);
         initNewTimetable();
     }
 
     @FXML
-    private void addRowAbove(ActionEvent event) {
+    private void addRowBelow(ActionEvent event) {
+        bg.requestFocus();
         timeOverlay.setVisible(false);
-        currentTable.addLessonRowAbove(tIndexI);
+        currentTable.addLessonRowBelow(tIndexI);
         initNewTimetable();
     }
 
@@ -1149,9 +1207,9 @@ public class FXMLController implements Initializable {
     @FXML
     private void menuPane_kp(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            hideMenuPane(true);
+            hideMenuPane();
         } else if (event.getCode() == KeyCode.ESCAPE) {
-            hideMenuPane(true);
+            hideMenuPane();
         }
     }
 

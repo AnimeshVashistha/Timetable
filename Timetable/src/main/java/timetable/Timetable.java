@@ -42,8 +42,13 @@ public class Timetable implements Serializable {
             }
         }
 
+        int toAdd = 0;
         for (int i = 0; i < times.length; i++) {
-            times[i] = LocalTime.MIDNIGHT;
+            toAdd += 45;
+            if (i % 2 == 0 && i != 0) {
+                toAdd += 15;
+            }
+            times[i] = LocalTime.of(7, 30).plusMinutes(toAdd);
         }
 
         days = new boolean[]{true, true, true, true, true, false, false};

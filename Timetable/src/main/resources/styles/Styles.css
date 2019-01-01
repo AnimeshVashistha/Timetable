@@ -65,6 +65,7 @@
 }
 
 .customtogglebutton{
+    -fx-cursor:hand;
     -jfx-toggle-color: -accent-color-primary;
     -jfx-untoggle-color: #ffffff;
     -jfx-toggle-line-color: -accent-color-secondary;
@@ -72,7 +73,7 @@
 }
 
 .customTimepicker{
-
+    -jfx-default-color: -accent-color-primary;
 }
 
 .customPanel{
@@ -84,6 +85,12 @@
 .menuPanel{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 7 7 0;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.autoCOmpletePanel{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 0 0 7 7;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
 }
 
