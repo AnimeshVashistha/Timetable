@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.image.ImageView;
@@ -31,6 +32,9 @@ import javafx.util.Duration;
 
 public class FXMLController implements Initializable {
 
+    final static String selectedColor = "-fx-background-color: #66DD7744";
+    final static String unselectedColor = "-fx-background-color: #00000000";
+    
     JFXButton[] days;
     JFXButton[] times;
     JFXButton[][] subjects;
@@ -40,6 +44,7 @@ public class FXMLController implements Initializable {
     JFXButton selectedDay;
     JFXButton selectedTime;
     JFXButton selectedSubject;
+    Label selectedAutocompleteOption;
 
     TranslateTransition menuPaneSlideIn;
     FadeTransition menuBackgroundPaneFadeIn;
@@ -364,7 +369,7 @@ public class FXMLController implements Initializable {
     @FXML
     private JFXTimePicker timepicker;
     @FXML
-    private GridPane autoCompletePanel;
+    private GridPane autoCompletePane;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -913,6 +918,7 @@ public class FXMLController implements Initializable {
             if (writeData) {
                 writeSOverlayData();
             }
+            autoCompletePane.setVisible(false);
             hideSubjectOverlay.play();
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.millis(animationDuration),
@@ -1002,6 +1008,8 @@ public class FXMLController implements Initializable {
         subjectOverlayHidden = false;
 
         hideOtherOverlays(3);
+        
+        autoCompletePane.setVisible(false);
 
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
@@ -1050,16 +1058,16 @@ public class FXMLController implements Initializable {
         sOverlayTeacher.setText(currentTable.getTeacherText(sIndexI, sIndexJ));
         subjectOverlay.setVisible(true);
 
-        autoCompletePanel.setLayoutX(x + h / hf * 0.4);
-        autoCompletePanel.setPrefWidth(w - h / hf * 0.8);
-        autoCompletePanel.setPrefHeight(20);
+        autoCompletePane.setLayoutX(x + h / hf * 0.4);
+        autoCompletePane.setPrefWidth(w - h / hf * 0.8);
+        autoCompletePane.setPrefHeight(20);
 
         Timeline t = new Timeline(new KeyFrame(
                 Duration.millis(1),
-                e -> autoCompletePanel.setLayoutY(subjectOverlay.getLayoutY() + sOverlaySubject.getHeight() + 10)));
+                e -> autoCompletePane.setLayoutY(subjectOverlay.getLayoutY() + sOverlaySubject.getHeight() + 10)));
         t.play();
 
-        autoCompletePanel.toFront();
+        autoCompletePane.toFront();
 
         showSubjectOverlay.play();
 
@@ -1122,20 +1130,42 @@ public class FXMLController implements Initializable {
             hideSubjectOverlay(true, true);
         } else if (event.getCode() == KeyCode.ESCAPE) {
             hideSubjectOverlay(false, true);
+        } else if (event.getCode() == KeyCode.UP && sOverlaySubject.isFocused()) {
+            autoCompletePane.getChildren().get(autoCompletePane.getChildren().size() - 1).setStyle(selectedColor);
+        } else if (event.getCode() == KeyCode.DOWN) {
+            autoCompletePane.getChildren().get(0).setStyle(selectedColor);
         } else if (sOverlaySubject.getText().length() > 0) {
-            autoCompletePanel.getChildren().removeIf(e -> (e.getClass() == JFXButton.class));
+            autoCompletePane.getChildren().removeIf(e -> (e.getClass() == Label.class));
             List<Subject> options = currentTable.getAutocompleteOptions(sOverlaySubject.getText());
             if (options.size() > 0) {
-                int row = 0;
-                for (Subject s : options) {
-                    autoCompletePanel.add(new JFXButton(s.getSubject()), 0, row, 1, 1);
-                    row++;
+                autoCompletePane.setPrefHeight((selectedSubject.getHeight() * 0.4) * options.size());
+                for (int i = 0; i < options.size() - 1; i++) {
+                    Label button = makeAutocompleteButton(options.get(i).getSubject(), false);
+                    autoCompletePane.add(button, 0, i, 1, 1);
                 }
-                autoCompletePanel.setPrefHeight(selectedSubject.getHeight() * 0.3 * options.size());
-                autoCompletePanel.setVisible(true);
+                Label button = makeAutocompleteButton(options.get(options.size() - 1).getSubject(), true);
+                autoCompletePane.add(button, 0, options.size() - 1, 1, 1);
             }
-            autoCompletePanel.setVisible(options.size() > 0);
+            autoCompletePane.setVisible(options.size() > 0);
         }
+    }
+
+    private Label makeAutocompleteButton(String content, boolean bottom) {
+        Label button = new Label(content);
+        button.setPrefWidth(500);
+        button.setMinHeight(selectedSubject.getHeight() * 0.4);
+        button.setPrefHeight(selectedSubject.getHeight() * 0.4);
+        button.setMaxHeight(selectedSubject.getHeight() * 0.4);
+        button.setAlignment(Pos.CENTER_LEFT);
+        button.setPadding(new Insets(0, 0, 0, selectedSubject.getHeight() * 0.1));
+        button.setFont(new Font(selectedSubject.getHeight() * 0.22));
+
+        if (bottom) {
+            button.getStyleClass().add("roundedBottomButton");
+        } else {
+            button.getStyleClass().add("notRoundedButton");
+        }
+        return button;
     }
 
     @FXML
