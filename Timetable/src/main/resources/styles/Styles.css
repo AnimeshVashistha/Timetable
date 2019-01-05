@@ -12,19 +12,16 @@
     -fx-background-color:#e8e8e8;
     -fx-background-radius: 7;
     -fx-cursor:hand;
-    -jfx-focus-color:#dddddd;
 }
 
 .timeButton{
     -fx-background-color:#cccccc;
-    -fx-border-radius:7;
     -fx-background-radius:7;
     -fx-cursor:hand;
 }
 
 .dayButton{
     -fx-background-color:#bbbbbb;
-    -fx-border-radius:7;
     -fx-background-radius:7;
     -fx-cursor:hand;
     -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
@@ -32,7 +29,6 @@
 
 .nameButton{
     -fx-background-color: -accent-color-primary;
-    -fx-border-radius: 7;
     -fx-background-radius: 7;
     -fx-cursor:hand;
     -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
@@ -40,14 +36,17 @@
 
 .customButtonBottom{
     -fx-background-color: #dddddd;
-    -fx-border-radius: 0 0 7 7;
     -fx-background-radius: 0 0 7 7;
     -fx-cursor:hand;
 }
 
 .roundedTopButton{
-    -fx-border-radius: 7 7 0 0;
     -fx-background-radius: 7 7 0 0;
+    -fx-cursor:hand;
+}
+
+.roundedBottomButton{
+    -fx-background-radius: 0 0 7 7;
     -fx-cursor:hand;
 }
 
