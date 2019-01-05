@@ -890,8 +890,8 @@ public class FXMLController implements Initializable {
         double w = selectedSubject.getHeight() * 1.8;
         double h = selectedSubject.getHeight() * hf;
 
-        timeOverlay.setPrefWidth(w);
-        timeOverlay.setPrefHeight(h);
+        secondarySubjectOverlay.setPrefWidth(w);
+        secondarySubjectOverlay.setPrefHeight(h);
 
         if (subjectGrid.getWidth() - x > w) {
             secondarySubjectOverlay.setLayoutX(x);
