@@ -14,6 +14,7 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -1318,6 +1319,24 @@ public class FXMLController implements Initializable {
         button.setPrefHeight(selectedSubject.getHeight() * 0.4);
         button.setMaxHeight(selectedSubject.getHeight() * 0.4);
         button.setAlignment(Pos.CENTER_LEFT);
+        button.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Label l = (Label) event.getSource();
+                for (int i = 0; i < currentTable.options.size(); i++) {
+                    if (l == autoCompletePane.getChildren().get(i)) {
+                        String subject = currentTable.getOption(autocompleteIndex).getSubject();
+                        String room = currentTable.getOption(autocompleteIndex).getRoom();
+                        String teacher = currentTable.getOption(autocompleteIndex).getTeacher();
+                        sOverlaySubject.setText(subject);
+                        sOverlayRoom.setText(room);
+                        sOverlayTeacher.setText(teacher);
+                        autocompleteFocused = false;
+                        autoCompletePane.setVisible(false);
+                    }
+                }
+            }
+        });
         button.setPadding(new Insets(0, 0, 0, selectedSubject.getHeight() * 0.025));
         button.setFont(new Font(selectedSubject.getHeight() * 0.22));
 
