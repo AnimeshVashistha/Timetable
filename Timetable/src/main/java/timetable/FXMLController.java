@@ -799,7 +799,7 @@ public class FXMLController implements Initializable {
 
     public void showDayOverlay(double x, double y) {
         dayOverlayHidden = false;
-        
+
         hideOtherOverlays(1);
 
         double hf = 4.2;
@@ -866,7 +866,7 @@ public class FXMLController implements Initializable {
         } else {
             timeOverlay.setLayoutY(subjectGrid.getHeight() - h);
         }
-        
+
         tOverlayClear.setFont(new Font(h / hf * 0.2));
         tOverlayDelete.setFont(new Font(h / hf * 0.2));
         tOverlayAddAbove.setFont(new Font(h / hf * 0.2));
@@ -905,7 +905,7 @@ public class FXMLController implements Initializable {
         } else {
             secondarySubjectOverlay.setLayoutY(subjectGrid.getHeight() - h);
         }
-        
+
         secondarySOverlayClear.setFont(new Font(h / hf * 0.2));
         secondarySOverlayDelete.setFont(new Font(h / hf * 0.2));
         secondarySOverlayAddAbove.setFont(new Font(h / hf * 0.2));
@@ -1267,7 +1267,7 @@ public class FXMLController implements Initializable {
             }
         } else if (event.getCode() == KeyCode.ESCAPE) {
             hideSubjectOverlay(false, true);
-        } else if (event.getCode() == KeyCode.UP && sOverlaySubject.isFocused()) {
+        } else if (event.getCode() == KeyCode.UP && sOverlaySubject.isFocused() && autoCompletePane.isVisible()) {
             if (autocompleteFocused) {
                 autoCompletePane.getChildren().get(autocompleteIndex).setStyle(unselectedColor);
                 autocompleteIndex--;
@@ -1281,7 +1281,7 @@ public class FXMLController implements Initializable {
                 autocompleteIndex = autoCompletePane.getChildren().size() - 1;
                 autoCompletePane.getChildren().get(autoCompletePane.getChildren().size() - 1).setStyle(selectedColor);
             }
-        } else if (event.getCode() == KeyCode.DOWN) {
+        } else if (event.getCode() == KeyCode.DOWN && sOverlaySubject.isFocused() && autoCompletePane.isVisible()) {
             if (autocompleteFocused) {
                 autoCompletePane.getChildren().get(autocompleteIndex).setStyle(unselectedColor);
                 autocompleteIndex++;
@@ -1349,7 +1349,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void clearRow(ActionEvent event) {
-        bg.requestFocus();
+        selectedTime.requestFocus();
         timeOverlay.setVisible(false);
         currentTable.clearLessonRow(tIndexI);
         initNewTimetable();
@@ -1381,7 +1381,7 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void clearSubject(ActionEvent event) {
-        bg.requestFocus();
+        selectedSubject.requestFocus();
         secondarySubjectOverlay.setVisible(false);
         currentTable.clearSubject(sIndexI, sIndexJ);
         initNewTimetable();
