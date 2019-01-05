@@ -866,7 +866,8 @@ public class FXMLController implements Initializable {
         } else {
             timeOverlay.setLayoutY(subjectGrid.getHeight() - h);
         }
-
+        
+        tOverlayClear.setFont(new Font(h / hf * 0.2));
         tOverlayDelete.setFont(new Font(h / hf * 0.2));
         tOverlayAddAbove.setFont(new Font(h / hf * 0.2));
         tOverlayAddBelow.setFont(new Font(h / hf * 0.2));
@@ -904,7 +905,8 @@ public class FXMLController implements Initializable {
         } else {
             secondarySubjectOverlay.setLayoutY(subjectGrid.getHeight() - h);
         }
-
+        
+        secondarySOverlayClear.setFont(new Font(h / hf * 0.2));
         secondarySOverlayDelete.setFont(new Font(h / hf * 0.2));
         secondarySOverlayAddAbove.setFont(new Font(h / hf * 0.2));
         secondarySOverlayAddBelow.setFont(new Font(h / hf * 0.2));
