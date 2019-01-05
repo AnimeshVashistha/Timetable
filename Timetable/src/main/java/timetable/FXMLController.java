@@ -19,8 +19,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -91,8 +91,8 @@ public class FXMLController implements Initializable {
     ParallelTransition showSecondarySubjectOverlay;
     ParallelTransition hideSecondarySubjectOverlay;
 
-    List<Timetable> timetables = new ArrayList<Timetable>();
-    Timetable currentTable = new Timetable();
+    List<Timetable> timetables;
+    Timetable currentTable;
 
     int animationDuration = 200;
     int animationDistance = 50;
@@ -391,12 +391,19 @@ public class FXMLController implements Initializable {
     private JFXButton secondarySOverlayAddBelow;
     @FXML
     private JFXButton secondarySOverlayDone;
+    @FXML
+    private JFXButton menuPaneNew;
+    @FXML
+    private GridPane menuPaneTables;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         initControlArrays();
-        initNewTimetable();
+
+        if (true) {
+            timetables = new ArrayList<Timetable>();
+            addNewTimetable();
+        }
 
         //menu pane transitions
         menuPaneSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuPane);
@@ -734,19 +741,16 @@ public class FXMLController implements Initializable {
 
     public void resizeFonts() {
         double scaleFactor1 = 0.09;
-        double scaleFactor2 = 0.09;
-        double scaleFactor3 = 0.11;
+        double scaleFactor2 = 0.11;
         double scaleFactorHeightDependent = 0.2;
 
         nameLabel.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
-
-        menuPaneName.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor2));
 
         for (JFXButton b : days) {
             b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
         }
         for (JFXButton b : times) {
-            b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor3));
+            b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor2));
         }
         for (JFXButton[] ba : subjects) {
             for (JFXButton b : ba) {
@@ -1067,6 +1071,13 @@ public class FXMLController implements Initializable {
         double h = menuPaneName.getHeight();
 
         menuPaneGrid.setMargin(menuPaneName, new Insets(h * 0.65, h * 0.4, h * 0.1, h * 0.4));
+
+        menuPaneName.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
+        menuPaneNew.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
+        for (Node b : menuPaneTables.getChildren()) {
+            JFXButton button = (JFXButton) b;
+            button.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
+        }
 
         menuPaneName.setText(currentTable.getName());
 
@@ -1506,5 +1517,30 @@ public class FXMLController implements Initializable {
             double y = selectedSubject.getLayoutY() + selectedSubject.getHeight() / 2;
             showSecondarySubjectOverlay(x, y);
         }
+    }
+
+    @FXML
+    private void addNewTimetable(ActionEvent event) {
+        addNewTimetable();
+    }
+
+    public void addNewTimetable() {
+        Timetable t = new Timetable("Timetable" + timetables.size());
+        currentTable = t;
+        timetables.add(t);
+        addTimetableToMenu(t);
+        initNewTimetable();
+    }
+
+    public void addTimetableToMenu(Timetable timetable) {
+        int size = timetables.size();
+        JFXButton tableButton = new JFXButton(timetable.getName());
+        tableButton.getStylesheets().add("subjectButton");
+        tableButton.setRipplerFill(Color.web(("#66DD77")));
+        tableButton.setPrefHeight(80);
+        tableButton.setPrefWidth(600);
+        tableButton.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
+        menuPaneTables.setPrefHeight(80 * size);
+        menuPaneTables.add(tableButton, 0, size - 1, 1, 1);
     }
 }
