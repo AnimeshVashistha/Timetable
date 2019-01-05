@@ -19,6 +19,7 @@ import java.util.List;
 public class Timetable implements Serializable {
 
     List<Subject> references = new LinkedList<Subject>();
+    List<Subject> options;
     String name = "new Timetable";
     int lessons = 8;
     Subject[][] subjects = new Subject[7][10];
@@ -60,7 +61,9 @@ public class Timetable implements Serializable {
                 if (references.size() > 0) {
                     boolean n = true;
                     for (int c = 0; c < references.size(); c++) {
-                        if (subjects[i][j].equals(references.get(c))) {
+                        if (subjects[i][j].getSubject().equals(references.get(c).getSubject())
+                                && subjects[i][j].getRoom().equals(references.get(c).getRoom())
+                                && subjects[i][j].getTeacher().equals(references.get(c).getTeacher())) {
                             n = false;
                             break;
                         }
@@ -83,6 +86,8 @@ public class Timetable implements Serializable {
                 options.add(s);
             }
         }
+
+        this.options = options;
 
         return options;
     }
@@ -147,6 +152,28 @@ public class Timetable implements Serializable {
         this.lessons = lessons;
     }
 
+    public Subject getOption(int i) {
+        return options.get(i);
+    }
+
+    public void clearLessonRow(int index) {
+        for (int i = 0; i < subjects.length; i++) {
+            subjects[i][index] = new Subject();
+        }
+    }
+
+    public void removeLessonRow(int index) {
+        if (lessons > 1) {
+            lessons--;
+            for (int i = 0; i < subjects.length; i++) {
+                for (int j = index; j < lessons - 1; j++) {
+                    subjects[i][j] = subjects[i][j + 1];
+                }
+                subjects[i][lessons] = new Subject();
+            }
+        }
+    }
+
     public void addLessonRowAbove(int index) {
         if (lessons < 10) {
             lessons++;
@@ -171,16 +198,29 @@ public class Timetable implements Serializable {
         }
     }
 
-    public void removeLessonRow(int index) {
-        if (lessons > 1) {
-            lessons--;
-            for (int i = 0; i < subjects.length; i++) {
-                for (int j = index; j < lessons - 1; j++) {
-                    subjects[i][j] = subjects[i][j + 1];
-                }
-                subjects[i][lessons] = new Subject();
-            }
+    public void clearSubject(int indexI, int indexJ) {
+        subjects[indexI][indexJ] = new Subject();
+    }
+
+    public void removeSubject(int indexI, int indexJ) {
+        for (int j = indexJ; j < lessons - 1; j++) {
+            subjects[indexI][j] = subjects[indexI][j + 1];
         }
+        subjects[indexI][lessons - 1] = new Subject();
+    }
+
+    public void addSubjectAbove(int indexI, int indexJ) {
+        for (int j = lessons - 1; j > indexJ + 1; j--) {
+            subjects[indexI][j] = subjects[indexI][j - 1];
+        }
+        subjects[indexI][indexJ] = new Subject();
+    }
+
+    public void addSubjectBelow(int indexI, int indexJ) {
+        for (int j = lessons - 1; j > indexJ + 1; j--) {
+            subjects[indexI][j] = subjects[indexI][j - 1];
+        }
+        subjects[indexI][indexJ + 1] = new Subject();
     }
 
 }
