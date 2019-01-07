@@ -1068,9 +1068,17 @@ public class FXMLController implements Initializable {
 
         hideOtherOverlays(0);
 
-        double h = menuPaneName.getHeight();
+        double h = menuPaneNew.getHeight();
+        double w = menuPaneNew.getWidth();
+        int tablecount = menuPaneTables.getChildren().size();
 
         menuPaneGrid.setMargin(menuPaneName, new Insets(h * 0.65, h * 0.4, h * 0.1, h * 0.4));
+        menuPaneTables.setPrefHeight(h * tablecount * 0.5);
+        menuPaneTables.setPrefWidth(w);
+        for (Node b : menuPaneTables.getChildren()) {
+            JFXButton button = (JFXButton) b;
+            button.setPrefHeight(h * 0.5);
+        }
 
         menuPaneName.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
         menuPaneNew.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
@@ -1534,13 +1542,14 @@ public class FXMLController implements Initializable {
 
     public void addTimetableToMenu(Timetable timetable) {
         int size = timetables.size();
+        double h = menuPaneNew.getHeight() * 0.5;
         JFXButton tableButton = new JFXButton(timetable.getName());
         tableButton.getStylesheets().add("subjectButton");
         tableButton.setRipplerFill(Color.web(("#66DD77")));
-        tableButton.setPrefHeight(80);
+        tableButton.setPrefHeight(h);
         tableButton.setPrefWidth(600);
         tableButton.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
-        menuPaneTables.setPrefHeight(80 * size);
         menuPaneTables.add(tableButton, 0, size - 1, 1, 1);
+        menuPaneTables.setPrefHeight(h * size);
     }
 }
