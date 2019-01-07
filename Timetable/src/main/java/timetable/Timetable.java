@@ -210,7 +210,7 @@ public class Timetable implements Serializable {
     }
 
     public void addSubjectAbove(int indexI, int indexJ) {
-        for (int j = lessons - 1; j > indexJ + 1; j--) {
+        for (int j = lessons - 1; j > indexJ; j--) {
             subjects[indexI][j] = subjects[indexI][j - 1];
         }
         subjects[indexI][indexJ] = new Subject();
