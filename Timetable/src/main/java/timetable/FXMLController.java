@@ -93,6 +93,7 @@ public class FXMLController implements Initializable {
 
     List<Timetable> timetables;
     Timetable currentTable;
+    DataManager dm;
 
     int animationDuration = 200;
     int animationDistance = 50;
@@ -398,6 +399,17 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        dm = new DataManager("timetables.imgay");
+
+        try {
+            List<Timetable> temp = dm.readTimeTables();
+            if (temp.size() > 0) {
+                timetables = temp;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         initControlArrays();
 
         if (true) {
@@ -1071,10 +1083,10 @@ public class FXMLController implements Initializable {
         double h = menuPaneNew.getHeight();
         double w = menuPaneNew.getWidth();
         int tablecount = menuPaneTables.getChildren().size();
-        
+
         System.out.println(tablecount);
         System.out.println(h);
-        
+
         System.out.println(h * tablecount * 0.5);
 
         menuPaneGrid.setMargin(menuPaneName, new Insets(h * 0.65, h * 0.4, h * 0.1, h * 0.4));
@@ -1547,20 +1559,20 @@ public class FXMLController implements Initializable {
 
     public void addTimetableToMenu(Timetable timetable) {
         int size = timetables.size();
-        
+
         System.out.println(size);
-        
+
         double h = menuPaneNew.getHeight();
         JFXButton tableButton = new JFXButton(timetable.getName());
         tableButton.getStylesheets().add("subjectButton");
         tableButton.setRipplerFill(Color.web(("#66DD77")));
-        tableButton.setPrefHeight(h*0.5);
+        tableButton.setPrefHeight(h * 0.5);
         tableButton.setPrefWidth(600);
         tableButton.setFont(new Font((name.getHeight() + name.getWidth()) * 0.05));
         menuPaneTables.add(tableButton, 0, size - 1, 1, 1);
-        
+
         System.out.println(h);
-        
+
         menuPaneTables.setPrefHeight(h * size * 0.5);
     }
 }
