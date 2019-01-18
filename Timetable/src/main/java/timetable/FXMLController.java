@@ -399,20 +399,22 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        initControlArrays();
+
         dm = new DataManager("timetables.imgay");
 
         try {
             List<Timetable> temp = dm.readTimeTables();
             if (temp.size() > 0) {
                 timetables = temp;
+                currentTable = timetables.get(0);
+            } else {
+                timetables = new ArrayList<Timetable>();
+                addNewTimetable();
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        initControlArrays();
-
-        if (true) {
             timetables = new ArrayList<Timetable>();
             addNewTimetable();
         }
@@ -1574,5 +1576,9 @@ public class FXMLController implements Initializable {
         System.out.println(h);
 
         menuPaneTables.setPrefHeight(h * size * 0.5);
+    }
+    
+    public void finalize(){
+        
     }
 }

@@ -428,7 +428,7 @@
             </rowConstraints>
         </GridPane>
         <AnchorPane fx:id="menuBackgroundPane" onMousePressed="#callHideMenuPane" prefHeight="200.0" prefWidth="200.0" styleClass="menuBackgroundPanel" stylesheets="@../styles/Styles.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-        <AnchorPane fx:id="menuPane" layoutX="-206.0" prefHeight="600.0" prefWidth="200.0" styleClass="menuPanel" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane fx:id="menuPane" layoutX="-206.0" prefHeight="600.0" prefWidth="200.0" styleClass="menuPanel" stylesheets="@../styles/Styles.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <GridPane fx:id="menuPaneGrid" layoutY="68.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
