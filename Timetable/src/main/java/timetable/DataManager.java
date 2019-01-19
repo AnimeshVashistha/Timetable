@@ -12,6 +12,7 @@ public class DataManager {
 
     String filename;
     String tables = "timetables";
+    String ctable = "currentTable";
 
     public DataManager(String filename) {
         this.filename = filename;
@@ -33,9 +34,26 @@ public class DataManager {
         return temp;
     }
 
-    public void saveTimetables(List<Timetable> timetables) {
+    public Timetable readCurrentTable() {
+        Timetable temp = new Timetable();
+        try {
+            FileInputStream fis = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            HashMap<String, Object> hm = (HashMap<String, Object>) ois.readObject();
+            fis.close();
+
+            temp = (Timetable) hm.get(ctable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return temp;
+    }
+
+    public void saveTimetables(List<Timetable> timetables, Timetable currentTable) {
         HashMap<String, Object> hm = new HashMap<String, Object>();
         hm.put(tables, timetables);
+        hm.put(ctable, currentTable);
 
         try {
             FileOutputStream fos = new FileOutputStream(filename);

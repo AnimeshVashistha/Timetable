@@ -402,13 +402,14 @@ public class FXMLController implements Initializable {
 
         initControlArrays();
 
-        dm = new DataManager("timetables.imgay");
+        dm = new DataManager("timetables.cfg");
 
         try {
-            List<Timetable> temp = dm.readTimeTables();
-            if (temp.size() > 0) {
-                timetables = temp;
-                currentTable = timetables.get(0);
+            List<Timetable> tempTables = dm.readTimeTables();
+            Timetable tempCurrentTable = dm.readCurrentTable();
+            if (tempTables.size() > 0) {
+                timetables = tempTables;
+                currentTable = tempCurrentTable;
             } else {
                 timetables = new ArrayList<Timetable>();
                 addNewTimetable();
