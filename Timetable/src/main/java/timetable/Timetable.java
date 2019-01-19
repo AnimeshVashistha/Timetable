@@ -26,6 +26,11 @@ public class Timetable implements Serializable {
     LocalTime[] times = new LocalTime[10];
     boolean[] days = new boolean[7];
     DateTimeFormatter HoursAndMinutes = DateTimeFormatter.ofPattern("HH:mm");
+    LocalTime startTime = LocalTime.of(7, 30);
+    int smallPause = 0;
+    int middlePause = 15;
+    int bigPause = 30;
+    int lessonlength = 45;
 
     public Timetable() {
         init();
@@ -43,16 +48,26 @@ public class Timetable implements Serializable {
             }
         }
 
-        int toAdd = 0;
-        for (int i = 0; i < times.length; i++) {
-            toAdd += 45;
-            if (i % 2 == 0 && i != 0) {
-                toAdd += 15;
-            }
-            times[i] = LocalTime.of(7, 30).plusMinutes(toAdd);
-        }
+        initTimes();
 
         days = new boolean[]{true, true, true, true, true, false, false};
+    }
+
+    private void initTimes() {
+        int toAdd = 0;
+        for (int i = 0; i < times.length; i++) {
+            times[i] = startTime.plusMinutes(toAdd);
+            toAdd += lessonlength;
+            if (i % 2 == 0) {
+                toAdd += smallPause;
+            }
+            if (i % 2 == 1 && i != 5) {
+                toAdd += middlePause;
+            }
+            if (i == 5) {
+                toAdd += bigPause;
+            }
+        }
     }
 
     public void updateReferences() {
@@ -117,7 +132,7 @@ public class Timetable implements Serializable {
     }
 
     public String getTimeText(int i) {
-        return times[i].format(HoursAndMinutes);
+        return times[i].format(HoursAndMinutes) + "\n" + times[i].plusMinutes(lessonlength).format(HoursAndMinutes);
     }
 
     public LocalTime getTime(int i) {
@@ -155,6 +170,48 @@ public class Timetable implements Serializable {
     public Subject getOption(int i) {
         return options.get(i);
     }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getSmallPause() {
+        return smallPause;
+    }
+
+    public void setSmallPause(int smallPause) {
+        this.smallPause = smallPause;
+    }
+
+    public int getMiddlePause() {
+        return middlePause;
+    }
+
+    public void setMiddlePause(int middlePause) {
+        this.middlePause = middlePause;
+    }
+
+    public int getBigPause() {
+        return bigPause;
+    }
+
+    public void setBigPause(int bigPause) {
+        this.bigPause = bigPause;
+    }
+
+    public int getLessonlength() {
+        return lessonlength;
+    }
+
+    public void setLessonlength(int lessonlength) {
+        this.lessonlength = lessonlength;
+    }
+    
+    
 
     public void clearLessonRow(int index) {
         for (int i = 0; i < subjects.length; i++) {

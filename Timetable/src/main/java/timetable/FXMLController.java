@@ -755,8 +755,8 @@ public class FXMLController implements Initializable {
 
     public void resizeFonts() {
         double scaleFactor1 = 0.09;
-        double scaleFactor2 = 0.11;
-        double scaleFactorHeightDependent = 0.2;
+        double scaleFactorHeightDependent1 = 0.3;
+        double scaleFactorHeightDependent2 = 0.2;
 
         nameLabel.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
 
@@ -764,11 +764,11 @@ public class FXMLController implements Initializable {
             b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
         }
         for (JFXButton b : times) {
-            b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor2));
+            b.setFont(new Font((name.getHeight()) * scaleFactorHeightDependent1));
         }
         for (JFXButton[] ba : subjects) {
             for (JFXButton b : ba) {
-                b.setFont(new Font((name.getHeight()) * scaleFactorHeightDependent));
+                b.setFont(new Font((name.getHeight()) * scaleFactorHeightDependent2));
             }
         }
     }
@@ -1092,11 +1092,11 @@ public class FXMLController implements Initializable {
         System.out.println(h * tablecount * 0.5);
 
         menuPaneGrid.setMargin(menuPaneName, new Insets(h * 0.65, h * 0.4, h * 0.1, h * 0.4));
-        menuPaneTables.setPrefHeight(h * tablecount * 0.5);
+        menuPaneTables.setPrefHeight(h * tablecount * 0.6);
         menuPaneTables.setPrefWidth(w);
         for (Node b : menuPaneTables.getChildren()) {
             JFXButton button = (JFXButton) b;
-            button.setPrefHeight(h * 0.5);
+            button.setPrefHeight(h * 0.6);
         }
 
         menuPaneName.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
@@ -1568,17 +1568,17 @@ public class FXMLController implements Initializable {
         JFXButton tableButton = new JFXButton(timetable.getName());
         tableButton.getStylesheets().add("subjectButton");
         tableButton.setRipplerFill(Color.web(("#66DD77")));
-        tableButton.setPrefHeight(h * 0.5);
+        tableButton.setPrefHeight(h * 0.6);
         tableButton.setPrefWidth(600);
         tableButton.setFont(new Font((name.getHeight() + name.getWidth()) * 0.05));
         menuPaneTables.add(tableButton, 0, size - 1, 1, 1);
 
         System.out.println(h);
 
-        menuPaneTables.setPrefHeight(h * size * 0.5);
+        menuPaneTables.setPrefHeight(h * size * 0.6);
     }
-    
-    public void finalize(){
-        
+
+    public void finalize() {
+
     }
 }
