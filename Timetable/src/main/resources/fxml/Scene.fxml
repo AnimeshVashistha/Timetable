@@ -445,12 +445,12 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <JFXTextField fx:id="menuPaneName" onKeyReleased="#menuPane_kp" onKeyTyped="#updateCurrentTableName" prefHeight="250.0" prefWidth="500.0" promptText="name" styleClass="customTextfield">
+                        <JFXTextField fx:id="menuPaneName" onKeyReleased="#menuPane_kp" onKeyTyped="#updateCurrentTableName" prefHeight="250.0" prefWidth="500.0" promptText="Name" styleClass="customTextfield">
                             <GridPane.margin>
                                 <Insets bottom="5.0" left="20.0" right="20.0" top="20.0" />
                             </GridPane.margin>
                         </JFXTextField>
-                        <JFXButton fx:id="menuPaneNew" onAction="#addNewTimetable" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="new" GridPane.rowIndex="1" />
+                        <JFXButton fx:id="menuPaneNew" onAction="#addNewTimetable" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="NEW" GridPane.rowIndex="1" />
                         <ScrollPane prefHeight="51.0" prefWidth="200.0" GridPane.rowIndex="4" GridPane.rowSpan="4">
                             <content>
                                 <GridPane fx:id="menuPaneTables" prefHeight="297.0" prefWidth="197.0">
