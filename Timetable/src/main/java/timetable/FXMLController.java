@@ -1089,11 +1089,6 @@ public class FXMLController implements Initializable {
         double w = menuPaneNew.getWidth();
         int tablecount = menuPaneTables.getChildren().size();
 
-        System.out.println(tablecount);
-        System.out.println(h);
-
-        System.out.println(h * tablecount * 0.5);
-
         menuPaneGrid.setMargin(menuPaneName, new Insets(h * 0.65, h * 0.4, h * 0.1, h * 0.4));
         menuPaneTables.setPrefHeight(h * tablecount * 0.6);
         menuPaneTables.setPrefWidth(w);
@@ -1612,8 +1607,6 @@ public class FXMLController implements Initializable {
     public void addTimetableToMenu(Timetable timetable) {
         int size = timetables.size();
 
-        System.out.println(size);
-
         double h = menuPaneNew.getHeight();
         JFXButton tableButton = new JFXButton(timetable.getName());
         tableButton.getStylesheets().add("subjectButton");
@@ -1632,8 +1625,6 @@ public class FXMLController implements Initializable {
         });
 
         menuPaneTables.add(tableButton, 0, size - 1, 1, 1);
-
-        System.out.println(h);
 
         menuPaneTables.setPrefHeight(h * size * 0.6);
     }
