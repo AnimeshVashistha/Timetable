@@ -102,6 +102,7 @@ public class FXMLController implements Initializable {
     int sIndexI = 0;
     int sIndexJ = 0;
     int autocompleteIndex = 0;
+    int timeTableIndex = 0;
 
     boolean menuPaneHidden = true;
     boolean dayOverlayHidden = true;
@@ -610,6 +611,7 @@ public class FXMLController implements Initializable {
         });
         name.focusedProperty().addListener(n -> {
             if (name.isFocused()) {
+
                 showMenuIcon.play();
             } else {
                 hideMenuIcon.play();
@@ -1104,7 +1106,7 @@ public class FXMLController implements Initializable {
         menuPaneNew.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
         for (Node b : menuPaneTables.getChildren()) {
             JFXButton button = (JFXButton) b;
-            button.setFont(new Font((name.getHeight() + name.getWidth()) * 0.05));
+            button.setFont(new Font((name.getHeight() + name.getWidth()) * 0.08));
         }
 
         menuPaneName.setText(currentTable.getName());
@@ -1500,6 +1502,8 @@ public class FXMLController implements Initializable {
         } else if (event.getCode() == KeyCode.ESCAPE) {
             hideMenuPane();
         }
+        JFXButton b = (JFXButton) menuPaneTables.getChildren().get(timeTableIndex);
+        b.setText(currentTable.getName());
     }
 
     @FXML
@@ -1529,21 +1533,67 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void subjectButton_kp(KeyEvent event) {
-        if (event.isControlDown()) {
-            for (int i = 0; i < subjects.length; i++) {
-                for (int j = 0; j < subjects[0].length; j++) {
-                    if (event.getSource() == subjects[i][j]) {
-                        selectedSubject = subjects[i][j];
-                        sIndexI = i;
-                        sIndexJ = j;
-                        break;
-                    }
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                if (event.getSource() == subjects[i][j]) {
+                    selectedSubject = subjects[i][j];
+                    sIndexI = i;
+                    sIndexJ = j;
+                    break;
                 }
             }
-
+        }
+        if (event.isControlDown() && event.getCode() == KeyCode.UP) {
+            moveSubjectUp(sIndexI, sIndexJ);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.DOWN) {
+            moveSubjectDown(sIndexI, sIndexJ);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.LEFT) {
+            moveSubjectLeft(sIndexI, sIndexJ);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.RIGHT) {
+            moveSubjectRight(sIndexI, sIndexJ);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.ENTER
+                || event.isControlDown() && event.getCode() == KeyCode.SPACE) {
             double x = selectedSubject.getLayoutX() + selectedSubject.getWidth() / 2;
             double y = selectedSubject.getLayoutY() + selectedSubject.getHeight() / 2;
             showSecondarySubjectOverlay(x, y);
+        }
+    }
+
+    public void moveSubjectUp(int i, int j) {
+        currentTable.moveSubjectUp(sIndexI, sIndexJ);
+        initNewTimetable();
+        if (j > 0) {
+            subjects[i][j - 1].requestFocus();
+        }
+    }
+
+    public void moveSubjectDown(int i, int j) {
+        currentTable.moveSubjectDown(sIndexI, sIndexJ);
+        initNewTimetable();
+        if (j < currentTable.getLessons()) {
+            subjects[i][j + 1].requestFocus();
+        }
+    }
+
+    public void moveSubjectLeft(int i, int j) {
+        currentTable.moveSubjectLeft(sIndexI, sIndexJ);
+        initNewTimetable();
+        if (i > 0) {
+            subjects[i - 1][j].requestFocus();
+        }
+    }
+
+    public void moveSubjectRight(int i, int j) {
+        currentTable.moveSubjectRight(sIndexI, sIndexJ);
+        initNewTimetable();
+        int days = 0;
+        for (int d = 0; d < currentTable.days.length; d++) {
+            if (currentTable.isDayDisplayed(d)) {
+                days++;
+            }
+        }
+        if (i < days) {
+            subjects[i + 1][j].requestFocus();
         }
     }
 
@@ -1554,10 +1604,9 @@ public class FXMLController implements Initializable {
 
     public void addNewTimetable() {
         Timetable t = new Timetable("Timetable" + timetables.size());
-        currentTable = t;
         timetables.add(t);
         addTimetableToMenu(t);
-        initNewTimetable();
+        setCurrentTable(t);
     }
 
     public void addTimetableToMenu(Timetable timetable) {
@@ -1571,7 +1620,17 @@ public class FXMLController implements Initializable {
         tableButton.setRipplerFill(Color.web(("#66DD77")));
         tableButton.setPrefHeight(h * 0.6);
         tableButton.setPrefWidth(600);
-        tableButton.setFont(new Font((name.getHeight() + name.getWidth()) * 0.05));
+        tableButton.setFont(new Font((name.getHeight() + name.getWidth()) * 0.08));
+        //Actionhandler for changing the currently displayed Timetable
+        tableButton.setOnAction(n -> {
+            for (int i = 0; i < menuPaneTables.getChildren().size(); i++) {
+                if (menuPaneTables.getChildren().get(i) == n.getSource()) {
+                    timeTableIndex = i;
+                    setCurrentTable(timetables.get(i));
+                }
+            }
+        });
+
         menuPaneTables.add(tableButton, 0, size - 1, 1, 1);
 
         System.out.println(h);
@@ -1579,7 +1638,16 @@ public class FXMLController implements Initializable {
         menuPaneTables.setPrefHeight(h * size * 0.6);
     }
 
-    public void finalize() {
+    private void setCurrentTable(Timetable t) {
+        currentTable = t;
+        initNewTimetable();
+    }
 
+    public void finalize() {
+        try {
+            dm.saveTimetables(timetables, currentTable);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

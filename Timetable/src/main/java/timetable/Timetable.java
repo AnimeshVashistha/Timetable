@@ -210,8 +210,6 @@ public class Timetable implements Serializable {
     public void setLessonlength(int lessonlength) {
         this.lessonlength = lessonlength;
     }
-    
-    
 
     public void clearLessonRow(int index) {
         for (int i = 0; i < subjects.length; i++) {
@@ -278,6 +276,52 @@ public class Timetable implements Serializable {
             subjects[indexI][j] = subjects[indexI][j - 1];
         }
         subjects[indexI][indexJ + 1] = new Subject();
+    }
+
+    public void moveSubjectUp(int indexI, int indexJ) {
+        if (indexJ > 0) {
+            switchSubjects(indexI, indexJ, indexI, indexJ - 1);
+        }
+    }
+
+    public void moveSubjectDown(int indexI, int indexJ) {
+        if (indexJ < lessons - 1) {
+            switchSubjects(indexI, indexJ, indexI, indexJ + 1);
+        }
+    }
+
+    public void moveSubjectLeft(int indexI, int indexJ) {
+        if (indexI > 0) {
+            for (int i = indexI - 1; i >= 0; i--) {
+                if (days[i]) {
+                    switchSubjects(indexI, indexJ, i, indexJ);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void moveSubjectRight(int indexI, int indexJ) {
+        int day = 0;
+        for (int d = 0; d < days.length; d++) {
+            if (isDayDisplayed(d)) {
+                day++;
+            }
+        }
+        if (indexI < day) {
+            for (int i = indexI + 1; i < days.length; i++) {
+                if (days[i]) {
+                    switchSubjects(indexI, indexJ, i, indexJ);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void switchSubjects(int i1, int j1, int i2, int j2) {
+        Subject temp = subjects[i1][j1];
+        subjects[i1][j1] = subjects[i2][j2];
+        subjects[i2][j2] = temp;
     }
 
 }
