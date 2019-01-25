@@ -16,7 +16,7 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
         
-        stage.setTitle("Timatable");
+        stage.setTitle("TTable");
         stage.getIcons().add(new Image("/images/Timetable.png"));
         stage.setScene(scene);
         stage.show();

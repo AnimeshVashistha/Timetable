@@ -428,7 +428,7 @@
             </rowConstraints>
         </GridPane>
         <AnchorPane fx:id="menuBackgroundPane" onMousePressed="#callHideMenuPane" prefHeight="200.0" prefWidth="200.0" styleClass="menuBackgroundPanel" stylesheets="@../styles/Styles.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-        <AnchorPane fx:id="menuPane" layoutX="-206.0" prefHeight="600.0" prefWidth="200.0" styleClass="menuPanel" stylesheets="@../styles/Styles.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane fx:id="menuPane" layoutX="-206.0" prefHeight="600.0" prefWidth="200.0" styleClass="menuPanel" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <GridPane fx:id="menuPaneGrid" layoutY="68.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
@@ -450,7 +450,7 @@
                                 <Insets bottom="5.0" left="20.0" right="20.0" top="20.0" />
                             </GridPane.margin>
                         </JFXTextField>
-                        <JFXButton fx:id="menuPaneNew" onAction="#addNewTimetable" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="NEW" GridPane.rowIndex="1" />
+                        <JFXButton fx:id="menuPaneNew" onAction="#addNewTimetable" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="new" GridPane.rowIndex="1" />
                         <ScrollPane prefHeight="51.0" prefWidth="200.0" GridPane.rowIndex="4" GridPane.rowSpan="4">
                             <content>
                                 <GridPane fx:id="menuPaneTables" prefHeight="297.0" prefWidth="197.0">
@@ -464,6 +464,7 @@
                                 </GridPane>
                             </content>
                         </ScrollPane>
+                  <JFXButton fx:id="menuPaneDelete" onAction="#deleteTimetable" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="delete" GridPane.rowIndex="2" />
                     </children>
                 </GridPane>
             </children>
