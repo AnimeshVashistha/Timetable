@@ -21,6 +21,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -400,6 +401,10 @@ public class FXMLController implements Initializable {
     private GridPane menuPaneTables;
     @FXML
     private JFXButton menuPaneDelete;
+    @FXML
+    private ScrollPane menuPaneScrollPane;
+    @FXML
+    private JFXButton menuPaneInfo;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -571,6 +576,8 @@ public class FXMLController implements Initializable {
         menuIcon.toFront();
 
         menuIcon.setTranslateX(-animationDistance);
+
+        menuPaneScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         menuPaneNew.setRipplerFill(Color.web("#66DD77"));
         menuPaneDelete.setRipplerFill(Color.web("#66DD77"));
@@ -1621,6 +1628,7 @@ public class FXMLController implements Initializable {
         int size = timetables.size();
 
         double h = menuPaneNew.getHeight();
+
         JFXButton tableButton = new JFXButton(timetable.getName());
         //tableButton.getStylesheets().add("subjectButton");
         tableButton.setRipplerFill(Color.web(("#66DD77")));
@@ -1640,9 +1648,21 @@ public class FXMLController implements Initializable {
 
         int vGridPos = menuPaneTables.getChildren().size();
 
-        menuPaneTables.add(tableButton, 0, vGridPos, 1, 1);
-
         menuPaneTables.setPrefHeight(h * size * 0.6);
+        
+        menuPaneTables.add(tableButton, 0, vGridPos, 1, 1);
+        
+        System.out.println("timetables.size() : " + size);
+        
+        System.out.println("menuPaneNew.getHeight() : " + h);
+        
+        System.out.println("menuPaneTables.getChildren().size() : " + vGridPos);
+        
+        System.out.println("button height : " + h * 0.6);
+
+        System.out.println("menuPaneTables.getPrefHeight() : " + menuPaneTables.getPrefHeight());
+        
+        System.out.println("----------------------------------------------------------------");
     }
 
     private void setCurrentTable(Timetable t) {
@@ -1660,9 +1680,12 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void deleteTimetable(ActionEvent event) {
+        
+        System.out.println("###########################################################");
+        
         timetables.remove(timeTableIndex);
         menuPaneTables.getChildren().remove(timeTableIndex);
-        if (timetables.size() <= 0) {
+        if (timetables.size() == 0) {
             addNewTimetable();
         } else if (timeTableIndex < timetables.size()) {
             currentTable = timetables.get(timeTableIndex);
@@ -1674,7 +1697,7 @@ public class FXMLController implements Initializable {
         initNewTimetable();
 
         menuPaneTables.getChildren().removeIf(e -> (e.getClass() == JFXButton.class));
-
+        
         for (Timetable t : timetables) {
             addTimetableToMenu(t);
         }
@@ -1689,6 +1712,11 @@ public class FXMLController implements Initializable {
         }
         JFXButton highlightedButton = (JFXButton) menuPaneTables.getChildren().get(timeTableIndex);
         highlightedButton.setStyle(selectedColor);
+    }
+
+    @FXML
+    private void showInfo(ActionEvent event) {
+        //show info pane
     }
 
 }

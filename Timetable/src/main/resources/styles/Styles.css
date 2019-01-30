@@ -40,6 +40,11 @@
     -fx-cursor:hand;
 }
 
+.roundedButton{
+    -fx-background-radius: 7;
+    -fx-cursor:hand;
+}
+
 .roundedTopButton{
     -fx-background-radius: 7 7 0 0;
     -fx-cursor:hand;

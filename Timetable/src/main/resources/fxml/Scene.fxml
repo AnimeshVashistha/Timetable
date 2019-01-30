@@ -451,7 +451,7 @@
                             </GridPane.margin>
                         </JFXTextField>
                         <JFXButton fx:id="menuPaneNew" onAction="#addNewTimetable" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="new" GridPane.rowIndex="1" />
-                        <ScrollPane prefHeight="51.0" prefWidth="200.0" GridPane.rowIndex="4" GridPane.rowSpan="4">
+                        <ScrollPane fx:id="menuPaneScrollPane" prefHeight="51.0" prefWidth="200.0" GridPane.rowIndex="4" GridPane.rowSpan="4">
                             <content>
                                 <GridPane fx:id="menuPaneTables" prefHeight="297.0" prefWidth="197.0">
                                     <columnConstraints>
@@ -465,6 +465,7 @@
                             </content>
                         </ScrollPane>
                   <JFXButton fx:id="menuPaneDelete" onAction="#deleteTimetable" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="delete" GridPane.rowIndex="2" />
+                  <JFXButton fx:id="menuPaneInfo" onAction="#showInfo" prefHeight="250.0" prefWidth="500.0" styleClass="notRoundedButton" text="info" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
             </children>
