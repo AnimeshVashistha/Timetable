@@ -86,6 +86,12 @@
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
 }
 
+.customPane{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 7;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
 .menuPanel{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 7 7 0;

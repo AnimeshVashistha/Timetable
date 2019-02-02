@@ -645,6 +645,19 @@ public class FXMLController implements Initializable {
 
         menuPane.prefWidthProperty().bind(nameBackground.widthProperty().multiply(1.2));
 
+        //test----------------------------------------------------
+        OptionsPane test = new OptionsPane(bg);
+        test.addButton(new JFXButton("1"));
+        test.addButton(new JFXButton("2"));
+        test.addButton(new JFXButton("3"));
+        test.getPane().toFront();
+        
+        Timeline testing = new Timeline(
+                new KeyFrame(Duration.millis(3000), e -> test.show(subject0106))
+        );
+        testing.play();
+        //test----------------------------------------------------
+
         Timeline unfocus = new Timeline(
                 new KeyFrame(Duration.millis(1), e -> bg.requestFocus())
         );
@@ -1649,19 +1662,19 @@ public class FXMLController implements Initializable {
         int vGridPos = menuPaneTables.getChildren().size();
 
         menuPaneTables.setPrefHeight(h * size * 0.6);
-        
+
         menuPaneTables.add(tableButton, 0, vGridPos, 1, 1);
-        
+
         System.out.println("timetables.size() : " + size);
-        
+
         System.out.println("menuPaneNew.getHeight() : " + h);
-        
+
         System.out.println("menuPaneTables.getChildren().size() : " + vGridPos);
-        
+
         System.out.println("button height : " + h * 0.6);
 
         System.out.println("menuPaneTables.getPrefHeight() : " + menuPaneTables.getPrefHeight());
-        
+
         System.out.println("----------------------------------------------------------------");
     }
 
@@ -1680,9 +1693,9 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void deleteTimetable(ActionEvent event) {
-        
+
         System.out.println("###########################################################");
-        
+
         timetables.remove(timeTableIndex);
         menuPaneTables.getChildren().remove(timeTableIndex);
         if (timetables.size() == 0) {
@@ -1697,7 +1710,7 @@ public class FXMLController implements Initializable {
         initNewTimetable();
 
         menuPaneTables.getChildren().removeIf(e -> (e.getClass() == JFXButton.class));
-        
+
         for (Timetable t : timetables) {
             addTimetableToMenu(t);
         }
