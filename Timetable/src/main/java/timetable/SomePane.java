@@ -9,15 +9,10 @@ package timetable;
  *
  * @author Tobias
  */
-public class SidebarPane extends SomePane{
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void cancel() {
+public abstract class SomePane {
+            
+    public abstract void hide();
     
-    }
+    public abstract void cancel();
     
 }

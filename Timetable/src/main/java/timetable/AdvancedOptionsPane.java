@@ -11,19 +11,20 @@ import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 /**
  *
  * @author Tobias
  */
-public class OptionsPane extends SomePane{
+public class AdvancedOptionsPane extends SomePane {
 
     GridPane pane = new GridPane();
     Pane parent;
@@ -37,20 +38,21 @@ public class OptionsPane extends SomePane{
     ParallelTransition show;
     ParallelTransition hide;
 
+    EventHandler<Event> onShow;
+    Button eventFirer = new Button();
+
     int animationDuration = 200;
     int animationDistance = 50;
-    double widthFactor = 1.8;
+    double widthFactor = 3;
     double heightFactor = 0.6;
     double fontFactor = 0.2;
     double focusAnimationFactor = 0.6;
-    boolean hidden = true;
+    boolean hidden = false;
 
-    String ripplerFill = "#66DD77";
-    String topButtonStyle = "roundedTopButton";
-    String middleButtonStyle = "notRoundedButton";
     String bottomButtonStyle = "customButtonBottom";
 
-    public OptionsPane(Pane parent) {
+    public AdvancedOptionsPane(Pane parent) {
+        this.parent = parent;
         pane.getStyleClass().add("customPane");
         pane.setPrefHeight(20);
         pane.setPrefWidth(20);
@@ -133,17 +135,14 @@ public class OptionsPane extends SomePane{
 
     private void show(double x, double y, double w, double h) {
         int size = pane.getChildren().size();
-        
-        hidden = false;
 
         pane.setPrefWidth(w * widthFactor);
         pane.setPrefHeight(h * size * heightFactor);
         pane.setLayoutX(x);
         pane.setLayoutY(y);
-
-        for (Node n : pane.getChildren()) {
-            JFXButton b = (JFXButton) n;
-            b.setFont(new Font(h * 0.2));
+        
+        if (onShow != null) {
+            eventFirer.fire();
         }
 
         Timeline focus = new Timeline(new KeyFrame(
@@ -153,6 +152,11 @@ public class OptionsPane extends SomePane{
 
         pane.setVisible(true);
         show.play();
+    }
+
+    public void setOnShow(EventHandler<Event> onShow) {
+        eventFirer.removeEventHandler(EventType.ROOT, this.onShow);
+        eventFirer.addEventHandler(EventType.ROOT, onShow);
     }
 
     @Override
@@ -169,32 +173,17 @@ public class OptionsPane extends SomePane{
             hide.play();
         }
     }
-    
+
     @Override
     public void cancel() {
-        hidden = true;
         pane.setVisible(false);
     }
 
-    public void addButton(JFXButton button) {
-
-        if (pane.getChildren().size() > 1) {
-            button.getStyleClass().add(middleButtonStyle);
-        } else {
-            button.getStyleClass().add(topButtonStyle);
-        }
-        button.setRipplerFill(Color.web(ripplerFill));
-        button.setPrefWidth(500);
-        button.setPrefHeight(150);
-
-        button.addEventHandler(ActionEvent.ACTION, n -> {
-            hide();
-        });
-
+    public void add(Node n) {
         int size = pane.getChildren().size();
 
         pane.getChildren().remove(done);
-        pane.add(button, 0, size - 1, 1, 1);
+        pane.add(n, 0, size - 1, 1, 1);
         pane.add(done, 0, size, 1, 1);
     }
 
@@ -228,14 +217,6 @@ public class OptionsPane extends SomePane{
 
     public void setFocusAnimationFactor(double focusAnimationFactor) {
         this.focusAnimationFactor = focusAnimationFactor;
-    }
-
-    public String getRipplerFill() {
-        return ripplerFill;
-    }
-
-    public void setRipplerFill(String ripplerFill) {
-        this.ripplerFill = ripplerFill;
     }
 
     public GridPane getPane() {

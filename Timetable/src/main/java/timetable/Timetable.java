@@ -217,7 +217,7 @@ public class Timetable implements Serializable {
         }
     }
 
-    public void removeLessonRow(int index) {
+    public void deleteLessonRow(int index) {
         if (lessons > 1) {
             lessons--;
             for (int i = 0; i < subjects.length; i++) {
@@ -257,7 +257,7 @@ public class Timetable implements Serializable {
         subjects[indexI][indexJ] = new Subject();
     }
 
-    public void removeSubject(int indexI, int indexJ) {
+    public void deleteSubject(int indexI, int indexJ) {
         for (int j = indexJ; j < lessons - 1; j++) {
             subjects[indexI][j] = subjects[indexI][j + 1];
         }
