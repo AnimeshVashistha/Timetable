@@ -1,0 +1,109 @@
+* {
+    -accent-color-primary: #66DD77;
+    -accent-color-secondary: #44CC55;
+}
+
+.customButtonNoFill{
+    -fx-background-color: transparent;
+    -fx-cursor:hand;
+}
+
+.subjectButton{
+    -fx-background-color:#e8e8e8;
+    -fx-background-radius: 7;
+    -fx-cursor:hand;
+}
+
+.timeButton{
+    -fx-background-color:#dddddd;
+    -fx-background-radius:7;
+    -fx-cursor:hand;
+}
+
+.dayButton{
+    -fx-background-color:#bbbbbb;
+    -fx-background-radius:7;
+    -fx-cursor:hand;
+    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
+}
+
+.nameButton{
+    -fx-background-color: -accent-color-primary;
+    -fx-background-radius: 7;
+    -fx-cursor:hand;
+    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
+}
+
+.customButtonBottom{
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 0 0 7 7;
+    -fx-cursor:hand;
+}
+
+.roundedButton{
+    -fx-background-radius: 7;
+    -fx-cursor:hand;
+}
+
+.roundedTopButton{
+    -fx-background-radius: 7 7 0 0;
+    -fx-cursor:hand;
+}
+
+.roundedBottomButton{
+    -fx-background-radius: 0 0 7 7;
+    -fx-cursor:hand;
+}
+
+.notRoundedButton{
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-cursor:hand;
+}
+
+.customTextfield{
+    -fx-prompt-text-fill: #888888;
+    -jfx-focus-color: -accent-color-primary;
+    -jfx-unfocus-color: #888888;
+    -jfx-label-float: true;
+}
+
+.customtogglebutton{
+    -fx-cursor:hand;
+    -jfx-toggle-color: -accent-color-primary;
+    -jfx-untoggle-color: #ffffff;
+    -jfx-toggle-line-color: -accent-color-secondary;
+    -jfx-untoggle-line-color: #888888;
+}
+
+.customTimepicker{
+    -jfx-default-color: -accent-color-primary;
+}
+
+.customPanel{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 7;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.customPane{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 7;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.menuPanel{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 0 7 7 0;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.autoCOmpletePanel{
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 0 0 7 7;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.menuBackgroundPanel{
+    -fx-background-color: #00000055;
+}
