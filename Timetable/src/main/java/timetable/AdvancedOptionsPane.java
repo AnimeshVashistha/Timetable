@@ -39,7 +39,10 @@ public class AdvancedOptionsPane extends SomePane {
     ParallelTransition hide;
 
     EventHandler<Event> onShow;
-    Button eventFirer = new Button();
+    Button showEvent = new Button();
+
+    EventHandler<Event> onHide;
+    Button hideEvent = new Button();
 
     int animationDuration = 200;
     int animationDistance = 50;
@@ -47,7 +50,7 @@ public class AdvancedOptionsPane extends SomePane {
     double heightFactor = 0.6;
     double fontFactor = 0.2;
     double focusAnimationFactor = 0.6;
-    boolean hidden = false;
+    boolean hidden = true;
 
     String bottomButtonStyle = "customButtonBottom";
 
@@ -136,13 +139,15 @@ public class AdvancedOptionsPane extends SomePane {
     private void show(double x, double y, double w, double h) {
         int size = pane.getChildren().size();
 
+        hidden = false;
+
         pane.setPrefWidth(w * widthFactor);
         pane.setPrefHeight(h * size * heightFactor);
         pane.setLayoutX(x);
         pane.setLayoutY(y);
-        
+
         if (onShow != null) {
-            eventFirer.fire();
+            showEvent.fire();
         }
 
         Timeline focus = new Timeline(new KeyFrame(
@@ -155,14 +160,20 @@ public class AdvancedOptionsPane extends SomePane {
     }
 
     public void setOnShow(EventHandler<Event> onShow) {
-        eventFirer.removeEventHandler(EventType.ROOT, this.onShow);
-        eventFirer.addEventHandler(EventType.ROOT, onShow);
+        if (this.onShow != null) {
+            showEvent.removeEventHandler(EventType.ROOT, this.onShow);
+        }
+        showEvent.addEventHandler(EventType.ROOT, onShow);
     }
 
     @Override
     public void hide() {
         if (hidden == false) {
             hidden = true;
+
+            if (onHide != null) {
+                hideEvent.fire();
+            }
 
             source.requestFocus();
 
@@ -177,6 +188,13 @@ public class AdvancedOptionsPane extends SomePane {
     @Override
     public void cancel() {
         pane.setVisible(false);
+    }
+
+    public void setOnHide(EventHandler<Event> onHide) {
+        if (this.onHide != null) {
+            hideEvent.removeEventHandler(EventType.ROOT, this.onHide);
+        }
+        hideEvent.addEventHandler(EventType.ROOT, onHide);
     }
 
     public void add(Node n) {

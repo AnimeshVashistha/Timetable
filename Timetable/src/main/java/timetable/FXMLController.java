@@ -69,7 +69,8 @@ public class FXMLController implements Initializable {
     JFXTextField subjectName;
     JFXTextField subjectRoom;
     JFXTextField subjectTeacher;
-    EventHandler<Event> subjectMenuScaler;
+    EventHandler<Event> subjectMenuOnShow;
+    EventHandler<Event> subjectMenuOnHide;
 
     TranslateTransition menuPaneSlideIn;
     FadeTransition menuBackgroundPaneFadeIn;
@@ -451,7 +452,8 @@ public class FXMLController implements Initializable {
         subjectName = new JFXTextField("name");
         subjectRoom = new JFXTextField("room");
         subjectTeacher = new JFXTextField("teacher");
-        subjectMenuScaler = (Event n) -> {
+        subjectMenuOnShow = (Event n) -> {
+            System.out.println("onShowListener");
             double h = subjectName.getHeight();
             subjectName.setPadding(new Insets(h * 0.35, h * 0.4, 0.1, h * 0.4));
             subjectRoom.setPadding(new Insets(h * 0.35, h * 0.4, 0.1, h * 0.4));
@@ -460,10 +462,13 @@ public class FXMLController implements Initializable {
             subjectRoom.setFont(new Font(h * 0.22));
             subjectTeacher.setFont(new Font(h * 0.22));
         };
+        subjectMenuOnShow = (Event n) -> {
+            System.out.println("onHideHandler");
+        };
         subjectMenu.add(subjectName);
         subjectMenu.add(subjectRoom);
         subjectMenu.add(subjectTeacher);
-        subjectMenu.setOnShow(subjectMenuScaler);
+        subjectMenu.setOnShow(subjectMenuOnShow);
 
         currentTable = tm.getCurrentTable();
         timetables = tm.getTimetables();
@@ -1029,7 +1034,6 @@ public class FXMLController implements Initializable {
         }
     }
 
-    @FXML
     private void showSubjectOverlay(ActionEvent event) {
         subjectOverlayHidden = false;
 
@@ -1491,6 +1495,21 @@ public class FXMLController implements Initializable {
     public void addRowBelow() {
         tm.addRowBelow();
         initNewTimetable();
+    }
+
+    @FXML
+    private void subjectMenu(ActionEvent event) {
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                if (subjects[i][j] == event.getSource()) {
+                    selectedSubject = subjects[i][j];
+                    tm.setsIndexI(i);
+                    tm.setsIndexJ(j);
+                    break;
+                }
+            }
+        }
+        subjectMenu.show(selectedSubject);
     }
 
     @FXML
