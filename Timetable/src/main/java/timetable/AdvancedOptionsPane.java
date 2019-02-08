@@ -49,7 +49,7 @@ public class AdvancedOptionsPane extends SomePane {
     double widthFactor = 3;
     double heightFactor = 0.6;
     double fontFactor = 0.2;
-    double focusAnimationFactor = 0.6;
+    double focusAnimationFactor = 0.8;
     boolean hidden = true;
 
     String bottomButtonStyle = "customButtonBottom";
@@ -163,6 +163,7 @@ public class AdvancedOptionsPane extends SomePane {
         if (this.onShow != null) {
             showEvent.removeEventHandler(EventType.ROOT, this.onShow);
         }
+        this.onShow = onShow;
         showEvent.addEventHandler(EventType.ROOT, onShow);
     }
 
@@ -194,6 +195,7 @@ public class AdvancedOptionsPane extends SomePane {
         if (this.onHide != null) {
             hideEvent.removeEventHandler(EventType.ROOT, this.onHide);
         }
+        this.onHide = onHide;
         hideEvent.addEventHandler(EventType.ROOT, onHide);
     }
 
@@ -239,6 +241,10 @@ public class AdvancedOptionsPane extends SomePane {
 
     public GridPane getPane() {
         return pane;
+    }
+
+    public JFXButton getDone() {
+        return done;
     }
 
 }

@@ -72,6 +72,8 @@ public class FXMLController implements Initializable {
     EventHandler<Event> subjectMenuOnShow;
     EventHandler<Event> subjectMenuOnHide;
 
+    EventHandler<KeyEvent> hideAllMenus;
+
     TranslateTransition menuPaneSlideIn;
     FadeTransition menuBackgroundPaneFadeIn;
     TranslateTransition menuPaneSlideOut;
@@ -399,22 +401,32 @@ public class FXMLController implements Initializable {
 
         tm = new TimetableManager();
 
+        hideAllMenus = (KeyEvent n) -> {
+            if (n.getCode() == KeyCode.ESCAPE) {
+                hideAllMenus();
+            }
+        };
+
         //time context menu
         timeContextMenu = new OptionsPane(bg);
         menus.add(timeContextMenu);
         clearRow = new JFXButton("clear row");
+        clearRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         clearRow.addEventHandler(ActionEvent.ACTION, n -> {
             clearRow();
         });
         deleteRow = new JFXButton("delete row");
+        deleteRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         deleteRow.addEventHandler(ActionEvent.ACTION, n -> {
             deleteRow();
         });
         addRowAbove = new JFXButton("add row above");
+        addRowAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         addRowAbove.addEventHandler(ActionEvent.ACTION, n -> {
             addRowAbove();
         });
         addRowBelow = new JFXButton("add row below");
+        addRowBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         addRowBelow.addEventHandler(ActionEvent.ACTION, n -> {
             addRowBelow();
         });
@@ -427,18 +439,22 @@ public class FXMLController implements Initializable {
         subjectContextMenu = new OptionsPane(bg);
         menus.add(subjectContextMenu);
         clear = new JFXButton("clear");
+        clear.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         clear.addEventHandler(ActionEvent.ACTION, n -> {
             clear();
         });
         delete = new JFXButton("delete");
+        delete.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         delete.addEventHandler(ActionEvent.ACTION, n -> {
             delete();
         });
         addAbove = new JFXButton("add above");
+        addAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         addAbove.addEventHandler(ActionEvent.ACTION, n -> {
             addAbove();
         });
         addBelow = new JFXButton("add below");
+        addBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         addBelow.addEventHandler(ActionEvent.ACTION, n -> {
             addBelow();
         });
@@ -449,26 +465,54 @@ public class FXMLController implements Initializable {
 
         //subject menu
         subjectMenu = new AdvancedOptionsPane(bg);
-        subjectName = new JFXTextField("name");
-        subjectRoom = new JFXTextField("room");
-        subjectTeacher = new JFXTextField("teacher");
+        menus.add(subjectMenu);
+        subjectName = new JFXTextField();
+        subjectName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectName.setPrefWidth(500);
+        subjectName.setPrefHeight(100);
+        subjectName.setPromptText("name");
+        subjectName.getStyleClass().add("customTextfield");
+        subjectRoom = new JFXTextField();
+        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectRoom.setPrefWidth(500);
+        subjectRoom.setPrefHeight(100);
+        subjectRoom.getStyleClass().add("customTextfield");
+        subjectRoom.setPromptText("room");
+        subjectTeacher = new JFXTextField();
+        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectTeacher.setPrefWidth(500);
+        subjectTeacher.setPrefHeight(100);
+        subjectTeacher.getStyleClass().add("customTextfield");
+        subjectTeacher.setPromptText("teacher");
+        //EventHandler
         subjectMenuOnShow = (Event n) -> {
-            System.out.println("onShowListener");
-            double h = subjectName.getHeight();
-            subjectName.setPadding(new Insets(h * 0.35, h * 0.4, 0.1, h * 0.4));
-            subjectRoom.setPadding(new Insets(h * 0.35, h * 0.4, 0.1, h * 0.4));
-            subjectTeacher.setPadding(new Insets(h * 0.35, h * 0.4, 0.1, h * 0.4));
+            double h = selectedSubject.getHeight();
+            subjectMenu.getPane().setMargin(subjectName, new Insets(0, 0, h * 0.1, 0));
+            subjectMenu.getPane().setMargin(subjectRoom, new Insets(0, 0, h * 0.1, 0));
+            subjectMenu.getPane().setMargin(subjectTeacher, new Insets(0, 0, h * 0.1, 0));
+            subjectName.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
+            subjectRoom.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
+            subjectTeacher.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
+            subjectMenu.getDone().setPadding(new Insets(h * 0.1));
             subjectName.setFont(new Font(h * 0.22));
             subjectRoom.setFont(new Font(h * 0.22));
             subjectTeacher.setFont(new Font(h * 0.22));
+            subjectMenu.getDone().setFont(new Font(h * 0.22));
+            subjectName.setText(tm.getCurrentTable().getSubjectText(tm.getsIndexI(), tm.getsIndexJ()));
+            subjectRoom.setText(tm.getCurrentTable().getRoomText(tm.getsIndexI(), tm.getsIndexJ()));
+            subjectTeacher.setText(tm.getCurrentTable().getTeacherText(tm.getsIndexI(), tm.getsIndexJ()));
         };
-        subjectMenuOnShow = (Event n) -> {
-            System.out.println("onHideHandler");
+        subjectMenuOnHide = (Event n) -> {
+            selectedSubject.setText(subjectName.getText() + "\n" + subjectRoom.getText());
+            tm.getCurrentTable().setSubjectText(subjectName.getText(), tm.getsIndexI(), tm.getsIndexJ());
+            tm.getCurrentTable().setRoomText(subjectRoom.getText(), tm.getsIndexI(), tm.getsIndexJ());
+            tm.getCurrentTable().setTeacherText(subjectTeacher.getText(), tm.getsIndexI(), tm.getsIndexJ());
         };
         subjectMenu.add(subjectName);
         subjectMenu.add(subjectRoom);
         subjectMenu.add(subjectTeacher);
         subjectMenu.setOnShow(subjectMenuOnShow);
+        subjectMenu.setOnHide(subjectMenuOnHide);
 
         currentTable = tm.getCurrentTable();
         timetables = tm.getTimetables();
@@ -894,6 +938,12 @@ public class FXMLController implements Initializable {
         }
     }
 
+    public void hideAllMenus() {
+        for (SomePane s : menus) {
+            s.hide();
+        }
+    }
+
     public void hideOtherOverlays(int num) {
         autoCompletePane.setVisible(false);
         if (num != 0) {
@@ -1296,68 +1346,8 @@ public class FXMLController implements Initializable {
         }
     }
 
-    @FXML
     private void subjectButton_kp(KeyEvent event) {
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                if (event.getSource() == subjects[i][j]) {
-                    selectedSubject = subjects[i][j];
-                    sIndexI = i;
-                    sIndexJ = j;
-                    break;
-                }
-            }
-        }
-        if (event.isControlDown() && event.getCode() == KeyCode.UP) {
-            moveSubjectUp(sIndexI, sIndexJ);
-        } else if (event.isControlDown() && event.getCode() == KeyCode.DOWN) {
-            moveSubjectDown(sIndexI, sIndexJ);
-        } else if (event.isControlDown() && event.getCode() == KeyCode.LEFT) {
-            moveSubjectLeft(sIndexI, sIndexJ);
-        } else if (event.isControlDown() && event.getCode() == KeyCode.RIGHT) {
-            moveSubjectRight(sIndexI, sIndexJ);
-        } else if (event.getCode() == KeyCode.DELETE) {
-            currentTable.clearSubject(sIndexI, sIndexJ);
-            initNewTimetable();
-        }
-    }
 
-    public void moveSubjectUp(int i, int j) {
-        currentTable.moveSubjectUp(sIndexI, sIndexJ);
-        initNewTimetable();
-        if (j > 0) {
-            subjects[i][j - 1].requestFocus();
-        }
-    }
-
-    public void moveSubjectDown(int i, int j) {
-        currentTable.moveSubjectDown(sIndexI, sIndexJ);
-        initNewTimetable();
-        if (j < currentTable.getLessons()) {
-            subjects[i][j + 1].requestFocus();
-        }
-    }
-
-    public void moveSubjectLeft(int i, int j) {
-        currentTable.moveSubjectLeft(sIndexI, sIndexJ);
-        initNewTimetable();
-        if (i > 0) {
-            subjects[i - 1][j].requestFocus();
-        }
-    }
-
-    public void moveSubjectRight(int i, int j) {
-        currentTable.moveSubjectRight(sIndexI, sIndexJ);
-        initNewTimetable();
-        int days = 0;
-        for (int d = 0; d < currentTable.days.length; d++) {
-            if (currentTable.isDayDisplayed(d)) {
-                days++;
-            }
-        }
-        if (i < days) {
-            subjects[i + 1][j].requestFocus();
-        }
     }
 
     @FXML
@@ -1498,6 +1488,20 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
+    private void timeKeyReleased(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            for (int i = 0; i < times.length; i++) {
+                if (times[i] == event.getSource()) {
+                    selectedTime = times[i];
+                    tm.settIndexI(i);
+                    break;
+                }
+            }
+            timeContextMenu.show(selectedTime);
+        }
+    }
+
+    @FXML
     private void subjectMenu(ActionEvent event) {
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
@@ -1510,6 +1514,7 @@ public class FXMLController implements Initializable {
             }
         }
         subjectMenu.show(selectedSubject);
+        hideOtherMenus(subjectMenu);
     }
 
     @FXML
@@ -1551,7 +1556,75 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    private void timeButton_kp(KeyEvent event) {
+    private void subjectKeyReleased(KeyEvent event) {
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                if (event.getSource() == subjects[i][j]) {
+                    selectedSubject = subjects[i][j];
+                    sIndexI = i;
+                    sIndexJ = j;
+                    break;
+                }
+            }
+        }
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            subjectContextMenu.show(selectedSubject);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.UP) {
+            moveSubjectUp(sIndexI, sIndexJ);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.DOWN) {
+            moveSubjectDown(sIndexI, sIndexJ);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.LEFT) {
+            moveSubjectLeft(sIndexI, sIndexJ);
+        } else if (event.isControlDown() && event.getCode() == KeyCode.RIGHT) {
+            moveSubjectRight(sIndexI, sIndexJ);
+        } else if (event.getCode() == KeyCode.DELETE) {
+            currentTable.clearSubject(sIndexI, sIndexJ);
+            initNewTimetable();
+        }
+
+    }
+
+    public void moveSubjectUp(int i, int j) {
+        tm.getCurrentTable().moveSubjectUp(sIndexI, sIndexJ);
+        initNewTimetable();
+        if (j > 0) {
+            subjects[i][j - 1].requestFocus();
+        }
+    }
+
+    public void moveSubjectDown(int i, int j) {
+        tm.getCurrentTable().moveSubjectDown(sIndexI, sIndexJ);
+        initNewTimetable();
+        if (j < currentTable.getLessons()) {
+            subjects[i][j + 1].requestFocus();
+        }
+    }
+
+    public void moveSubjectLeft(int i, int j) {
+        tm.getCurrentTable().moveSubjectLeft(sIndexI, sIndexJ);
+        initNewTimetable();
+        if (i > 0) {
+            subjects[i - 1][j].requestFocus();
+        }
+    }
+
+    public void moveSubjectRight(int i, int j) {
+        tm.getCurrentTable().moveSubjectRight(sIndexI, sIndexJ);
+        initNewTimetable();
+        int days = 0;
+        for (int d = 0; d < currentTable.days.length; d++) {
+            if (currentTable.isDayDisplayed(d)) {
+                days++;
+            }
+        }
+        if (i < days) {
+            subjects[i + 1][j].requestFocus();
+        }
+    }
+
+    @FXML
+    private void hideAllMenus(ActionEvent event) {
+        hideAllMenus();
     }
 
 }
