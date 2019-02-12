@@ -16,6 +16,7 @@ import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -71,6 +72,10 @@ public class FXMLController implements Initializable {
     JFXTextField subjectTeacher;
     EventHandler<Event> subjectMenuOnShow;
     EventHandler<Event> subjectMenuOnHide;
+
+    GridPane autoCompletePane;
+    Label selectedAutoCompleteOption;
+    EventHandler<KeyEvent> subjectMenuKeyPressed;
 
     EventHandler<KeyEvent> hideAllMenus;
 
@@ -382,8 +387,6 @@ public class FXMLController implements Initializable {
     @FXML
     private JFXTimePicker timepicker;
     @FXML
-    private GridPane autoCompletePane;
-    @FXML
     private JFXButton menuPaneNew;
     @FXML
     private GridPane menuPaneTables;
@@ -513,6 +516,13 @@ public class FXMLController implements Initializable {
         subjectMenu.add(subjectTeacher);
         subjectMenu.setOnShow(subjectMenuOnShow);
         subjectMenu.setOnHide(subjectMenuOnHide);
+
+        //autocomplete pane
+        autoCompletePane = new GridPane();
+        subjectMenuKeyPressed = (KeyEvent n) -> {
+            autocompleteSubject(n);
+        };
+        subjectName.addEventHandler(KeyEvent.KEY_PRESSED, subjectMenuKeyPressed);
 
         currentTable = tm.getCurrentTable();
         timetables = tm.getTimetables();
@@ -938,6 +948,7 @@ public class FXMLController implements Initializable {
         }
     }
 
+    @FXML
     public void hideAllMenus() {
         for (SomePane s : menus) {
             s.hide();
@@ -1258,14 +1269,14 @@ public class FXMLController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 Label l = (Label) event.getSource();
-                for (int i = 0; i < currentTable.options.size(); i++) {
+                for (int i = 0; i < tm.currentTable.options.size(); i++) {
                     if (l == autoCompletePane.getChildren().get(i)) {
-                        String subject = currentTable.getOption(autocompleteIndex).getSubject();
-                        String room = currentTable.getOption(autocompleteIndex).getRoom();
-                        String teacher = currentTable.getOption(autocompleteIndex).getTeacher();
-                        sOverlaySubject.setText(subject);
-                        sOverlayRoom.setText(room);
-                        sOverlayTeacher.setText(teacher);
+                        String subject = tm.currentTable.getOption(autocompleteIndex).getSubject();
+                        String room = tm.currentTable.getOption(autocompleteIndex).getRoom();
+                        String teacher = tm.currentTable.getOption(autocompleteIndex).getTeacher();
+                        subjectName.setText(subject);
+                        subjectRoom.setText(room);
+                        subjectTeacher.setText(teacher);
                         autocompleteFocused = false;
                         autoCompletePane.setVisible(false);
                     }
@@ -1517,6 +1528,22 @@ public class FXMLController implements Initializable {
         hideOtherMenus(subjectMenu);
     }
 
+    public void autocompleteSubject(KeyEvent e) {
+        if (e.getCode() == KeyCode.ENTER) {
+            
+        } else if (e.getCode() == KeyCode.UP) {
+
+        } else if (e.getCode() == KeyCode.DOWN) {
+
+        } else{
+            
+        }
+    }
+    
+    public void enterPressed(){
+        
+    }
+
     @FXML
     private void subjectContextMenu(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
@@ -1622,7 +1649,6 @@ public class FXMLController implements Initializable {
         }
     }
 
-    @FXML
     private void hideAllMenus(ActionEvent event) {
         hideAllMenus();
     }
