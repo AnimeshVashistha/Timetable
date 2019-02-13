@@ -34,6 +34,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+/**
+ * 
+ * @author Tobias
+ */
 public class FXMLController implements Initializable {
 
     final static String selectedColor = "-fx-background-color: #66DD7744";

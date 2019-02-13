@@ -23,7 +23,7 @@ import javafx.util.Duration;
  *
  * @author Tobias
  */
-public class OptionsPane extends SomePane{
+public class OptionsPane extends SomePane {
 
     GridPane pane = new GridPane();
     Pane parent;
@@ -101,13 +101,6 @@ public class OptionsPane extends SomePane{
         double w = source.getHeight();
         double h = source.getHeight();
 
-        if (x + w > parent.getWidth()) {
-            x = parent.getWidth() - w * widthFactor;
-        }
-        if (y + h > parent.getHeight()) {
-            y = parent.getHeight() - h * size * heightFactor;
-        }
-
         show(x, y, w, h);
     }
 
@@ -121,19 +114,19 @@ public class OptionsPane extends SomePane{
         double w = source.getHeight();
         double h = source.getHeight();
 
-        if (x + w > parent.getWidth()) {
-            x = parent.getWidth() - w * widthFactor;
-        }
-        if (y + h > parent.getHeight()) {
-            y = parent.getHeight() - h * size * heightFactor;
-        }
-
         show(x, y, w, h);
     }
 
     private void show(double x, double y, double w, double h) {
         int size = pane.getChildren().size();
-        
+
+        if (x + w * widthFactor > parent.getWidth()) {
+            x = parent.getWidth() - w * widthFactor;
+        }
+        if (y + h * size * heightFactor > parent.getHeight()) {
+            y = parent.getHeight() - h * size * heightFactor;
+        }
+
         hidden = false;
 
         pane.setPrefWidth(w * widthFactor);
@@ -169,7 +162,7 @@ public class OptionsPane extends SomePane{
             hide.play();
         }
     }
-    
+
     @Override
     public void cancel() {
         hidden = true;

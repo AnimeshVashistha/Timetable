@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package timetable;
 
 import com.jfoenix.controls.JFXButton;
@@ -12,6 +7,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
@@ -40,7 +36,8 @@ public class AutocompletePane extends SomePane {
     double fontFactor = 0.2;
     boolean hidden = true;
 
-    String bottomButtonStyle = "customButtonBottom";
+    String defaultButtonStyle = "notRoundedButton";
+    String bottomButtonStyle = "roundedBottomButton";
 
     public AutocompletePane(Pane parent) {
         this.parent = parent;
@@ -83,10 +80,10 @@ public class AutocompletePane extends SomePane {
         double w = source.getHeight();
         double h = source.getHeight();
 
-        if (x + w > parent.getWidth()) {
+        if (x + w * widthFactor > parent.getWidth()) {
             x = parent.getWidth() - w * widthFactor;
         }
-        if (y + h > parent.getHeight()) {
+        if (y + h * size * heightFactor > parent.getHeight()) {
             y = parent.getHeight() - h * size * heightFactor;
         }
 
@@ -103,10 +100,10 @@ public class AutocompletePane extends SomePane {
         double w = source.getHeight();
         double h = source.getHeight();
 
-        if (x + w > parent.getWidth()) {
+        if (x + w * widthFactor > parent.getWidth()) {
             x = parent.getWidth() - w * widthFactor;
         }
-        if (y + h > parent.getHeight()) {
+        if (y + h * size * heightFactor > parent.getHeight()) {
             y = parent.getHeight() - h * size * heightFactor;
         }
 
@@ -146,9 +143,14 @@ public class AutocompletePane extends SomePane {
     }
 
     public void setFields(List<Subject> options) {
-        for (int i = 0; i < options.size(); i++) {
-            
+        for (int i = 0; i < options.size() - 1; i++) {
+            Label l = new Label(options.get(i).getSubject());
+            l.getStyleClass().add(defaultButtonStyle);
+            pane.getChildren().add(l);
         }
+        Label l = new Label(options.get(options.size() - 1).getSubject());
+        l.getStyleClass().add(bottomButtonStyle);
+        pane.getChildren().add(l);
     }
 
     public double getWidthFactor() {

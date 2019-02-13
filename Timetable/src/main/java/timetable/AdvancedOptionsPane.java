@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package timetable;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
@@ -106,13 +102,6 @@ public class AdvancedOptionsPane extends SomePane {
         double w = source.getHeight();
         double h = source.getHeight();
 
-        if (x + w > parent.getWidth()) {
-            x = parent.getWidth() - w * widthFactor;
-        }
-        if (y + h > parent.getHeight()) {
-            y = parent.getHeight() - h * size * heightFactor;
-        }
-
         show(x, y, w, h);
     }
 
@@ -125,13 +114,6 @@ public class AdvancedOptionsPane extends SomePane {
         double y = source.getLayoutY() + 1;
         double w = source.getHeight();
         double h = source.getHeight();
-
-        if (x + w > parent.getWidth()) {
-            x = parent.getWidth() - w * widthFactor;
-        }
-        if (y + h > parent.getHeight()) {
-            y = parent.getHeight() - h * size * heightFactor;
-        }
 
         show(x, y, w, h);
     }
@@ -155,8 +137,31 @@ public class AdvancedOptionsPane extends SomePane {
                 e -> pane.getChildren().get(0).requestFocus()));
         focus.play();
 
+        Timeline reposition = new Timeline(new KeyFrame(Duration.millis(1), n -> {
+            repositon();
+        }));
+        reposition.play();
+
         pane.setVisible(true);
         show.play();
+    }
+
+    private void repositon() {
+
+        double x = pane.getLayoutX();
+        double y = pane.getLayoutY();
+        double w = pane.getWidth();
+        double h = pane.getHeight();
+
+        if (x + w > parent.getWidth()) {
+            x = parent.getWidth() - w;
+            pane.setLayoutX(x);
+        }
+        if (y + h > parent.getHeight()) {
+            y = parent.getHeight() - h;
+            pane.setLayoutY(y);
+
+        }
     }
 
     public void setOnShow(EventHandler<Event> onShow) {
