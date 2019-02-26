@@ -1,7 +1,6 @@
 package timetable;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
