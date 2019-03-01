@@ -167,6 +167,10 @@ public class Timetable implements Serializable {
         this.lessons = lessons;
     }
 
+    public List<Subject> getOptions() {
+        return options;
+    }
+    
     public Subject getOption(int i) {
         return options.get(i);
     }

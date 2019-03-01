@@ -98,7 +98,7 @@
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
 }
 
-.autoCOmpletePanel{
+.autocompletePane{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 0 7 7;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);

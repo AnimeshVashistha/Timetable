@@ -19,7 +19,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -39,8 +38,8 @@ import javafx.util.Duration;
  */
 public class FXMLController implements Initializable {
 
-    final static String selectedColor = "-fx-background-color: #66DD7744";
-    final static String unselectedColor = "-fx-background-color: #00000000";
+    static String selectedColor = "-fx-background-color: #66DD7744";
+    static String unselectedColor = "-fx-background-color: #00000000";
 
     TimetableManager tm;
 
@@ -79,6 +78,7 @@ public class FXMLController implements Initializable {
     AutocompletePane autoCompletePane;
     Label selectedAutoCompleteOption;
     EventHandler<KeyEvent> subjectMenuKeyPressed;
+    EventHandler<MouseEvent> autocompleteOnClick;
 
     EventHandler<KeyEvent> hideAllMenus;
 
@@ -104,15 +104,6 @@ public class FXMLController implements Initializable {
     FadeTransition dayOverlayFadeOut;
     ParallelTransition showDayOverlay;
     ParallelTransition hideDayOverlay;
-
-    TranslateTransition subjectOverlayComeUp;
-    FadeTransition subjectOverlayFadeIn;
-    TranslateTransition subjectOverlayGoDown;
-    FadeTransition subjectOverlayFadeOut;
-    ParallelTransition showSubjectOverlay;
-    ParallelTransition hideSubjectOverlay;
-
-    DataManager dm;
 
     int animationDuration = 200;
     int animationDistance = 50;
@@ -365,10 +356,6 @@ public class FXMLController implements Initializable {
     @FXML
     private GridPane menuPaneGrid;
     @FXML
-    private AnchorPane timePickerOverlay;
-    @FXML
-    private JFXTimePicker timepicker;
-    @FXML
     private JFXButton menuPaneNew;
     @FXML
     private GridPane menuPaneTables;
@@ -376,18 +363,6 @@ public class FXMLController implements Initializable {
     private JFXButton menuPaneDelete;
     @FXML
     private ScrollPane menuPaneScrollPane;
-    @FXML
-    private JFXButton menuPaneInfo;
-    @FXML
-    private AnchorPane subjectOverlay;
-    @FXML
-    private JFXTextField sOverlaySubject;
-    @FXML
-    private JFXTextField sOverlayRoom;
-    @FXML
-    private JFXTextField sOverlayTeacher;
-    @FXML
-    private JFXButton sOverlayDone;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -499,6 +474,7 @@ public class FXMLController implements Initializable {
         };
         subjectMenuOnHide = (Event n) -> {
             writeSubjectData();
+            autoCompletePane.hide();
         };
         subjectMenu.add(subjectName);
         subjectMenu.add(subjectRoom);
@@ -508,10 +484,15 @@ public class FXMLController implements Initializable {
 
         //autocomplete pane
         autoCompletePane = new AutocompletePane(bg);
+        menus.add(autoCompletePane);
         subjectMenuKeyPressed = (KeyEvent n) -> {
             autocompleteSubject(n);
         };
-        subjectName.addEventHandler(KeyEvent.KEY_PRESSED, subjectMenuKeyPressed);
+        autocompleteOnClick = (MouseEvent n) -> {
+            autocompleteLabelClicked(n);
+        };
+        subjectName.addEventHandler(KeyEvent.KEY_RELEASED, subjectMenuKeyPressed);
+        autoCompletePane.setOnClick(autocompleteOnClick);
 
         initNewTimetable();
 
@@ -598,9 +579,7 @@ public class FXMLController implements Initializable {
 
         menuPaneNew.setRipplerFill(Color.web("#66DD77"));
         menuPaneDelete.setRipplerFill(Color.web("#66DD77"));
-
-        timepicker.setIs24HourView(true);
-
+        
         name.setRipplerFill(Color.web("#888888"));
         for (int i = 0; i < days.length; i++) {
             days[i].setRipplerFill(Color.web("000000"));
@@ -637,6 +616,11 @@ public class FXMLController implements Initializable {
                 showMenuIcon.play();
             } else {
                 hideMenuIcon.play();
+            }
+        });
+        subjectName.focusedProperty().addListener(n -> {
+            if (!subjectName.isFocused()) {
+                autoCompletePane.hide();
             }
         });
 
@@ -906,6 +890,10 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
+    private void hideAllMenus(ActionEvent event) {
+        hideAllMenus();
+    }
+    
     public void hideAllMenus() {
         for (SomePane s : menus) {
             s.hide();
@@ -1019,7 +1007,6 @@ public class FXMLController implements Initializable {
         }
     }
 
-    @FXML
     private void callCancelOverlaysA(ActionEvent event) {
         hideOtherOverlays(-1);
     }
@@ -1165,7 +1152,7 @@ public class FXMLController implements Initializable {
         } else if (tm.getTimeTableIndex() < tm.getTimetables().size()) {
             tm.setCurrentTable(tm.getTimeTableIndex());
         } else {
-            tm.setTimeTableIndex(tm.getTimeTableIndex()-1);
+            tm.setTimeTableIndex(tm.getTimeTableIndex() - 1);
             tm.setCurrentTable(tm.getTimeTableIndex());
         }
 
@@ -1266,41 +1253,61 @@ public class FXMLController implements Initializable {
         tm.getCurrentTable().setTeacherText(subjectTeacher.getText(), tm.getsIndexI(), tm.getsIndexJ());
     }
 
-    boolean autocompleteFucused = false;
-    int autocompleteIndex = 0;
-
     public void autocompleteSubject(KeyEvent e) {
         if (e.getCode() == KeyCode.ENTER) {
-            if (autocompleteFucused) {
-
-            } else {
-                subjectMenu.hide();
-            }
+            enterPressed();
         } else if (e.getCode() == KeyCode.UP) {
-            upPressed();
+            autoCompletePane.upPressed();
         } else if (e.getCode() == KeyCode.DOWN) {
-            downPressed();
+            autoCompletePane.downPressed();
         } else {
             handleInput();
         }
     }
 
-    private void upPressed() {
-        if (autocompleteFucused && autocompleteIndex > 0) {
-
+    public void autocompleteLabelClicked(MouseEvent e) {
+        Label l = (Label) e.getSource();
+        for (int i = 0; i < tm.getCurrentTable().getOptions().size(); i++) {
+            if (l == autoCompletePane.getPane().getChildren().get(i)) {
+                writeAutocomplete(i);
+            }
         }
     }
 
-    private void downPressed() {
+    private void enterPressed() {
+        if (autoCompletePane.isAutocompleteFucused()) {
+            writeAutocomplete();
+        } else {
+            subjectMenu.hide();
+        }
+    }
 
+    private void writeAutocomplete() {
+        setSubjectMenuFields(tm.getCurrentTable().getOption(autoCompletePane.getAutocompleteIndex()));
+        autoCompletePane.hide();
+    }
+
+    private void writeAutocomplete(int index) {
+        setSubjectMenuFields(tm.getCurrentTable().getOption(index));
+        autoCompletePane.hide();
+    }
+
+    private void setSubjectMenuFields(Subject s) {
+        subjectName.setText(s.getSubject());
+        subjectRoom.setText(s.getRoom());
+        subjectTeacher.setText(s.getTeacher());
     }
 
     private void handleInput() {
-        List<Subject> options = tm.getCurrentTable().getAutocompleteOptions(subjectName.getText());
-        System.out.println(options);
-        if (options.size() > 0) {
-            autoCompletePane.setFields(options);
-            autoCompletePane.show(subjectName);
+        if (subjectName.getText().length() > 0) {
+            tm.getCurrentTable().updateReferences();
+            List<Subject> options = tm.getCurrentTable().getAutocompleteOptions(subjectName.getText());
+            if (options.size() > 0) {
+                autoCompletePane.setFields(subjectName, options);
+                autoCompletePane.show(subjectName);
+            } else {
+                autoCompletePane.hide();
+            }
         }
     }
 
@@ -1407,26 +1414,6 @@ public class FXMLController implements Initializable {
         if (i < days) {
             subjects[i + 1][j].requestFocus();
         }
-    }
-
-    private void hideAllMenus(ActionEvent event) {
-        hideAllMenus();
-    }
-
-    @FXML
-    private void sOverlaySubject_kp(KeyEvent event) {
-    }
-
-    @FXML
-    private void sOverlayRoom_kp(KeyEvent event) {
-    }
-
-    @FXML
-    private void sOverlayTeacher_kp(KeyEvent event) {
-    }
-
-    @FXML
-    private void callHideSubjectOverlay(ActionEvent event) {
     }
 
 }
