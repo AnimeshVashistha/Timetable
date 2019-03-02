@@ -5,6 +5,7 @@ import java.util.List;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,13 +26,13 @@ public class AutocompletePane extends SomePane {
     Pane parent;
     JFXTextField source;
 
+    ScaleTransition ScaleUp;
     FadeTransition FadeIn;
+    ScaleTransition ScaleDown;
     FadeTransition FadeOut;
     ParallelTransition show;
     ParallelTransition hide;
-
-    int animationDuration = 200;
-    int animationDistance = 50;
+    
     double widthFactor = 3;
     double heightFactor = 0.6;
     double fontFactor = 0.3;
@@ -51,17 +52,25 @@ public class AutocompletePane extends SomePane {
         this.parent = parent;
         parent.getChildren().add(pane);
 
-        FadeIn = new FadeTransition(Duration.millis(animationDuration));
+        ScaleUp = new ScaleTransition(Duration.millis(FXMLController.animationDuration));
+        ScaleUp.setToY(1);
+
+        FadeIn = new FadeTransition(Duration.millis(FXMLController.animationDuration));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        FadeOut = new FadeTransition(Duration.millis(animationDuration));
+        ScaleDown = new ScaleTransition(Duration.millis(FXMLController.animationDuration));
+        ScaleDown.setToY(0);
+
+        FadeOut = new FadeTransition(Duration.millis(FXMLController.animationDuration));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(pane);
+        show.getChildren().add(ScaleUp);
         show.getChildren().add(FadeIn);
 
         hide = new ParallelTransition(pane);
+        hide.getChildren().add(ScaleDown);
         hide.getChildren().add(FadeOut);
     }
 
@@ -114,7 +123,7 @@ public class AutocompletePane extends SomePane {
             autocompleteFucused = false;
 
             new Timeline(
-                    new KeyFrame(Duration.millis(animationDuration), n -> pane.setVisible(false))
+                    new KeyFrame(Duration.millis(FXMLController.animationDuration), n -> pane.setVisible(false))
             ).play();
 
             hide.play();

@@ -37,8 +37,6 @@ public class OptionsPane extends SomePane {
     ParallelTransition show;
     ParallelTransition hide;
 
-    int animationDuration = 200;
-    int animationDistance = 50;
     double widthFactor = 1.8;
     double heightFactor = 0.6;
     double fontFactor = 0.2;
@@ -59,18 +57,18 @@ public class OptionsPane extends SomePane {
         this.parent = parent;
         parent.getChildren().add(pane);
 
-        SlideIn = new TranslateTransition(Duration.millis(animationDuration));
-        SlideIn.setFromY(animationDistance);
+        SlideIn = new TranslateTransition(Duration.millis(FXMLController.animationDuration));
+        SlideIn.setFromY(FXMLController.animationDistance);
         SlideIn.setToY(0);
 
-        FadeIn = new FadeTransition(Duration.millis(animationDuration));
+        FadeIn = new FadeTransition(Duration.millis(FXMLController.animationDuration));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        SlideOut = new TranslateTransition(Duration.millis(animationDuration));
-        SlideOut.setToY(animationDistance);
+        SlideOut = new TranslateTransition(Duration.millis(FXMLController.animationDuration));
+        SlideOut.setToY(FXMLController.animationDistance);
 
-        FadeOut = new FadeTransition(Duration.millis(animationDuration));
+        FadeOut = new FadeTransition(Duration.millis(FXMLController.animationDuration));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(pane);
@@ -140,7 +138,7 @@ public class OptionsPane extends SomePane {
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(animationDuration * focusAnimationFactor),
+                Duration.millis(FXMLController.animationDuration * focusAnimationFactor),
                 e -> pane.getChildren().get(0).requestFocus()));
         focus.play();
 
@@ -156,7 +154,7 @@ public class OptionsPane extends SomePane {
             source.requestFocus();
 
             new Timeline(
-                    new KeyFrame(Duration.millis(animationDuration), n -> pane.setVisible(false))
+                    new KeyFrame(Duration.millis(FXMLController.animationDuration), n -> pane.setVisible(false))
             ).play();
 
             hide.play();
