@@ -148,7 +148,7 @@ public class AutocompletePane extends SomePane {
 
         for (int i = 0; i < options.size(); i++) {
             Label l = new Label(options.get(i).getSubject());
-            l.setPrefSize(150, 500);
+            l.setPrefSize(500, 150);
             l.setPadding(new Insets(0, 0, 0, source.getHeight() * paddingFactor));
             l.setFont(new Font(source.getHeight() * fontFactor));
             if (onClick != null) {

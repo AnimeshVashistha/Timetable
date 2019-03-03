@@ -25,6 +25,7 @@ public class AdvancedOptionsPane extends SomePane {
     Pane parent;
     JFXButton done = new JFXButton();
     JFXButton source;
+    Node specificFocus;
 
     TranslateTransition SlideIn;
     FadeTransition FadeIn;
@@ -38,12 +39,13 @@ public class AdvancedOptionsPane extends SomePane {
 
     EventHandler<Event> onHide;
     Button hideEvent = new Button();
-    
+
     double widthFactor = 3;
     double heightFactor = 0.6;
     double fontFactor = 0.2;
     double focusAnimationFactor = 0.8;
     boolean hidden = true;
+    boolean requestSpecificFocus = false;
 
     String bottomButtonStyle = "customButtonBottom";
 
@@ -129,9 +131,16 @@ public class AdvancedOptionsPane extends SomePane {
             showEvent.fire();
         }
 
+        Node toFocus;
+        if (requestSpecificFocus) {
+            toFocus = specificFocus;
+        } else {
+            toFocus = pane.getChildren().get(0);
+        }
+
         Timeline focus = new Timeline(new KeyFrame(
                 Duration.millis(FXMLController.animationDuration * focusAnimationFactor),
-                e -> pane.getChildren().get(0).requestFocus()));
+                e -> toFocus.requestFocus()));
         focus.play();
 
         Timeline reposition = new Timeline(new KeyFrame(Duration.millis(1), n -> {
@@ -247,6 +256,22 @@ public class AdvancedOptionsPane extends SomePane {
 
     public JFXButton getDone() {
         return done;
+    }
+
+    public boolean isRequestSpecificFocus() {
+        return requestSpecificFocus;
+    }
+
+    public void setRequestSpecificFocus(boolean requestSpecificFocus) {
+        this.requestSpecificFocus = requestSpecificFocus;
+    }
+
+    public Node getSpecificFocus() {
+        return specificFocus;
+    }
+
+    public void setSpecificFocus(Node specificFocus) {
+        this.specificFocus = specificFocus;
     }
 
 }

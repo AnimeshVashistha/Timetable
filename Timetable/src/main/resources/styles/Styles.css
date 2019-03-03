@@ -68,7 +68,8 @@
     -jfx-label-float: true;
 }
 
-.customtogglebutton{
+.customToggleButton{
+    -fx-align-content: right;
     -fx-cursor:hand;
     -jfx-toggle-color: -accent-color-primary;
     -jfx-untoggle-color: #ffffff;

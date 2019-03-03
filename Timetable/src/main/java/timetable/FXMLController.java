@@ -19,7 +19,9 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
@@ -27,7 +29,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -43,6 +48,7 @@ public class FXMLController implements Initializable {
     final static double animationFocusOffsetMultiplier = 0.6;
     final static String[] englishDayNames = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
+    static String primaryColor = "-fx-color: #66DD7744";
     static String selectedColor = "-fx-background-color: #66DD7744";
     static String unselectedColor = "-fx-background-color: #00000000";
     static String[] dayNames = englishDayNames;
@@ -83,6 +89,7 @@ public class FXMLController implements Initializable {
     JFXTextField subjectName;
     JFXTextField subjectRoom;
     JFXTextField subjectTeacher;
+    EventHandler<KeyEvent> writeData;
     EventHandler<Event> subjectMenuOnShow;
     EventHandler<Event> subjectMenuOnHide;
 
@@ -343,10 +350,20 @@ public class FXMLController implements Initializable {
         for (int i = 0; i < dayPanes.length; i++) {
             dayPanes[i] = new GridPane();
             dayToggles[i] = new JFXToggleButton();
+            dayToggles[i].setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            dayToggles[i].getStyleClass().add("customToggleButton");
+            dayToggles[i].setAlignment(Pos.CENTER);
             dayToggles[i].addEventHandler(EventType.ROOT, dayToggled);
+            dayToggles[i].addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
             dayLabels[i] = new Label(dayNames[i]);
-            dayPanes[i].add(dayLabels[i], i, 0, 2, 1);
-            dayPanes[i].add(dayToggles[i], i, 2, 1, 1);
+
+            Pane spacer = new Pane();
+            ColumnConstraints cc = new ColumnConstraints();
+            cc.setHgrow(Priority.ALWAYS);
+            dayPanes[i].addColumn(0, dayLabels[i]);
+            dayPanes[i].addColumn(1, spacer);
+            dayPanes[i].addColumn(2, dayToggles[i]);
+            dayPanes[i].getColumnConstraints().addAll(new ColumnConstraints(), cc);
             dayContextMenu.add(dayPanes[i]);
         }
         dayContextMenuOnShow = (Event e) -> {
@@ -355,6 +372,8 @@ public class FXMLController implements Initializable {
         dayContextMenuOnHide = (Event e) -> {
             writeDayData();
         };
+        dayContextMenu.setSpecificFocus(dayToggles[0]);
+        dayContextMenu.setRequestSpecificFocus(true);
         dayContextMenu.setOnShow(dayContextMenuOnShow);
         dayContextMenu.setOnHide(dayContextMenuOnHide);
 
@@ -417,6 +436,11 @@ public class FXMLController implements Initializable {
         //subject menu
         subjectMenu = new AdvancedOptionsPane(bg);
         menus.add(subjectMenu);
+        writeData = (KeyEvent n) -> {
+            if (n.getCode() == KeyCode.ENTER) {
+                hideAllMenus();
+            }
+        };
         subjectName = new JFXTextField();
         subjectName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         subjectName.setPrefWidth(500);
@@ -425,12 +449,14 @@ public class FXMLController implements Initializable {
         subjectName.getStyleClass().add("customTextfield");
         subjectRoom = new JFXTextField();
         subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeData);
         subjectRoom.setPrefWidth(500);
         subjectRoom.setPrefHeight(100);
         subjectRoom.getStyleClass().add("customTextfield");
         subjectRoom.setPromptText("room");
         subjectTeacher = new JFXTextField();
         subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeData);
         subjectTeacher.setPrefWidth(500);
         subjectTeacher.setPrefHeight(100);
         subjectTeacher.getStyleClass().add("customTextfield");
@@ -984,7 +1010,7 @@ public class FXMLController implements Initializable {
         if (event.isSecondaryButtonDown()) {
             getSelectedDay(event);
             dayContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedDay);
-            hideOtherMenus(timeContextMenu);
+            hideOtherMenus(dayContextMenu);
         }
     }
 
@@ -994,7 +1020,9 @@ public class FXMLController implements Initializable {
             dayToggles[i].setSelected(tm.getCurrentTable().isDayDisplayed(i));
             dayToggles[i].setScaleX(h * 0.012);
             dayToggles[i].setScaleY(h * 0.012);
-            dayToggles[i].setMaxHeight((h) / 8);
+            dayToggles[i].setMinHeight(h * dayContextMenu.getHeightFactor());
+            dayToggles[i].setPrefHeight(h * dayContextMenu.getHeightFactor());
+            dayToggles[i].setMaxHeight(h * dayContextMenu.getHeightFactor());
             dayLabels[i].setFont(new Font(h * 0.22));
             dayPanes[i].setPadding(new Insets(0, h * 0.4, 0, h * 0.4));
         }
@@ -1030,6 +1058,11 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void dayKeyReleased(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            getSelectedDay(event);
+            dayContextMenu.show(selectedDay);
+            hideOtherMenus(dayContextMenu);
+        }
     }
 
     private void getSelectedDay(Event e) {
@@ -1075,6 +1108,8 @@ public class FXMLController implements Initializable {
         if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
             getSelectedTime(event);
             timeContextMenu.show(selectedTime);
+            hideOtherMenus(timeContextMenu);
+
         }
     }
 
