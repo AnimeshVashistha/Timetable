@@ -59,10 +59,10 @@ public class GUI implements Initializable {
     JFXButton selectedDay;
     JFXButton selectedTime;
     JFXButton selectedSubject;
-    
+
     List<SomePane> menus = new ArrayList<SomePane>();
     EventHandler<KeyEvent> hideAllMenus;
-    
+
     //menu
     SidebarPane menu;
     JFXTextField menuName;
@@ -314,12 +314,12 @@ public class GUI implements Initializable {
 
         tm = new TimetableManager();
 
-        hideAllMenus = (KeyEvent n) -> {
-            if (n.getCode() == KeyCode.ESCAPE) {
+        hideAllMenus = (KeyEvent event) -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
                 hideAllMenus();
             }
         };
-        
+
         //menu
         menu = new SidebarPane(bg);
         menus.add(menu);
@@ -337,7 +337,7 @@ public class GUI implements Initializable {
         dayPanes = new GridPane[7];
         dayToggles = new JFXToggleButton[dayPanes.length];
         dayLabels = new Label[dayPanes.length];
-        dayToggled = (Event e) -> {
+        dayToggled = (Event event) -> {
             dayToggled();
         };
         for (int i = 0; i < dayPanes.length; i++) {
@@ -357,10 +357,10 @@ public class GUI implements Initializable {
             dayPanes[i].getColumnConstraints().add(cc);
             dayContextMenu.add(dayPanes[i]);
         }
-        dayContextMenuOnShow = (Event e) -> {
+        dayContextMenuOnShow = (Event event) -> {
             scaleDayContextMenu();
         };
-        dayContextMenuOnHide = (Event e) -> {
+        dayContextMenuOnHide = (Event event) -> {
             writeDayData();
         };
         dayContextMenu.setSpecificFocus(dayToggles[0]);
@@ -373,22 +373,22 @@ public class GUI implements Initializable {
         menus.add(timeContextMenu);
         clearRow = new JFXButton("clear row");
         clearRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        clearRow.addEventHandler(ActionEvent.ACTION, n -> {
+        clearRow.addEventHandler(ActionEvent.ACTION, event -> {
             clearRow();
         });
         deleteRow = new JFXButton("delete row");
         deleteRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        deleteRow.addEventHandler(ActionEvent.ACTION, n -> {
+        deleteRow.addEventHandler(ActionEvent.ACTION, event -> {
             deleteRow();
         });
         addRowAbove = new JFXButton("add row above");
         addRowAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        addRowAbove.addEventHandler(ActionEvent.ACTION, n -> {
+        addRowAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addRowAbove();
         });
         addRowBelow = new JFXButton("add row below");
         addRowBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        addRowBelow.addEventHandler(ActionEvent.ACTION, n -> {
+        addRowBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addRowBelow();
         });
         timeContextMenu.addButton(clearRow);
@@ -399,8 +399,8 @@ public class GUI implements Initializable {
         //subject menu
         subjectMenu = new AdvancedOptionsPane(bg);
         menus.add(subjectMenu);
-        writeData = (KeyEvent n) -> {
-            if (n.getCode() == KeyCode.ENTER) {
+        writeData = (KeyEvent event) -> {
+            if (event.getCode() == KeyCode.ENTER) {
                 hideAllMenus();
             }
         };
@@ -424,10 +424,10 @@ public class GUI implements Initializable {
         subjectTeacher.setPrefHeight(100);
         subjectTeacher.getStyleClass().add("customTextfield");
         subjectTeacher.setPromptText("teacher");
-        subjectMenuOnShow = (Event n) -> {
+        subjectMenuOnShow = (Event event) -> {
             scaleSubjectMenu();
         };
-        subjectMenuOnHide = (Event n) -> {
+        subjectMenuOnHide = (Event event) -> {
             writeSubjectData();
             autoCompletePane.hide();
         };
@@ -439,14 +439,14 @@ public class GUI implements Initializable {
 
         //autocomplete pane
         autoCompletePane = new AutocompletePane(bg);
-        subjectMenuKeyPressed = (KeyEvent n) -> {
-            autocompleteSubject(n);
+        subjectMenuKeyPressed = (KeyEvent event) -> {
+            autocompleteSubject(event);
         };
-        autocompleteOnClick = (MouseEvent n) -> {
-            autocompleteLabelClicked(n);
+        autocompleteOnClick = (MouseEvent event) -> {
+            autocompleteLabelClicked(event);
         };
-        confirmInput = (KeyEvent n) -> {
-            if (n.getCode() == KeyCode.ENTER) {
+        confirmInput = (KeyEvent event) -> {
+            if (event.getCode() == KeyCode.ENTER) {
                 subjectMenu.hide();
             }
         };
@@ -460,22 +460,22 @@ public class GUI implements Initializable {
         menus.add(subjectContextMenu);
         clear = new JFXButton("clear");
         clear.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        clear.addEventHandler(ActionEvent.ACTION, n -> {
+        clear.addEventHandler(ActionEvent.ACTION, event -> {
             clear();
         });
         delete = new JFXButton("delete");
         delete.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        delete.addEventHandler(ActionEvent.ACTION, n -> {
+        delete.addEventHandler(ActionEvent.ACTION, event -> {
             delete();
         });
         addAbove = new JFXButton("add above");
         addAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        addAbove.addEventHandler(ActionEvent.ACTION, n -> {
+        addAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addAbove();
         });
         addBelow = new JFXButton("add below");
         addBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        addBelow.addEventHandler(ActionEvent.ACTION, n -> {
+        addBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addBelow();
         });
         subjectContextMenu.addButton(clear);
@@ -531,28 +531,28 @@ public class GUI implements Initializable {
             }
         }
 
-        bg.widthProperty().addListener(n -> {
+        bg.widthProperty().addListener(event -> {
             cancelMenus();
             Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.millis(1), e -> resizeFonts())
+                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
             );
             timeline.play();
         });
-        bg.heightProperty().addListener(n -> {
+        bg.heightProperty().addListener(event -> {
             cancelMenus();
             Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.millis(1), e -> resizeFonts())
+                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
             );
             timeline.play();
         });
-        name.focusedProperty().addListener(n -> {
+        name.focusedProperty().addListener(event -> {
             if (name.isFocused()) {
                 showMenuIcon.play();
             } else {
                 hideMenuIcon.play();
             }
         });
-        subjectName.focusedProperty().addListener(n -> {
+        subjectName.focusedProperty().addListener(event -> {
             if (!subjectName.isFocused()) {
                 autoCompletePane.hide();
             }
@@ -564,7 +564,7 @@ public class GUI implements Initializable {
         name.prefWidthProperty().bind(nameBackground.widthProperty());
 
         Timeline unfocus = new Timeline(
-                new KeyFrame(Duration.millis(1), e -> bg.requestFocus())
+                new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
         );
 
         unfocus.play();
@@ -684,7 +684,7 @@ public class GUI implements Initializable {
     }
 
     public void initNewTimetable() {
-        subjectGrid.getChildren().removeIf(e -> (e.getClass() == JFXButton.class));
+        subjectGrid.getChildren().removeIf(event -> (event.getClass() == JFXButton.class));
         subjectGrid.getColumnConstraints().clear();
         subjectGrid.getRowConstraints().clear();
 
@@ -725,7 +725,7 @@ public class GUI implements Initializable {
         }
 
         Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(1), e -> resizeFonts())
+                new KeyFrame(Duration.millis(1), event -> resizeFonts())
         );
         timeline.play();
     }
@@ -764,12 +764,14 @@ public class GUI implements Initializable {
     private void hideMenuIcon(MouseEvent event) {
         hideMenuIcon.play();
     }
-    
+
+    //################################menu################################
     @FXML
     private void menu(ActionEvent event) {
-        
+
     }
 
+    //################################dayContextMenu################################
     @FXML
     private void dayContextMenu(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
@@ -830,21 +832,40 @@ public class GUI implements Initializable {
         }
     }
 
-    private void getSelectedDay(Event e) {
+    private void getSelectedDay(Event event) {
         for (int i = 0; i < days.length; i++) {
-            if (days[i] == e.getSource()) {
+            if (days[i] == event.getSource()) {
                 selectedDay = days[i];
                 break;
             }
         }
     }
 
+    //
+    //
+    //################################timeContextMenu################################
+    //
+    //
+    /**
+     *
+     * @param event
+     */
     @FXML
     private void timeContextMenu(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedTime(event);
             timeContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedTime);
             hideOtherMenus(timeContextMenu);
+        }
+    }
+
+    @FXML
+    private void timeKeyReleased(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            getSelectedTime(event);
+            timeContextMenu.show(selectedTime);
+            hideOtherMenus(timeContextMenu);
+
         }
     }
 
@@ -868,19 +889,9 @@ public class GUI implements Initializable {
         initNewTimetable();
     }
 
-    @FXML
-    private void timeKeyReleased(KeyEvent event) {
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
-            getSelectedTime(event);
-            timeContextMenu.show(selectedTime);
-            hideOtherMenus(timeContextMenu);
-
-        }
-    }
-
-    private void getSelectedTime(Event e) {
+    private void getSelectedTime(Event event) {
         for (int i = 0; i < times.length; i++) {
-            if (times[i] == e.getSource()) {
+            if (times[i] == event.getSource()) {
                 selectedTime = times[i];
                 tm.settIndexI(i);
                 break;
@@ -888,6 +899,7 @@ public class GUI implements Initializable {
         }
     }
 
+    //################################subjectMenu################################
     @FXML
     private void subjectMenu(ActionEvent event) {
         getSelectedSubject(event);
@@ -920,22 +932,22 @@ public class GUI implements Initializable {
         tm.getCurrentTable().setTeacherText(subjectTeacher.getText(), tm.getsIndexI(), tm.getsIndexJ());
     }
 
-    public void autocompleteSubject(KeyEvent e) {
-        if (e.getCode() == KeyCode.ENTER) {
+    public void autocompleteSubject(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
             enterPressed();
-        } else if (e.getCode() == KeyCode.UP) {
+        } else if (event.getCode() == KeyCode.UP) {
             autoCompletePane.upPressed();
-        } else if (e.getCode() == KeyCode.DOWN) {
+        } else if (event.getCode() == KeyCode.DOWN) {
             autoCompletePane.downPressed();
-        } else if (e.getCode() == KeyCode.ESCAPE) {
+        } else if (event.getCode() == KeyCode.ESCAPE) {
             //just here so handleInput() doesn't get called ._.
         } else {
             handleInput();
         }
     }
 
-    public void autocompleteLabelClicked(MouseEvent e) {
-        Label l = (Label) e.getSource();
+    public void autocompleteLabelClicked(MouseEvent event) {
+        Label l = (Label) event.getSource();
         for (int i = 0; i < tm.getCurrentTable().getOptions().size(); i++) {
             if (l == autoCompletePane.getPane().getChildren().get(i)) {
                 writeAutocomplete(i);
@@ -980,6 +992,7 @@ public class GUI implements Initializable {
         }
     }
 
+    //################################subjectContextMenu################################
     @FXML
     private void subjectContextMenu(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
@@ -1067,10 +1080,10 @@ public class GUI implements Initializable {
         }
     }
 
-    private void getSelectedSubject(Event e) {
+    private void getSelectedSubject(Event event) {
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
-                if (e.getSource() == subjects[i][j]) {
+                if (event.getSource() == subjects[i][j]) {
                     selectedSubject = subjects[i][j];
                     tm.setsIndexI(i);
                     tm.setsIndexJ(j);

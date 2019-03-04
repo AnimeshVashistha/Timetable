@@ -73,7 +73,7 @@ public class SidebarPane extends SomePane {
 
         Timeline focus = new Timeline(new KeyFrame(
                 Duration.millis(SomePane.animationDuration * SomePane.focusAnimationOffsetFactor),
-                e -> toFocus.requestFocus()));
+                n -> toFocus.requestFocus()));
         focus.play();
 
         getPane().setVisible(true);

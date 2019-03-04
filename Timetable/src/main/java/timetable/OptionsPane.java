@@ -104,7 +104,7 @@ public class OptionsPane extends SomePane {
 
         Timeline focus = new Timeline(new KeyFrame(
                 Duration.millis(SomePane.animationDuration * SomePane.focusAnimationOffsetFactor),
-                e -> getPane().getChildren().get(0).requestFocus()));
+                n -> getPane().getChildren().get(0).requestFocus()));
         focus.play();
 
         getPane().setVisible(true);
@@ -143,7 +143,7 @@ public class OptionsPane extends SomePane {
         button.setPrefWidth(500);
         button.setPrefHeight(150);
 
-        button.addEventHandler(ActionEvent.ACTION, n -> {
+        button.addEventHandler(ActionEvent.ACTION, event -> {
             hide();
         });
 

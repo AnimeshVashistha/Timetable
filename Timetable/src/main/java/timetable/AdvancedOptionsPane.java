@@ -111,7 +111,7 @@ public class AdvancedOptionsPane extends SomePane {
 
         Timeline focus = new Timeline(new KeyFrame(
                 Duration.millis(SomePane.animationDuration * SomePane.focusAnimationOffsetFactor),
-                e -> toFocus.requestFocus()));
+                n -> toFocus.requestFocus()));
         focus.play();
 
         Timeline reposition = new Timeline(new KeyFrame(Duration.millis(1), n -> {
