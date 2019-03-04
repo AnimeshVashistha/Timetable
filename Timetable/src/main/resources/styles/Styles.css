@@ -3,21 +3,11 @@
     -accent-color-secondary: #44CC55;
 }
 
-.customButtonNoFill{
-    -fx-background-color: transparent;
-    -fx-cursor:hand;
-}
-
-.subjectButton{
-    -fx-background-color:#e8e8e8;
+.nameButton{
+    -fx-background-color: -accent-color-primary;
     -fx-background-radius: 7;
     -fx-cursor:hand;
-}
-
-.timeButton{
-    -fx-background-color:#dddddd;
-    -fx-background-radius:7;
-    -fx-cursor:hand;
+    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
 }
 
 .dayButton{
@@ -27,17 +17,28 @@
     -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
 }
 
-.nameButton{
-    -fx-background-color: -accent-color-primary;
+.timeButton{
+    -fx-background-color:#dddddd;
+    -fx-background-radius:7;
+    -fx-cursor:hand;
+}
+
+.subjectButton{
+    -fx-background-color:#e8e8e8;
     -fx-background-radius: 7;
     -fx-cursor:hand;
-    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
+}
+
+.customButtonNoFill{
+    -fx-background-color: transparent;
+    -fx-cursor:hand;
 }
 
 .customButtonBottom{
     -fx-background-color: #dddddd;
     -fx-background-radius: 0 0 7 7;
     -fx-cursor:hand;
+    -jfx-rippler-fill: #ff0000;
 }
 
 .roundedButton{
@@ -52,6 +53,11 @@
 
 .roundedBottomButton{
     -fx-background-radius: 0 0 7 7;
+    -fx-cursor:hand;
+}
+
+.roundedBottomRightButton{
+    -fx-background-radius: 0 0 7 0;
     -fx-cursor:hand;
 }
 
@@ -81,30 +87,24 @@
     -jfx-default-color: -accent-color-primary;
 }
 
-.customPanel{
-    -fx-background-color: #EEEEEE;
-    -fx-background-radius: 7;
-    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
-}
-
 .customPane{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 7;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
 }
 
-.menuPanel{
+.menuPane{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 7 7 0;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.menuBackgroundPane{
+    -fx-background-color: #00000055;
 }
 
 .autocompletePane{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 0 7 7;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
-}
-
-.menuBackgroundPanel{
-    -fx-background-color: #00000055;
 }

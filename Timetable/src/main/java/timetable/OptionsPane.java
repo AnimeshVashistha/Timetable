@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package timetable;
 
 import com.jfoenix.controls.JFXButton;
@@ -13,7 +8,6 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -25,11 +19,6 @@ import javafx.util.Duration;
  */
 public class OptionsPane extends SomePane {
 
-    GridPane pane = new GridPane();
-    Pane parent;
-    JFXButton done = new JFXButton();
-    JFXButton source;
-
     TranslateTransition SlideIn;
     FadeTransition FadeIn;
     TranslateTransition SlideOut;
@@ -37,64 +26,40 @@ public class OptionsPane extends SomePane {
     ParallelTransition show;
     ParallelTransition hide;
 
-    double widthFactor = 1.8;
-    double heightFactor = 0.6;
-    double fontFactor = 0.2;
-    double focusAnimationFactor = 0.6;
-    boolean hidden = true;
-
     String ripplerFill = "#66DD77";
     String topButtonStyle = "roundedTopButton";
     String middleButtonStyle = "notRoundedButton";
-    String bottomButtonStyle = "customButtonBottom";
 
     public OptionsPane(Pane parent) {
-        pane.getStyleClass().add("customPane");
-        pane.setPrefHeight(20);
-        pane.setPrefWidth(20);
-        pane.setVisible(false);
+        super(parent);
 
-        this.parent = parent;
-        parent.getChildren().add(pane);
-
-        SlideIn = new TranslateTransition(Duration.millis(FXMLController.animationDuration));
-        SlideIn.setFromY(FXMLController.animationDistance);
+        SlideIn = new TranslateTransition(Duration.millis(SomePane.animationDuration));
+        SlideIn.setFromY(SomePane.animationDistance);
         SlideIn.setToY(0);
 
-        FadeIn = new FadeTransition(Duration.millis(FXMLController.animationDuration));
+        FadeIn = new FadeTransition(Duration.millis(SomePane.animationDuration));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        SlideOut = new TranslateTransition(Duration.millis(FXMLController.animationDuration));
-        SlideOut.setToY(FXMLController.animationDistance);
+        SlideOut = new TranslateTransition(Duration.millis(SomePane.animationDuration));
+        SlideOut.setToY(SomePane.animationDistance);
 
-        FadeOut = new FadeTransition(Duration.millis(FXMLController.animationDuration));
+        FadeOut = new FadeTransition(Duration.millis(SomePane.animationDuration));
         FadeOut.setToValue(0);
 
-        show = new ParallelTransition(pane);
+        show = new ParallelTransition(getPane());
         show.getChildren().add(SlideIn);
         show.getChildren().add(FadeIn);
 
-        hide = new ParallelTransition(pane);
+        hide = new ParallelTransition(getPane());
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
-
-        done.setText("done");
-        done.getStyleClass().add(bottomButtonStyle);
-        done.setPrefWidth(500);
-        done.setPrefHeight(150);
-
-        done.setOnAction(n -> {
-            hide();
-        });
-
-        pane.getChildren().add(done);
     }
 
     public void showOnCoordinates(double x, double y, JFXButton source) {
-        this.source = source;
+        setSource(source);
 
-        int size = pane.getChildren().size();
+        int size = getPane().getChildren().size();
 
         double w = source.getHeight();
         double h = source.getHeight();
@@ -103,9 +68,9 @@ public class OptionsPane extends SomePane {
     }
 
     public void show(JFXButton source) {
-        this.source = source;
-
-        int size = pane.getChildren().size();
+        setSource(source);
+        
+        int size = getPane().getChildren().size();
 
         double x = source.getLayoutX() + 1;
         double y = source.getLayoutY() + 1;
@@ -116,45 +81,45 @@ public class OptionsPane extends SomePane {
     }
 
     private void show(double x, double y, double w, double h) {
-        int size = pane.getChildren().size();
+        int size = getPane().getChildren().size();
 
-        if (x + w * widthFactor > parent.getWidth()) {
-            x = parent.getWidth() - w * widthFactor;
+        if (x + w * getWidthFactor() > getParent().getWidth()) {
+            x = getParent().getWidth() - w * getWidthFactor();
         }
-        if (y + h * size * heightFactor > parent.getHeight()) {
-            y = parent.getHeight() - h * size * heightFactor;
+        if (y + h * size * getHeightFactor() > getParent().getHeight()) {
+            y = getParent().getHeight() - h * size * getHeightFactor();
         }
 
-        hidden = false;
+        setHidden(false);
 
-        pane.setPrefWidth(w * widthFactor);
-        pane.setPrefHeight(h * size * heightFactor);
-        pane.setLayoutX(x);
-        pane.setLayoutY(y);
+        getPane().setPrefWidth(w * getWidthFactor());
+        getPane().setPrefHeight(h * size * getHeightFactor());
+        getPane().setLayoutX(x);
+        getPane().setLayoutY(y);
 
-        for (Node n : pane.getChildren()) {
+        for (Node n : getPane().getChildren()) {
             JFXButton b = (JFXButton) n;
             b.setFont(new Font(h * 0.2));
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(FXMLController.animationDuration * focusAnimationFactor),
-                e -> pane.getChildren().get(0).requestFocus()));
+                Duration.millis(SomePane.animationDuration * SomePane.focusAnimationOffsetFactor),
+                e -> getPane().getChildren().get(0).requestFocus()));
         focus.play();
 
-        pane.setVisible(true);
+        getPane().setVisible(true);
         show.play();
     }
 
     @Override
     public void hide() {
-        if (hidden == false) {
-            hidden = true;
+        if (isHidden() == false) {
+            setHidden(true);
 
-            source.requestFocus();
+            getSource().requestFocus();
 
             new Timeline(
-                    new KeyFrame(Duration.millis(FXMLController.animationDuration), n -> pane.setVisible(false))
+                    new KeyFrame(Duration.millis(SomePane.animationDuration), n -> getPane().setVisible(false))
             ).play();
 
             hide.play();
@@ -163,13 +128,13 @@ public class OptionsPane extends SomePane {
 
     @Override
     public void cancel() {
-        hidden = true;
-        pane.setVisible(false);
+        setHidden(true);
+        getPane().setVisible(false);
     }
 
     public void addButton(JFXButton button) {
 
-        if (pane.getChildren().size() > 1) {
+        if (getPane().getChildren().size() > 1) {
             button.getStyleClass().add(middleButtonStyle);
         } else {
             button.getStyleClass().add(topButtonStyle);
@@ -182,55 +147,11 @@ public class OptionsPane extends SomePane {
             hide();
         });
 
-        int size = pane.getChildren().size();
+        int size = getPane().getChildren().size();
 
-        pane.getChildren().remove(done);
-        pane.add(button, 0, size - 1, 1, 1);
-        pane.add(done, 0, size, 1, 1);
-    }
-
-    public double getWidthFactor() {
-        return widthFactor;
-    }
-
-    public void setWidthFactor(double widthFactor) {
-        this.widthFactor = widthFactor;
-    }
-
-    public double getHeightFactor() {
-        return heightFactor;
-    }
-
-    public void setHeightFactor(double heightFactor) {
-        this.heightFactor = heightFactor;
-    }
-
-    public double getFontFactor() {
-        return fontFactor;
-    }
-
-    public void setFontFactor(double fontFactor) {
-        this.fontFactor = fontFactor;
-    }
-
-    public double getFocusAnimationFactor() {
-        return focusAnimationFactor;
-    }
-
-    public void setFocusAnimationFactor(double focusAnimationFactor) {
-        this.focusAnimationFactor = focusAnimationFactor;
-    }
-
-    public String getRipplerFill() {
-        return ripplerFill;
-    }
-
-    public void setRipplerFill(String ripplerFill) {
-        this.ripplerFill = ripplerFill;
-    }
-
-    public GridPane getPane() {
-        return pane;
+        getPane().getChildren().remove(getDone());
+        getPane().add(button, 0, size - 1, 1, 1);
+        getPane().add(getDone(), 0, size, 1, 1);
     }
 
 }

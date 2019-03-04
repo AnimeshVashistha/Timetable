@@ -20,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -31,7 +30,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -41,11 +39,11 @@ import javafx.util.Duration;
  *
  * @author Tobias
  */
-public class FXMLController implements Initializable {
+public class GUI implements Initializable {
 
     final static int animationDuration = 200;
     final static int animationDistance = 50;
-    final static double animationFocusOffsetMultiplier = 0.6;
+    final static double focusAnimationOffsetFactor = 0.6;
     final static String[] englishDayNames = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
     static String primaryColor = "-fx-color: #66DD7744";
@@ -61,10 +59,18 @@ public class FXMLController implements Initializable {
     JFXButton selectedDay;
     JFXButton selectedTime;
     JFXButton selectedSubject;
-    Label selectedAutocompleteOption;
-
+    
     List<SomePane> menus = new ArrayList<SomePane>();
+    EventHandler<KeyEvent> hideAllMenus;
+    
+    //menu
+    SidebarPane menu;
+    JFXTextField menuName;
+    JFXButton addTimetable;
+    JFXButton deleteTimetable;
+    ScrollPane menuTimetables;
 
+    //day context menu
     AdvancedOptionsPane dayContextMenu;
     GridPane[] dayPanes;
     JFXToggleButton[] dayToggles;
@@ -73,18 +79,14 @@ public class FXMLController implements Initializable {
     EventHandler<Event> dayContextMenuOnShow;
     EventHandler<Event> dayContextMenuOnHide;
 
+    //time context menu
     OptionsPane timeContextMenu;
     JFXButton clearRow;
     JFXButton deleteRow;
     JFXButton addRowAbove;
     JFXButton addRowBelow;
 
-    OptionsPane subjectContextMenu;
-    JFXButton clear;
-    JFXButton delete;
-    JFXButton addAbove;
-    JFXButton addBelow;
-
+    //subject menu
     AdvancedOptionsPane subjectMenu;
     JFXTextField subjectName;
     JFXTextField subjectRoom;
@@ -93,20 +95,11 @@ public class FXMLController implements Initializable {
     EventHandler<Event> subjectMenuOnShow;
     EventHandler<Event> subjectMenuOnHide;
 
+    //autocomplete pane
     AutocompletePane autoCompletePane;
-    Label selectedAutoCompleteOption;
     EventHandler<KeyEvent> subjectMenuKeyPressed;
     EventHandler<MouseEvent> autocompleteOnClick;
     EventHandler<KeyEvent> confirmInput;
-
-    EventHandler<KeyEvent> hideAllMenus;
-
-    TranslateTransition menuPaneSlideIn;
-    FadeTransition menuBackgroundPaneFadeIn;
-    TranslateTransition menuPaneSlideOut;
-    FadeTransition menuBackgroundPaneFadeOut;
-    ParallelTransition showMenuPane;
-    ParallelTransition hideMenuPane;
 
     FadeTransition menuIconFadeIn;
     TranslateTransition menuIconSlideIn;
@@ -116,6 +109,13 @@ public class FXMLController implements Initializable {
     FadeTransition nameLabelFadeOut;
     ParallelTransition showMenuIcon;
     ParallelTransition hideMenuIcon;
+
+    //subject context menu
+    OptionsPane subjectContextMenu;
+    JFXButton clear;
+    JFXButton delete;
+    JFXButton addAbove;
+    JFXButton addBelow;
 
     boolean menuPaneHidden = true;
     boolean dayOverlayHidden = true;
@@ -306,24 +306,6 @@ public class FXMLController implements Initializable {
     private Label nameLabel;
     @FXML
     private Label nameBackground;
-    @FXML
-    private AnchorPane menuPane;
-    @FXML
-    private AnchorPane menuBackgroundPane;
-    @FXML
-    private JFXTextField menuPaneName;
-    @FXML
-    private GridPane menuPaneGrid;
-    @FXML
-    private JFXButton menuPaneNew;
-    @FXML
-    private GridPane menuPaneTables;
-    @FXML
-    private JFXButton menuPaneDelete;
-    @FXML
-    private ScrollPane menuPaneScrollPane;
-    @FXML
-    private JFXButton menuPaneInfo;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -337,9 +319,20 @@ public class FXMLController implements Initializable {
                 hideAllMenus();
             }
         };
+        
+        //menu
+        menu = new SidebarPane(bg);
+        menus.add(menu);
+        menuName = new JFXTextField();
+        addTimetable = new JFXButton();
+        addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        deleteTimetable = new JFXButton();
+        deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        menuTimetables = new ScrollPane();
 
         //day context menu
         dayContextMenu = new AdvancedOptionsPane(bg);
+        dayContextMenu.setWidthFactor(2.7);
         menus.add(dayContextMenu);
         dayPanes = new GridPane[7];
         dayToggles = new JFXToggleButton[dayPanes.length];
@@ -357,13 +350,11 @@ public class FXMLController implements Initializable {
             dayToggles[i].addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
             dayLabels[i] = new Label(dayNames[i]);
 
-            Pane spacer = new Pane();
             ColumnConstraints cc = new ColumnConstraints();
             cc.setHgrow(Priority.ALWAYS);
             dayPanes[i].addColumn(0, dayLabels[i]);
-            dayPanes[i].addColumn(1, spacer);
             dayPanes[i].addColumn(2, dayToggles[i]);
-            dayPanes[i].getColumnConstraints().addAll(new ColumnConstraints(), cc);
+            dayPanes[i].getColumnConstraints().add(cc);
             dayContextMenu.add(dayPanes[i]);
         }
         dayContextMenuOnShow = (Event e) -> {
@@ -405,34 +396,6 @@ public class FXMLController implements Initializable {
         timeContextMenu.addButton(addRowAbove);
         timeContextMenu.addButton(addRowBelow);
 
-        //subject context menu
-        subjectContextMenu = new OptionsPane(bg);
-        menus.add(subjectContextMenu);
-        clear = new JFXButton("clear");
-        clear.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        clear.addEventHandler(ActionEvent.ACTION, n -> {
-            clear();
-        });
-        delete = new JFXButton("delete");
-        delete.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        delete.addEventHandler(ActionEvent.ACTION, n -> {
-            delete();
-        });
-        addAbove = new JFXButton("add above");
-        addAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        addAbove.addEventHandler(ActionEvent.ACTION, n -> {
-            addAbove();
-        });
-        addBelow = new JFXButton("add below");
-        addBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        addBelow.addEventHandler(ActionEvent.ACTION, n -> {
-            addBelow();
-        });
-        subjectContextMenu.addButton(clear);
-        subjectContextMenu.addButton(delete);
-        subjectContextMenu.addButton(addAbove);
-        subjectContextMenu.addButton(addBelow);
-
         //subject menu
         subjectMenu = new AdvancedOptionsPane(bg);
         menus.add(subjectMenu);
@@ -461,7 +424,6 @@ public class FXMLController implements Initializable {
         subjectTeacher.setPrefHeight(100);
         subjectTeacher.getStyleClass().add("customTextfield");
         subjectTeacher.setPromptText("teacher");
-        //EventHandler
         subjectMenuOnShow = (Event n) -> {
             scaleSubjectMenu();
         };
@@ -477,7 +439,6 @@ public class FXMLController implements Initializable {
 
         //autocomplete pane
         autoCompletePane = new AutocompletePane(bg);
-        menus.add(autoCompletePane);
         subjectMenuKeyPressed = (KeyEvent n) -> {
             autocompleteSubject(n);
         };
@@ -494,26 +455,33 @@ public class FXMLController implements Initializable {
 
         initNewTimetable();
 
-        //menu pane transitions
-        menuPaneSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuPane);
-        menuPaneSlideIn.setToX(0);
-
-        menuBackgroundPaneFadeIn = new FadeTransition(Duration.millis(animationDuration), menuBackgroundPane);
-        menuBackgroundPaneFadeIn.setToValue(1);
-
-        menuPaneSlideOut = new TranslateTransition(Duration.millis(animationDuration), menuPane);
-        menuPaneSlideOut.setToX(-200);
-
-        menuBackgroundPaneFadeOut = new FadeTransition(Duration.millis(animationDuration), menuBackgroundPane);
-        menuBackgroundPaneFadeOut.setToValue(0);
-
-        showMenuPane = new ParallelTransition();
-        showMenuPane.getChildren().add(menuPaneSlideIn);
-        showMenuPane.getChildren().add(menuBackgroundPaneFadeIn);
-
-        hideMenuPane = new ParallelTransition();
-        hideMenuPane.getChildren().add(menuPaneSlideOut);
-        hideMenuPane.getChildren().add(menuBackgroundPaneFadeOut);
+        //subject context menu
+        subjectContextMenu = new OptionsPane(bg);
+        menus.add(subjectContextMenu);
+        clear = new JFXButton("clear");
+        clear.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        clear.addEventHandler(ActionEvent.ACTION, n -> {
+            clear();
+        });
+        delete = new JFXButton("delete");
+        delete.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        delete.addEventHandler(ActionEvent.ACTION, n -> {
+            delete();
+        });
+        addAbove = new JFXButton("add above");
+        addAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addAbove.addEventHandler(ActionEvent.ACTION, n -> {
+            addAbove();
+        });
+        addBelow = new JFXButton("add below");
+        addBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addBelow.addEventHandler(ActionEvent.ACTION, n -> {
+            addBelow();
+        });
+        subjectContextMenu.addButton(clear);
+        subjectContextMenu.addButton(delete);
+        subjectContextMenu.addButton(addAbove);
+        subjectContextMenu.addButton(addBelow);
 
         //menu icon transitions
         menuIconSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuIcon);
@@ -550,11 +518,6 @@ public class FXMLController implements Initializable {
 
         menuIcon.setTranslateX(-animationDistance);
 
-        menuPaneScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
-        menuPaneNew.setRipplerFill(Color.web("#66DD77"));
-        menuPaneDelete.setRipplerFill(Color.web("#66DD77"));
-
         name.setRipplerFill(Color.web("#888888"));
         for (int i = 0; i < days.length; i++) {
             days[i].setRipplerFill(Color.web("000000"));
@@ -570,19 +533,15 @@ public class FXMLController implements Initializable {
 
         bg.widthProperty().addListener(n -> {
             cancelMenus();
-            cancelOverlays();
             Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.millis(1), e -> resizeFonts()),
-                    new KeyFrame(Duration.millis(50), e -> menuPane.setTranslateX(-menuPane.getWidth()))
+                    new KeyFrame(Duration.millis(1), e -> resizeFonts())
             );
             timeline.play();
         });
         bg.heightProperty().addListener(n -> {
-            cancelOverlays();
             cancelMenus();
             Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.millis(1), e -> resizeFonts()),
-                    new KeyFrame(Duration.millis(50), e -> menuPane.setTranslateX(-menuPane.getWidth()))
+                    new KeyFrame(Duration.millis(1), e -> resizeFonts())
             );
             timeline.play();
         });
@@ -599,14 +558,10 @@ public class FXMLController implements Initializable {
             }
         });
 
-        nameLabel.textProperty().bind(menuPaneName.textProperty());
-
         menuIcon.fitHeightProperty().bind(nameBackground.heightProperty());
         menuIcon.fitWidthProperty().bind(nameBackground.heightProperty());
         name.prefHeightProperty().bind(nameBackground.heightProperty());
         name.prefWidthProperty().bind(nameBackground.widthProperty());
-
-        menuPane.prefWidthProperty().bind(nameBackground.widthProperty().multiply(1.2));
 
         Timeline unfocus = new Timeline(
                 new KeyFrame(Duration.millis(1), e -> bg.requestFocus())
@@ -729,15 +684,13 @@ public class FXMLController implements Initializable {
     }
 
     public void initNewTimetable() {
-        //Timetable tm.getCurrentTable() = tm.getCurrentTable();
-
         subjectGrid.getChildren().removeIf(e -> (e.getClass() == JFXButton.class));
         subjectGrid.getColumnConstraints().clear();
         subjectGrid.getRowConstraints().clear();
 
         subjectGrid.add(name, 0, 0, 1, 1);
-        menuPaneName.setText(tm.getCurrentTable().getName());
 
+        //display days
         int pos = 0;
         for (int i = 0; i < days.length; i++) {
             if (tm.getCurrentTable().isDayDisplayed(i)) {
@@ -745,12 +698,16 @@ public class FXMLController implements Initializable {
                 pos++;
             }
         }
+
+        //display times
         for (int i = 0; i < times.length; i++) {
             if (i < tm.getCurrentTable().getLessons()) {
                 subjectGrid.add(times[i], 0, i + 1, 1, 1);
                 times[i].setText(tm.getCurrentTable().getTimeText(i));
             }
         }
+
+        //display subjects
         pos = 0;
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
@@ -779,12 +736,6 @@ public class FXMLController implements Initializable {
         }
     }
 
-    public void cancelOverlays() {
-        menuPane.setTranslateX(-menuPane.getWidth());
-        menuPane.setVisible(false);
-        menuBackgroundPane.setVisible(false);
-    }
-
     public void hideOtherMenus(SomePane sp) {
         for (SomePane s : menus) {
             if (!s.equals(sp)) {
@@ -804,205 +755,19 @@ public class FXMLController implements Initializable {
         }
     }
 
-    public void hideOtherOverlays(int num) {
-        if (num != 0) {
-            hideMenuPane();
-        }
-    }
-
-    public void hideMenuPane() {
-        if (menuPaneHidden == false) {
-            menuPaneHidden = true;
-
-            bg.requestFocus();
-
-            menuPaneSlideOut.setToX(-menuPane.getWidth());
-
-            hideMenuPane.play();
-
-            Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.millis(animationDuration),
-                            e -> menuPane.setVisible(false)),
-                    new KeyFrame(Duration.millis(animationDuration),
-                            e -> menuBackgroundPane.setVisible(false))
-            );
-            timeline.play();
-        }
-    }
-
     @FXML
     private void showMenuIcon(MouseEvent event) {
         showMenuIcon.play();
     }
 
     @FXML
-    private void menu(ActionEvent event) {
-        menuPaneHidden = false;
-
-        hideOtherOverlays(0);
-
-        double h = menuPaneNew.getHeight();
-        double w = menuPaneNew.getWidth();
-        int tablecount = menuPaneTables.getChildren().size();
-
-        menuPaneGrid.setMargin(menuPaneName, new Insets(h * 0.65, h * 0.4, h * 0.1, h * 0.4));
-        menuPaneTables.setPrefHeight(h * tablecount * 0.6);
-        menuPaneTables.setPrefWidth(w);
-        for (Node b : menuPaneTables.getChildren()) {
-            JFXButton button = (JFXButton) b;
-            button.setPrefHeight(h * 0.6);
-        }
-
-        menuPaneName.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
-        menuPaneNew.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
-        menuPaneDelete.setFont(new Font((name.getHeight() + name.getWidth()) * 0.09));
-        for (Node b : menuPaneTables.getChildren()) {
-            JFXButton button = (JFXButton) b;
-            button.setFont(new Font((name.getHeight() + name.getWidth()) * 0.08));
-        }
-
-        menuPaneName.setText(tm.getCurrentTable().getName());
-
-        menuPane.setVisible(true);
-        menuBackgroundPane.setVisible(true);
-        showMenuPane.play();
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(animationDuration * animationFocusOffsetMultiplier), e -> menuPaneName.requestFocus())
-        );
-        timeline.play();
-    }
-
-    private void callCancelOverlaysA(ActionEvent event) {
-        hideOtherOverlays(-1);
-    }
-
-    @FXML
     private void hideMenuIcon(MouseEvent event) {
         hideMenuIcon.play();
     }
-
+    
     @FXML
-    private void callHideMenuPane(MouseEvent event) {
-        hideMenuPane();
-    }
-
-    @FXML
-    private void updateCurrentTableName(KeyEvent event) {
-        tm.getCurrentTable().setName(menuPaneName.getText());
-    }
-
-    @FXML
-    private void menuPane_kp(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            hideMenuPane();
-        } else if (event.getCode() == KeyCode.ESCAPE) {
-            hideMenuPane();
-        }
-        JFXButton b = (JFXButton) menuPaneTables.getChildren().get(tm.getTimeTableIndex());
-        b.setText(tm.getCurrentTable().getName());
-    }
-
-    @FXML
-    private void addNewTimetable(ActionEvent event) {
-        addNewTimetable();
-    }
-
-    public void addNewTimetable() {
-        Timetable t = new Timetable("Timetable" + tm.tableCount);
-        tm.getTimetables().add(t);
-        addTimetableToMenu(t);
-        setCurrentTable(t);
-        tm.setTimeTableIndex(tm.getTimetables().size() - 1);
-        highlightTimetable();
-        tm.tableCount++;
-    }
-
-    public void addTimetableToMenu(Timetable timetable) {
-        int size = tm.getTimetables().size();
-
-        double h = menuPaneNew.getHeight();
-
-        JFXButton tableButton = new JFXButton(timetable.getName());
-        //tableButton.getStylesheets().add("subjectButton");
-        tableButton.setRipplerFill(Color.web(("#66DD77")));
-        tableButton.setPrefHeight(h * 0.6);
-        tableButton.setPrefWidth(600);
-        tableButton.setFont(new Font((name.getHeight() + name.getWidth()) * 0.08));
-        //Actionhandler for changing the currently displayed Timetable
-        tableButton.setOnAction(n -> {
-            for (int i = 0; i < menuPaneTables.getChildren().size(); i++) {
-                if (menuPaneTables.getChildren().get(i) == n.getSource()) {
-                    tm.setTimeTableIndex(i);
-                    setCurrentTable(tm.getTimetables().get(i));
-                }
-            }
-            highlightTimetable();
-        });
-
-        int vGridPos = menuPaneTables.getChildren().size();
-
-        menuPaneTables.setPrefHeight(h * size * 0.6);
-
-        menuPaneTables.add(tableButton, 0, vGridPos, 1, 1);
-
-        System.out.println("tm.getTimetables().size() : " + size);
-
-        System.out.println("menuPaneNew.getHeight() : " + h);
-
-        System.out.println("menuPaneTables.getChildren().size() : " + vGridPos);
-
-        System.out.println("button height : " + h * 0.6);
-
-        System.out.println("menuPaneTables.getPrefHeight() : " + menuPaneTables.getPrefHeight());
-
-        System.out.println("--------------------------------------------------------------");
-    }
-
-    private void setCurrentTable(Timetable t) {
-        tm.currentTable = t;
-        initNewTimetable();
-    }
-
-    @FXML
-    private void deleteTimetable(ActionEvent event) {
-
-        System.out.println("###########################################################");
-
-        tm.getTimetables().remove(tm.getTimeTableIndex());
-        menuPaneTables.getChildren().remove(tm.getTimeTableIndex());
-        if (tm.getTimetables().size() == 0) {
-            addNewTimetable();
-        } else if (tm.getTimeTableIndex() < tm.getTimetables().size()) {
-            tm.setCurrentTable(tm.getTimeTableIndex());
-        } else {
-            tm.setTimeTableIndex(tm.getTimeTableIndex() - 1);
-            tm.setCurrentTable(tm.getTimeTableIndex());
-        }
-
-        initNewTimetable();
-
-        menuPaneTables.getChildren().removeIf(e -> (e.getClass() == JFXButton.class));
-
-        for (Timetable t : tm.getTimetables()) {
-            addTimetableToMenu(t);
-        }
-
-        highlightTimetable();
-    }
-
-    public void highlightTimetable() {
-        for (Node b : menuPaneTables.getChildren()) {
-            JFXButton button = (JFXButton) b;
-            button.setStyle(unselectedColor);
-        }
-        JFXButton highlightedButton = (JFXButton) menuPaneTables.getChildren().get(tm.getTimeTableIndex());
-        highlightedButton.setStyle(selectedColor);
-    }
-
-    @FXML
-    private void showInfo(ActionEvent event) {
-        //show info pane
+    private void menu(ActionEvent event) {
+        
     }
 
     @FXML
@@ -1024,7 +789,7 @@ public class FXMLController implements Initializable {
             dayToggles[i].setPrefHeight(h * dayContextMenu.getHeightFactor());
             dayToggles[i].setMaxHeight(h * dayContextMenu.getHeightFactor());
             dayLabels[i].setFont(new Font(h * 0.22));
-            dayPanes[i].setPadding(new Insets(0, h * 0.4, 0, h * 0.4));
+            dayPanes[i].setPadding(new Insets(0, h * 0.1, 0, h * 0.4));
         }
         dayContextMenu.getPane().setPadding(new Insets(h * 0.1, 0, 0, 0));
         dayContextMenu.getDone().setFont(new Font(h * 0.22));

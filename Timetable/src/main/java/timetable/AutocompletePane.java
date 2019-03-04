@@ -20,7 +20,7 @@ import javafx.util.Duration;
  *
  * @author Tobias
  */
-public class AutocompletePane extends SomePane {
+public class AutocompletePane {
 
     GridPane pane = new GridPane();
     Pane parent;
@@ -32,7 +32,7 @@ public class AutocompletePane extends SomePane {
     FadeTransition FadeOut;
     ParallelTransition show;
     ParallelTransition hide;
-    
+
     double widthFactor = 3;
     double heightFactor = 0.6;
     double fontFactor = 0.3;
@@ -52,17 +52,17 @@ public class AutocompletePane extends SomePane {
         this.parent = parent;
         parent.getChildren().add(pane);
 
-        ScaleUp = new ScaleTransition(Duration.millis(FXMLController.animationDuration));
+        ScaleUp = new ScaleTransition(Duration.millis(GUI.animationDuration));
         ScaleUp.setToY(1);
 
-        FadeIn = new FadeTransition(Duration.millis(FXMLController.animationDuration));
+        FadeIn = new FadeTransition(Duration.millis(GUI.animationDuration));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        ScaleDown = new ScaleTransition(Duration.millis(FXMLController.animationDuration));
+        ScaleDown = new ScaleTransition(Duration.millis(GUI.animationDuration));
         ScaleDown.setToY(0);
 
-        FadeOut = new FadeTransition(Duration.millis(FXMLController.animationDuration));
+        FadeOut = new FadeTransition(Duration.millis(GUI.animationDuration));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(pane);
@@ -116,21 +116,19 @@ public class AutocompletePane extends SomePane {
         pane.setVisible(true);
     }
 
-    @Override
     public void hide() {
         if (hidden == false) {
             hidden = true;
             autocompleteFucused = false;
 
             new Timeline(
-                    new KeyFrame(Duration.millis(FXMLController.animationDuration), n -> pane.setVisible(false))
+                    new KeyFrame(Duration.millis(GUI.animationDuration), n -> pane.setVisible(false))
             ).play();
 
             hide.play();
         }
     }
 
-    @Override
     public void cancel() {
         pane.setVisible(false);
     }
@@ -208,11 +206,11 @@ public class AutocompletePane extends SomePane {
     }
 
     public void focus(int index) {
-        pane.getChildren().get(index).setStyle(FXMLController.selectedColor);
+        pane.getChildren().get(index).setStyle(GUI.selectedColor);
     }
 
     public void unfocus(int index) {
-        pane.getChildren().get(index).setStyle(FXMLController.unselectedColor);
+        pane.getChildren().get(index).setStyle(GUI.unselectedColor);
     }
 
     public double getWidthFactor() {

@@ -11,7 +11,6 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
@@ -21,11 +20,8 @@ import javafx.util.Duration;
  */
 public class AdvancedOptionsPane extends SomePane {
 
-    GridPane pane = new GridPane();
-    Pane parent;
-    JFXButton done = new JFXButton();
-    JFXButton source;
     Node specificFocus;
+    boolean requestSpecificFocus = false;
 
     TranslateTransition SlideIn;
     FadeTransition FadeIn;
@@ -40,63 +36,38 @@ public class AdvancedOptionsPane extends SomePane {
     EventHandler<Event> onHide;
     Button hideEvent = new Button();
 
-    double widthFactor = 3;
-    double heightFactor = 0.6;
-    double fontFactor = 0.2;
-    double focusAnimationFactor = 0.8;
-    boolean hidden = true;
-    boolean requestSpecificFocus = false;
-
-    String bottomButtonStyle = "customButtonBottom";
-
     public AdvancedOptionsPane(Pane parent) {
-        this.parent = parent;
-        pane.getStyleClass().add("customPane");
-        pane.setPrefHeight(20);
-        pane.setPrefWidth(20);
-        pane.setVisible(false);
+        super(parent);
+        
+        setWidthFactor(3);
 
-        this.parent = parent;
-        parent.getChildren().add(pane);
-
-        SlideIn = new TranslateTransition(Duration.millis(FXMLController.animationDuration));
-        SlideIn.setFromY(FXMLController.animationDistance);
+        SlideIn = new TranslateTransition(Duration.millis(SomePane.animationDuration));
+        SlideIn.setFromY(SomePane.animationDistance);
         SlideIn.setToY(0);
 
-        FadeIn = new FadeTransition(Duration.millis(FXMLController.animationDuration));
+        FadeIn = new FadeTransition(Duration.millis(SomePane.animationDuration));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        SlideOut = new TranslateTransition(Duration.millis(FXMLController.animationDuration));
-        SlideOut.setToY(FXMLController.animationDistance);
+        SlideOut = new TranslateTransition(Duration.millis(SomePane.animationDuration));
+        SlideOut.setToY(SomePane.animationDistance);
 
-        FadeOut = new FadeTransition(Duration.millis(FXMLController.animationDuration));
+        FadeOut = new FadeTransition(Duration.millis(SomePane.animationDuration));
         FadeOut.setToValue(0);
 
-        show = new ParallelTransition(pane);
+        show = new ParallelTransition(getPane());
         show.getChildren().add(SlideIn);
         show.getChildren().add(FadeIn);
 
-        hide = new ParallelTransition(pane);
+        hide = new ParallelTransition(getPane());
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
-
-        done.setText("done");
-        done.getStyleClass().add(bottomButtonStyle);
-        done.setPrefWidth(500);
-        done.setPrefHeight(150);
-
-        done.setOnAction(n -> {
-            hide();
-        });
-
-        pane.getChildren().add(done);
     }
 
     public void showOnCoordinates(double x, double y, JFXButton source) {
-        this.source = source;
+        setSource(source);
 
-        int size = pane.getChildren().size();
+        int size = getPane().getChildren().size();
 
         double w = source.getHeight();
         double h = source.getHeight();
@@ -105,9 +76,9 @@ public class AdvancedOptionsPane extends SomePane {
     }
 
     public void show(JFXButton source) {
-        this.source = source;
+        setSource(source);
 
-        int size = pane.getChildren().size();
+        int size = getPane().getChildren().size();
 
         double x = source.getLayoutX() + 1;
         double y = source.getLayoutY() + 1;
@@ -118,14 +89,14 @@ public class AdvancedOptionsPane extends SomePane {
     }
 
     private void show(double x, double y, double w, double h) {
-        int size = pane.getChildren().size();
+        int size = getPane().getChildren().size();
 
-        hidden = false;
+        setHidden(false);
 
-        pane.setPrefWidth(w * widthFactor);
-        pane.setPrefHeight(h * size * heightFactor);
-        pane.setLayoutX(x);
-        pane.setLayoutY(y);
+        getPane().setPrefWidth(w * getWidthFactor());
+        getPane().setPrefHeight(h * size * getHeightFactor());
+        getPane().setLayoutX(x);
+        getPane().setLayoutY(y);
 
         if (onShow != null) {
             showEvent.fire();
@@ -135,11 +106,11 @@ public class AdvancedOptionsPane extends SomePane {
         if (requestSpecificFocus) {
             toFocus = specificFocus;
         } else {
-            toFocus = pane.getChildren().get(0);
+            toFocus = getPane().getChildren().get(0);
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(FXMLController.animationDuration * focusAnimationFactor),
+                Duration.millis(SomePane.animationDuration * SomePane.focusAnimationOffsetFactor),
                 e -> toFocus.requestFocus()));
         focus.play();
 
@@ -148,24 +119,24 @@ public class AdvancedOptionsPane extends SomePane {
         }));
         reposition.play();
 
-        pane.setVisible(true);
+        getPane().setVisible(true);
         show.play();
     }
 
     private void repositon() {
 
-        double x = pane.getLayoutX();
-        double y = pane.getLayoutY();
-        double w = pane.getWidth();
-        double h = pane.getHeight();
+        double x = getPane().getLayoutX();
+        double y = getPane().getLayoutY();
+        double w = getPane().getWidth();
+        double h = getPane().getHeight();
 
-        if (x + w > parent.getWidth()) {
-            x = parent.getWidth() - w;
-            pane.setLayoutX(x);
+        if (x + w > getParent().getWidth()) {
+            x = getParent().getWidth() - w;
+            getPane().setLayoutX(x);
         }
-        if (y + h > parent.getHeight()) {
-            y = parent.getHeight() - h;
-            pane.setLayoutY(y);
+        if (y + h > getParent().getHeight()) {
+            y = getParent().getHeight() - h;
+            getPane().setLayoutY(y);
 
         }
     }
@@ -180,17 +151,17 @@ public class AdvancedOptionsPane extends SomePane {
 
     @Override
     public void hide() {
-        if (hidden == false) {
-            hidden = true;
+        if (isHidden() == false) {
+            setHidden(true);
 
             if (onHide != null) {
                 hideEvent.fire();
             }
 
-            source.requestFocus();
+            getSource().requestFocus();
 
             new Timeline(
-                    new KeyFrame(Duration.millis(FXMLController.animationDuration), n -> pane.setVisible(false))
+                    new KeyFrame(Duration.millis(SomePane.animationDuration), n -> getPane().setVisible(false))
             ).play();
 
             hide.play();
@@ -199,7 +170,8 @@ public class AdvancedOptionsPane extends SomePane {
 
     @Override
     public void cancel() {
-        pane.setVisible(false);
+        setHidden(true);
+        getPane().setVisible(false);
     }
 
     public void setOnHide(EventHandler<Event> onHide) {
@@ -211,59 +183,10 @@ public class AdvancedOptionsPane extends SomePane {
     }
 
     public void add(Node n) {
-        int size = pane.getChildren().size();
-
-        pane.getChildren().remove(done);
-        pane.add(n, 0, size - 1, 1, 1);
-        pane.add(done, 0, size, 1, 1);
-    }
-
-    public double getWidthFactor() {
-        return widthFactor;
-    }
-
-    public void setWidthFactor(double widthFactor) {
-        this.widthFactor = widthFactor;
-    }
-
-    public double getHeightFactor() {
-        return heightFactor;
-    }
-
-    public void setHeightFactor(double heightFactor) {
-        this.heightFactor = heightFactor;
-    }
-
-    public double getFontFactor() {
-        return fontFactor;
-    }
-
-    public void setFontFactor(double fontFactor) {
-        this.fontFactor = fontFactor;
-    }
-
-    public double getFocusAnimationFactor() {
-        return focusAnimationFactor;
-    }
-
-    public void setFocusAnimationFactor(double focusAnimationFactor) {
-        this.focusAnimationFactor = focusAnimationFactor;
-    }
-
-    public GridPane getPane() {
-        return pane;
-    }
-
-    public JFXButton getDone() {
-        return done;
-    }
-
-    public boolean isRequestSpecificFocus() {
-        return requestSpecificFocus;
-    }
-
-    public void setRequestSpecificFocus(boolean requestSpecificFocus) {
-        this.requestSpecificFocus = requestSpecificFocus;
+        int size = getPane().getChildren().size();
+        getPane().getChildren().remove(getDone());
+        getPane().add(n, 0, size - 1, 1, 1);
+        getPane().add(getDone(), 0, size, 1, 1);
     }
 
     public Node getSpecificFocus() {
@@ -274,4 +197,12 @@ public class AdvancedOptionsPane extends SomePane {
         this.specificFocus = specificFocus;
     }
 
+    public boolean isRequestSpecificFocus() {
+        return requestSpecificFocus;
+    }
+
+    public void setRequestSpecificFocus(boolean requestSpecificFocus) {
+        this.requestSpecificFocus = requestSpecificFocus;
+    }
+    
 }
