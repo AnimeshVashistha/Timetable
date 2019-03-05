@@ -126,6 +126,8 @@ public class GUI implements Initializable {
     boolean dayOverlayHidden = true;
 
     @FXML
+    private AnchorPane bg;
+    @FXML
     private GridPane subjectGrid;
     @FXML
     private JFXButton name;
@@ -269,8 +271,6 @@ public class GUI implements Initializable {
     private JFXButton subject0509;
     @FXML
     private JFXButton subject0609;
-    @FXML
-    private AnchorPane bg;
     @FXML
     private JFXButton day00;
     @FXML

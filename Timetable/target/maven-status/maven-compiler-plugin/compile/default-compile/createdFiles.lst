@@ -1,0 +1,11 @@
+timetable\Timetable.class
+timetable\Main.class
+timetable\SidebarPane.class
+timetable\GUI.class
+timetable\Subject.class
+timetable\DataManager.class
+timetable\SomePane.class
+timetable\AutocompletePane.class
+timetable\TimetableManager.class
+timetable\AdvancedOptionsPane.class
+timetable\OptionsPane.class
