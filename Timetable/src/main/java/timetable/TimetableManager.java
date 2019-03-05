@@ -145,19 +145,19 @@ public class TimetableManager {
         currentTable.addLessonRowBelow(tIndexI);
     }
 
-    public void clear() {
+    public void clearSubject() {
         currentTable.clearSubject(sIndexI, sIndexJ);
     }
 
-    public void delete() {
+    public void deleteSubject() {
         currentTable.deleteSubject(sIndexI, sIndexJ);
     }
 
-    public void addAbove() {
+    public void addSubjectAbove() {
         currentTable.addSubjectAbove(sIndexI, sIndexJ);
     }
 
-    public void addBelow() {
+    public void addSubjectBelow() {
         currentTable.addSubjectBelow(sIndexI, sIndexJ);
     }
 }

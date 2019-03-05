@@ -20,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -44,6 +45,7 @@ public class GUI implements Initializable {
     final static int animationDuration = 200;
     final static int animationDistance = 50;
     final static double focusAnimationOffsetFactor = 0.6;
+    final static double fontFactor = 0.22;
     final static String[] englishDayNames = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
     static String primaryColor = "-fx-color: #66DD7744";
@@ -60,24 +62,28 @@ public class GUI implements Initializable {
     JFXButton selectedTime;
     JFXButton selectedSubject;
 
-    List<SomePane> menus = new ArrayList<SomePane>();
     EventHandler<KeyEvent> hideAllMenus;
+    List<SomePane> menus;
 
     //menu
+    EventHandler<Event> menuOnShow;
+    EventHandler<Event> menuOnHide;
+    EventHandler<KeyEvent> writeMenuData;
     SidebarPane menu;
     JFXTextField menuName;
     JFXButton addTimetable;
     JFXButton deleteTimetable;
-    ScrollPane menuTimetables;
+    ScrollPane menuScrollPane;
+    GridPane menuTimetables;
 
     //day context menu
+    EventHandler<Event> dayContextMenuOnShow;
+    EventHandler<Event> dayContextMenuOnHide;
+    EventHandler<Event> dayToggled;
     AdvancedOptionsPane dayContextMenu;
     GridPane[] dayPanes;
     JFXToggleButton[] dayToggles;
     Label[] dayLabels;
-    EventHandler<Event> dayToggled;
-    EventHandler<Event> dayContextMenuOnShow;
-    EventHandler<Event> dayContextMenuOnHide;
 
     //time context menu
     OptionsPane timeContextMenu;
@@ -87,19 +93,18 @@ public class GUI implements Initializable {
     JFXButton addRowBelow;
 
     //subject menu
+    EventHandler<Event> subjectMenuOnShow;
+    EventHandler<Event> subjectMenuOnHide;
+    EventHandler<KeyEvent> writeSubjectData;
     AdvancedOptionsPane subjectMenu;
     JFXTextField subjectName;
     JFXTextField subjectRoom;
     JFXTextField subjectTeacher;
-    EventHandler<KeyEvent> writeData;
-    EventHandler<Event> subjectMenuOnShow;
-    EventHandler<Event> subjectMenuOnHide;
 
     //autocomplete pane
-    AutocompletePane autoCompletePane;
     EventHandler<KeyEvent> subjectMenuKeyPressed;
     EventHandler<MouseEvent> autocompleteOnClick;
-    EventHandler<KeyEvent> confirmInput;
+    AutocompletePane autoCompletePane;
 
     FadeTransition menuIconFadeIn;
     TranslateTransition menuIconSlideIn;
@@ -319,27 +324,70 @@ public class GUI implements Initializable {
                 hideAllMenus();
             }
         };
+        menus = new ArrayList<SomePane>();
 
         //menu
+        menuOnShow = (Event event) -> {
+            scaleMenu();
+            updateMenuData();
+        };
+        menuOnHide = (Event event) -> {
+            writeMenuData();
+        };
+        writeMenuData = (KeyEvent event) -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                menu.hide();
+            }
+        };
         menu = new SidebarPane(bg);
         menus.add(menu);
         menuName = new JFXTextField();
-        addTimetable = new JFXButton();
+        menuName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addTimetable = new JFXButton("add timetable");
+        addTimetable.setPrefWidth(500);
+        addTimetable.setPrefHeight(100);
         addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        deleteTimetable = new JFXButton();
+        menuName.addEventHandler(ActionEvent.ACTION, event -> {
+            tm.addTimetable();
+            initNewTimetable();
+        });
+        deleteTimetable = new JFXButton("delete timetable");
+        deleteTimetable.setPrefWidth(500);
+        deleteTimetable.setPrefHeight(100);
         deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        menuTimetables = new ScrollPane();
+        deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
+            tm.deleteCurrentTimetable();
+            initNewTimetable();
+        });
+        menuScrollPane = new ScrollPane();
+        menuScrollPane.setPrefHeight(500);
+        menuTimetables = new GridPane();
+
+        menuScrollPane.setContent(menuTimetables);
+        menu.add(menuName);
+        menu.add(addTimetable);
+        menu.add(deleteTimetable);
+        menu.add(menuScrollPane);
 
         //day context menu
-        dayContextMenu = new AdvancedOptionsPane(bg);
-        dayContextMenu.setWidthFactor(2.7);
-        menus.add(dayContextMenu);
-        dayPanes = new GridPane[7];
-        dayToggles = new JFXToggleButton[dayPanes.length];
-        dayLabels = new Label[dayPanes.length];
+        dayContextMenuOnShow = (Event event) -> {
+            scaleDayContextMenu();
+            updateDayContextMenuData();
+        };
+        dayContextMenuOnHide = (Event event) -> {
+            writeDayData();
+        };
         dayToggled = (Event event) -> {
             dayToggled();
         };
+        dayContextMenu = new AdvancedOptionsPane(bg);
+        menus.add(dayContextMenu);
+        dayContextMenu.setWidthFactor(2.7);
+        dayContextMenu.setOnShow(dayContextMenuOnShow);
+        dayContextMenu.setOnHide(dayContextMenuOnHide);
+        dayPanes = new GridPane[7];
+        dayToggles = new JFXToggleButton[dayPanes.length];
+        dayLabels = new Label[dayPanes.length];
         for (int i = 0; i < dayPanes.length; i++) {
             dayPanes[i] = new GridPane();
             dayToggles[i] = new JFXToggleButton();
@@ -357,16 +405,8 @@ public class GUI implements Initializable {
             dayPanes[i].getColumnConstraints().add(cc);
             dayContextMenu.add(dayPanes[i]);
         }
-        dayContextMenuOnShow = (Event event) -> {
-            scaleDayContextMenu();
-        };
-        dayContextMenuOnHide = (Event event) -> {
-            writeDayData();
-        };
         dayContextMenu.setSpecificFocus(dayToggles[0]);
         dayContextMenu.setRequestSpecificFocus(true);
-        dayContextMenu.setOnShow(dayContextMenuOnShow);
-        dayContextMenu.setOnHide(dayContextMenuOnHide);
 
         //time context menu
         timeContextMenu = new OptionsPane(bg);
@@ -397,13 +437,23 @@ public class GUI implements Initializable {
         timeContextMenu.addButton(addRowBelow);
 
         //subject menu
-        subjectMenu = new AdvancedOptionsPane(bg);
-        menus.add(subjectMenu);
-        writeData = (KeyEvent event) -> {
+        subjectMenuOnShow = (Event event) -> {
+            scaleSubjectMenu();
+            updateSubjectMenuData();
+        };
+        subjectMenuOnHide = (Event event) -> {
+            writeSubjectData();
+            autoCompletePane.hide();
+        };
+        writeSubjectData = (KeyEvent event) -> {
             if (event.getCode() == KeyCode.ENTER) {
-                hideAllMenus();
+                subjectMenu.hide();
             }
         };
+        subjectMenu = new AdvancedOptionsPane(bg);
+        menus.add(subjectMenu);
+        subjectMenu.setOnShow(subjectMenuOnShow);
+        subjectMenu.setOnHide(subjectMenuOnHide);
         subjectName = new JFXTextField();
         subjectName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         subjectName.setPrefWidth(500);
@@ -412,44 +462,30 @@ public class GUI implements Initializable {
         subjectName.getStyleClass().add("customTextfield");
         subjectRoom = new JFXTextField();
         subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeData);
+        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectRoom.setPrefWidth(500);
         subjectRoom.setPrefHeight(100);
         subjectRoom.getStyleClass().add("customTextfield");
         subjectRoom.setPromptText("room");
         subjectTeacher = new JFXTextField();
         subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeData);
+        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectTeacher.setPrefWidth(500);
         subjectTeacher.setPrefHeight(100);
         subjectTeacher.getStyleClass().add("customTextfield");
         subjectTeacher.setPromptText("teacher");
-        subjectMenuOnShow = (Event event) -> {
-            scaleSubjectMenu();
-        };
-        subjectMenuOnHide = (Event event) -> {
-            writeSubjectData();
-            autoCompletePane.hide();
-        };
         subjectMenu.add(subjectName);
         subjectMenu.add(subjectRoom);
         subjectMenu.add(subjectTeacher);
-        subjectMenu.setOnShow(subjectMenuOnShow);
-        subjectMenu.setOnHide(subjectMenuOnHide);
 
         //autocomplete pane
-        autoCompletePane = new AutocompletePane(bg);
         subjectMenuKeyPressed = (KeyEvent event) -> {
             autocompleteSubject(event);
         };
         autocompleteOnClick = (MouseEvent event) -> {
             autocompleteLabelClicked(event);
         };
-        confirmInput = (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                subjectMenu.hide();
-            }
-        };
+        autoCompletePane = new AutocompletePane(bg);
         subjectName.addEventHandler(KeyEvent.KEY_RELEASED, subjectMenuKeyPressed);
         autoCompletePane.setOnClick(autocompleteOnClick);
 
@@ -765,13 +801,42 @@ public class GUI implements Initializable {
         hideMenuIcon.play();
     }
 
+    //
     //################################menu################################
+    //
     @FXML
     private void menu(ActionEvent event) {
+        menu.show(name);
+    }
+
+    public void scaleMenu() {
+        double h = name.getHeight();
+        menuName.setFont(new Font(h * fontFactor));
+        addTimetable.setFont(new Font(h * fontFactor));
+        deleteTimetable.setFont(new Font(h * fontFactor));
+        menu.getDone().setFont(new Font(h * fontFactor));
+        menuTimetables.setPrefHeight(tm.getTimetables().size() * h * 0.4);
+        for (Node n : menuTimetables.getChildren()) {
+            JFXButton button = (JFXButton) n;
+            button.setFont(new Font(h * fontFactor));
+        }
+    }
+
+    public void updateMenuData() {
+        menuName.setText(tm.getCurrentTable().getName());
+    }
+
+    public void writeMenuData() {
+        tm.getCurrentTable().setName(menuName.getText());
+    }
+
+    public void updateMenuTimetables() {
 
     }
 
+    //
     //################################dayContextMenu################################
+    //
     @FXML
     private void dayContextMenu(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
@@ -781,25 +846,38 @@ public class GUI implements Initializable {
         }
     }
 
+    @FXML
+    private void dayKeyReleased(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            getSelectedDay(event);
+            dayContextMenu.show(selectedDay);
+        }
+    }
+
     public void scaleDayContextMenu() {
         double h = selectedDay.getHeight();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < dayToggles.length; i++) {
             dayToggles[i].setSelected(tm.getCurrentTable().isDayDisplayed(i));
             dayToggles[i].setScaleX(h * 0.012);
             dayToggles[i].setScaleY(h * 0.012);
             dayToggles[i].setMinHeight(h * dayContextMenu.getHeightFactor());
             dayToggles[i].setPrefHeight(h * dayContextMenu.getHeightFactor());
             dayToggles[i].setMaxHeight(h * dayContextMenu.getHeightFactor());
-            dayLabels[i].setFont(new Font(h * 0.22));
+            dayLabels[i].setFont(new Font(h * fontFactor));
             dayPanes[i].setPadding(new Insets(0, h * 0.1, 0, h * 0.4));
         }
         dayContextMenu.getPane().setPadding(new Insets(h * 0.1, 0, 0, 0));
-        dayContextMenu.getDone().setFont(new Font(h * 0.22));
+        dayContextMenu.getDone().setFont(new Font(h * fontFactor));
+    }
 
+    public void updateDayContextMenuData() {
+        for (int i = 0; i < dayToggles.length; i++) {
+            dayToggles[i].setSelected(tm.getCurrentTable().isDayDisplayed(i));
+        }
     }
 
     public void writeDayData() {
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < dayToggles.length; i++) {
             tm.getCurrentTable().setDayDisplayed(dayToggles[i].isSelected(), i);
         }
         initNewTimetable();
@@ -823,15 +901,6 @@ public class GUI implements Initializable {
         }
     }
 
-    @FXML
-    private void dayKeyReleased(KeyEvent event) {
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
-            getSelectedDay(event);
-            dayContextMenu.show(selectedDay);
-            hideOtherMenus(dayContextMenu);
-        }
-    }
-
     private void getSelectedDay(Event event) {
         for (int i = 0; i < days.length; i++) {
             if (days[i] == event.getSource()) {
@@ -842,14 +911,8 @@ public class GUI implements Initializable {
     }
 
     //
-    //
     //################################timeContextMenu################################
     //
-    //
-    /**
-     *
-     * @param event
-     */
     @FXML
     private void timeContextMenu(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
@@ -899,7 +962,9 @@ public class GUI implements Initializable {
         }
     }
 
+    //
     //################################subjectMenu################################
+    //
     @FXML
     private void subjectMenu(ActionEvent event) {
         getSelectedSubject(event);
@@ -916,13 +981,22 @@ public class GUI implements Initializable {
         subjectRoom.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         subjectTeacher.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         subjectMenu.getDone().setPadding(new Insets(h * 0.1));
-        subjectName.setFont(new Font(h * 0.22));
-        subjectRoom.setFont(new Font(h * 0.22));
-        subjectTeacher.setFont(new Font(h * 0.22));
-        subjectMenu.getDone().setFont(new Font(h * 0.22));
+        subjectName.setFont(new Font(h * fontFactor));
+        subjectRoom.setFont(new Font(h * fontFactor));
+        subjectTeacher.setFont(new Font(h * fontFactor));
+        subjectMenu.getDone().setFont(new Font(h * fontFactor));
+    }
+
+    public void updateSubjectMenuData() {
         subjectName.setText(tm.getCurrentTable().getSubjectText(tm.getsIndexI(), tm.getsIndexJ()));
         subjectRoom.setText(tm.getCurrentTable().getRoomText(tm.getsIndexI(), tm.getsIndexJ()));
         subjectTeacher.setText(tm.getCurrentTable().getTeacherText(tm.getsIndexI(), tm.getsIndexJ()));
+    }
+
+    private void setSubjectMenuFields(Subject s) {
+        subjectName.setText(s.getSubject());
+        subjectRoom.setText(s.getRoom());
+        subjectTeacher.setText(s.getTeacher());
     }
 
     public void writeSubjectData() {
@@ -930,6 +1004,18 @@ public class GUI implements Initializable {
         tm.getCurrentTable().setSubjectText(subjectName.getText(), tm.getsIndexI(), tm.getsIndexJ());
         tm.getCurrentTable().setRoomText(subjectRoom.getText(), tm.getsIndexI(), tm.getsIndexJ());
         tm.getCurrentTable().setTeacherText(subjectTeacher.getText(), tm.getsIndexI(), tm.getsIndexJ());
+    }
+
+    //
+    //################################autoCompletePane################################
+    //
+    public void autocompleteLabelClicked(MouseEvent event) {
+        Label l = (Label) event.getSource();
+        for (int i = 0; i < tm.getCurrentTable().getOptions().size(); i++) {
+            if (l == autoCompletePane.getPane().getChildren().get(i)) {
+                writeAutocomplete(i);
+            }
+        }
     }
 
     public void autocompleteSubject(KeyEvent event) {
@@ -946,37 +1032,12 @@ public class GUI implements Initializable {
         }
     }
 
-    public void autocompleteLabelClicked(MouseEvent event) {
-        Label l = (Label) event.getSource();
-        for (int i = 0; i < tm.getCurrentTable().getOptions().size(); i++) {
-            if (l == autoCompletePane.getPane().getChildren().get(i)) {
-                writeAutocomplete(i);
-            }
-        }
-    }
-
     private void enterPressed() {
         if (autoCompletePane.isAutocompleteFucused()) {
             writeAutocomplete();
         } else {
             subjectMenu.hide();
         }
-    }
-
-    private void writeAutocomplete() {
-        setSubjectMenuFields(tm.getCurrentTable().getOption(autoCompletePane.getAutocompleteIndex()));
-        autoCompletePane.hide();
-    }
-
-    private void writeAutocomplete(int index) {
-        setSubjectMenuFields(tm.getCurrentTable().getOption(index));
-        autoCompletePane.hide();
-    }
-
-    private void setSubjectMenuFields(Subject s) {
-        subjectName.setText(s.getSubject());
-        subjectRoom.setText(s.getRoom());
-        subjectTeacher.setText(s.getTeacher());
     }
 
     private void handleInput() {
@@ -992,7 +1053,19 @@ public class GUI implements Initializable {
         }
     }
 
+    private void writeAutocomplete() {
+        setSubjectMenuFields(tm.getCurrentTable().getOption(autoCompletePane.getAutocompleteIndex()));
+        autoCompletePane.hide();
+    }
+
+    private void writeAutocomplete(int index) {
+        setSubjectMenuFields(tm.getCurrentTable().getOption(index));
+        autoCompletePane.hide();
+    }
+
+    //
     //################################subjectContextMenu################################
+    //
     @FXML
     private void subjectContextMenu(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
@@ -1003,25 +1076,41 @@ public class GUI implements Initializable {
     }
 
     public void clear() {
-        tm.clear();
+        tm.clearSubject();
         initNewTimetable();
     }
 
     public void delete() {
-        tm.delete();
+        tm.deleteSubject();
         initNewTimetable();
     }
 
     public void addAbove() {
-        tm.delete();
+        tm.addSubjectAbove();
         initNewTimetable();
     }
 
     public void addBelow() {
-        tm.delete();
+        tm.addSubjectBelow();
         initNewTimetable();
     }
 
+    private void getSelectedSubject(Event event) {
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                if (event.getSource() == subjects[i][j]) {
+                    selectedSubject = subjects[i][j];
+                    tm.setsIndexI(i);
+                    tm.setsIndexJ(j);
+                    break;
+                }
+            }
+        }
+    }
+
+    //
+    //################################subjects################################
+    //
     @FXML
     private void subjectKeyReleased(KeyEvent event) {
         getSelectedSubject(event);
@@ -1077,19 +1166,6 @@ public class GUI implements Initializable {
         }
         if (i < days) {
             subjects[i + 1][j].requestFocus();
-        }
-    }
-
-    private void getSelectedSubject(Event event) {
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                if (event.getSource() == subjects[i][j]) {
-                    selectedSubject = subjects[i][j];
-                    tm.setsIndexI(i);
-                    tm.setsIndexJ(j);
-                    break;
-                }
-            }
         }
     }
 
