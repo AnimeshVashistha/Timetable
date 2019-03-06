@@ -26,7 +26,6 @@ public class OptionsPane extends SomePane {
     ParallelTransition show;
     ParallelTransition hide;
 
-    String ripplerFill = "#66DD77";
     String topButtonStyle = "roundedTopButton";
     String middleButtonStyle = "notRoundedButton";
 
@@ -69,7 +68,7 @@ public class OptionsPane extends SomePane {
 
     public void show(JFXButton source) {
         setSource(source);
-        
+
         int size = getPane().getChildren().size();
 
         double x = source.getLayoutX() + 1;
@@ -139,7 +138,7 @@ public class OptionsPane extends SomePane {
         } else {
             button.getStyleClass().add(topButtonStyle);
         }
-        button.setRipplerFill(Color.web(ripplerFill));
+        button.setRipplerFill(Color.web(GUI.ripplerFill));
         button.setPrefWidth(500);
         button.setPrefHeight(150);
 

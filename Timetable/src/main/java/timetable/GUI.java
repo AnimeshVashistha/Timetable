@@ -51,6 +51,7 @@ public class GUI implements Initializable {
     static String primaryColor = "-fx-color: #66DD7744";
     static String selectedColor = "-fx-background-color: #66DD7744";
     static String unselectedColor = "-fx-background-color: #00000000";
+    static String ripplerFill = "#66DD77";
     static String[] dayNames = englishDayNames;
 
     TimetableManager tm;
@@ -69,12 +70,13 @@ public class GUI implements Initializable {
     EventHandler<Event> menuOnShow;
     EventHandler<Event> menuOnHide;
     EventHandler<KeyEvent> writeMenuData;
+    EventHandler<ActionEvent> timetableButtonPressed;
     SidebarPane menu;
     JFXTextField menuName;
     JFXButton addTimetable;
     JFXButton deleteTimetable;
     ScrollPane menuScrollPane;
-    GridPane menuTimetables;
+    TimetablePane timetablePane;
 
     //day context menu
     EventHandler<Event> dayContextMenuOnShow;
@@ -319,6 +321,8 @@ public class GUI implements Initializable {
 
         tm = new TimetableManager();
 
+        initNewTimetable();
+
         hideAllMenus = (KeyEvent event) -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 hideAllMenus();
@@ -339,31 +343,35 @@ public class GUI implements Initializable {
                 menu.hide();
             }
         };
+        timetableButtonPressed = (ActionEvent event) -> {
+            timetableButtonPressed(event);
+        };
         menu = new SidebarPane(bg);
         menus.add(menu);
+        menu.setOnShow(menuOnShow);
+        menu.setOnHide(menuOnHide);
         menuName = new JFXTextField();
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         addTimetable = new JFXButton("add timetable");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(100);
         addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
-        menuName.addEventHandler(ActionEvent.ACTION, event -> {
-            tm.addTimetable();
-            initNewTimetable();
+        addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
+            addTimetable();
         });
         deleteTimetable = new JFXButton("delete timetable");
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(100);
         deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
-            tm.deleteCurrentTimetable();
-            initNewTimetable();
+            deleteTimetable();
         });
         menuScrollPane = new ScrollPane();
-        menuScrollPane.setPrefHeight(500);
-        menuTimetables = new GridPane();
+        menuScrollPane.setPrefHeight(400);
+        timetablePane = new TimetablePane();
+        timetablePane.update(tm.getTimetables(), timetableButtonPressed);
 
-        menuScrollPane.setContent(menuTimetables);
+        menuScrollPane.setContent(timetablePane.getPane());
         menu.add(menuName);
         menu.add(addTimetable);
         menu.add(deleteTimetable);
@@ -488,8 +496,6 @@ public class GUI implements Initializable {
         autoCompletePane = new AutocompletePane(bg);
         subjectName.addEventHandler(KeyEvent.KEY_RELEASED, subjectMenuKeyPressed);
         autoCompletePane.setOnClick(autocompleteOnClick);
-
-        initNewTimetable();
 
         //subject context menu
         subjectContextMenu = new OptionsPane(bg);
@@ -720,7 +726,7 @@ public class GUI implements Initializable {
     }
 
     public void initNewTimetable() {
-        subjectGrid.getChildren().removeIf(event -> (event.getClass() == JFXButton.class));
+        subjectGrid.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
         subjectGrid.getColumnConstraints().clear();
         subjectGrid.getRowConstraints().clear();
 
@@ -815,11 +821,7 @@ public class GUI implements Initializable {
         addTimetable.setFont(new Font(h * fontFactor));
         deleteTimetable.setFont(new Font(h * fontFactor));
         menu.getDone().setFont(new Font(h * fontFactor));
-        menuTimetables.setPrefHeight(tm.getTimetables().size() * h * 0.4);
-        for (Node n : menuTimetables.getChildren()) {
-            JFXButton button = (JFXButton) n;
-            button.setFont(new Font(h * fontFactor));
-        }
+        timetablePane.scale(h);
     }
 
     public void updateMenuData() {
@@ -831,7 +833,24 @@ public class GUI implements Initializable {
     }
 
     public void updateMenuTimetables() {
+        timetablePane.update(tm.getTimetables(), timetableButtonPressed);
+    }
 
+    public void timetableButtonPressed(ActionEvent event) {
+
+    }
+
+    public void addTimetable() {
+        tm.addTimetable();
+        updateMenuTimetables();
+        scaleMenu();
+        addTimetable();
+    }
+
+    public void deleteTimetable() {
+        tm.deleteCurrentTimetable();
+        updateMenuTimetables();
+        initNewTimetable();
     }
 
     //

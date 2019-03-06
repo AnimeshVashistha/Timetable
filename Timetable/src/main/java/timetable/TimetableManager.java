@@ -45,14 +45,14 @@ public class TimetableManager {
     }
 
     public void addTimetable() {
-        currentTable = new Timetable("Timetable" + tableCount);
+        currentTable = new Timetable("Timetable " + tableCount);
         timetables.add(currentTable);
         timeTableIndex = tableCount;
         tableCount++;
     }
 
     public void addTimetable(int index) {
-        currentTable = new Timetable("Timetable" + tableCount);
+        currentTable = new Timetable("Timetable " + tableCount);
         timetables.add(currentTable);
         timeTableIndex = index;
         tableCount++;
