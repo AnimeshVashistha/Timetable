@@ -17,7 +17,7 @@ public class TimetableManager {
     int sIndexI = 0;
     int sIndexJ = 0;
     int autocompleteIndex = 0;
-    int timeTableIndex = 0;
+    int timetableIndex = 0;
     int tableCount = 0;
 
     public TimetableManager() {
@@ -47,14 +47,14 @@ public class TimetableManager {
     public void addTimetable() {
         currentTable = new Timetable("Timetable " + tableCount);
         timetables.add(currentTable);
-        timeTableIndex = tableCount;
+        timetableIndex = timetables.size() - 1;
         tableCount++;
     }
 
     public void addTimetable(int index) {
         currentTable = new Timetable("Timetable " + tableCount);
         timetables.add(currentTable);
-        timeTableIndex = index;
+        timetableIndex = index;
         tableCount++;
     }
 
@@ -63,23 +63,23 @@ public class TimetableManager {
 
         if (timetables.size() == 0) {
             addTimetable();
-        } else if (timeTableIndex < timetables.size()) {
-            currentTable = timetables.get(timeTableIndex);
+        } else if (timetableIndex < timetables.size()) {
+            currentTable = timetables.get(timetableIndex);
         } else {
-            timeTableIndex--;
-            currentTable = timetables.get(timeTableIndex);
+            timetableIndex--;
+            currentTable = timetables.get(timetableIndex);
         }
     }
 
     public void deleteTimetable(int index) {
         timetables.remove(index);
-        if (timeTableIndex >= index) {
-            timeTableIndex--;
+        if (timetableIndex >= index) {
+            timetableIndex--;
         }
     }
 
     public int getTimeTableIndex() {
-        return timeTableIndex;
+        return timetableIndex;
     }
 
     public Timetable getCurrentTable() {
@@ -90,14 +90,14 @@ public class TimetableManager {
         return timetables.get(index);
     }
 
-    public void setTimeTableIndex(int timeTableIndex) {
-        this.timeTableIndex = timeTableIndex;
+    public void setTimeTableIndex(int timetableIndex) {
+        this.timetableIndex = timetableIndex;
     }
 
     public void setCurrentTable(int index) {
         if (index < timetables.size()) {
             currentTable = timetables.get(index);
-            timeTableIndex = index;
+            timetableIndex = index;
         }
     }
 

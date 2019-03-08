@@ -23,10 +23,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -331,9 +333,9 @@ public class GUI implements Initializable {
 
         //menu
         menuOnShow = (Event event) -> {
-            scaleMenu();
             updateMenuData();
             updateMenuTimetables();
+            scaleMenu();
         };
         menuOnHide = (Event event) -> {
             writeMenuData();
@@ -359,23 +361,34 @@ public class GUI implements Initializable {
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
         addTimetable = new JFXButton("add timetable");
         addTimetable.setPrefWidth(500);
-        addTimetable.setPrefHeight(100);
+        addTimetable.setPrefHeight(150);
+        addTimetable.setRipplerFill(Color.web(ripplerFill));
         addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             addTimetable();
         });
         deleteTimetable = new JFXButton("delete timetable");
         deleteTimetable.setPrefWidth(500);
-        deleteTimetable.setPrefHeight(100);
+        deleteTimetable.setPrefHeight(150);
+        deleteTimetable.setRipplerFill(Color.web(ripplerFill));
         deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
         deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             deleteTimetable();
         });
         menuScrollPane = new ScrollPane();
         menuScrollPane.setPrefHeight(400);
+        menuScrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+        menuScrollPane.setStyle("-fx-focus-color: transparent;");
+        menuScrollPane.addEventFilter(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent event) {
+                if (event.getDeltaX() != 0) {
+                    event.consume();
+                }
+            }
+        });
         timetablePane = new TimetablePane();
-        timetablePane.update(tm.getTimetables(), timetableButtonPressed);
-
+        timetablePane.update(tm.getTimetables(), timetableButtonPressed, tm.getTimeTableIndex());
         menuScrollPane.setContent(timetablePane.getPane());
         menu.add(menuName);
         menu.add(addTimetable);
@@ -559,6 +572,7 @@ public class GUI implements Initializable {
         hideMenuIcon.getChildren().add(menuIconSlideOut);
         hideMenuIcon.getChildren().add(nameLabelFadeIn);
 
+        nameLabel.setText(tm.getCurrentTable().getName());
         nameLabel.toBack();
         nameBackground.toBack();
         menuIcon.toFront();
@@ -574,7 +588,7 @@ public class GUI implements Initializable {
         }
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
-                subjects[i][j].setRipplerFill(Color.web("#66DD77"));
+                subjects[i][j].setRipplerFill(Color.web(ripplerFill));
             }
         }
 
@@ -821,14 +835,14 @@ public class GUI implements Initializable {
     }
 
     public void scaleMenu() {
-        double h = name.getHeight();
+        double h = name.getPrefHeight();
         menu.getPane().setMargin(menuName, new Insets(0, 0, h * 0.1, 0));
         menuName.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         menuName.setFont(new Font(h * fontFactor));
         addTimetable.setFont(new Font(h * fontFactor));
         deleteTimetable.setFont(new Font(h * fontFactor));
         menu.getDone().setFont(new Font(h * fontFactor));
-        timetablePane.scale(h, menu.getPane().getWidth());
+        timetablePane.scale(h, menu.getPane().getPrefWidth());
     }
 
     public void updateMenuData() {
@@ -837,26 +851,39 @@ public class GUI implements Initializable {
 
     public void writeMenuData() {
         tm.getCurrentTable().setName(menuName.getText());
+        nameLabel.setText(menuName.getText());
     }
 
     public void updateMenuTimetables() {
-        timetablePane.update(tm.getTimetables(), timetableButtonPressed);
+        timetablePane.update(tm.getTimetables(), timetableButtonPressed, tm.getTimeTableIndex());
     }
 
     public void timetableButtonPressed(ActionEvent event) {
-
+        int size = timetablePane.getPane().getChildren().size();
+        for (int i = 0; i < size; i++) {
+            if (event.getSource().equals(timetablePane.getPane().getChildren().get(i))) {
+                writeMenuData();
+                tm.setCurrentTable(i);
+                initNewTimetable();
+                updateMenuData();
+                updateMenuTimetables();
+                scaleMenu();
+            }
+        }
     }
 
     public void addTimetable() {
         tm.addTimetable();
         updateMenuTimetables();
         scaleMenu();
+        initNewTimetable();
         updateMenuData();
     }
 
     public void deleteTimetable() {
         tm.deleteCurrentTimetable();
         updateMenuTimetables();
+        scaleMenu();
         initNewTimetable();
         updateMenuData();
     }

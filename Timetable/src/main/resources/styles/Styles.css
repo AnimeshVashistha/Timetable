@@ -38,7 +38,6 @@
     -fx-background-color: #dddddd;
     -fx-background-radius: 0 0 7 7;
     -fx-cursor:hand;
-    -jfx-rippler-fill: #ff0000;
 }
 
 .roundedButton{
@@ -57,6 +56,7 @@
 }
 
 .roundedBottomRightButton{
+    -fx-background-color: #dddddd;
     -fx-background-radius: 0 0 7 0;
     -fx-cursor:hand;
 }
