@@ -20,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -334,12 +333,13 @@ public class GUI implements Initializable {
         menuOnShow = (Event event) -> {
             scaleMenu();
             updateMenuData();
+            updateMenuTimetables();
         };
         menuOnHide = (Event event) -> {
             writeMenuData();
         };
         writeMenuData = (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
+            if (event.getCode() == KeyCode.ENTER) {
                 menu.hide();
             }
         };
@@ -351,7 +351,12 @@ public class GUI implements Initializable {
         menu.setOnShow(menuOnShow);
         menu.setOnHide(menuOnHide);
         menuName = new JFXTextField();
+        menuName.setPrefHeight(100);
+        menuName.setPrefWidth(500);
+        menuName.setPromptText("name");
+        menuName.getStyleClass().add("customTextfield");
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
         addTimetable = new JFXButton("add timetable");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(100);
@@ -817,11 +822,13 @@ public class GUI implements Initializable {
 
     public void scaleMenu() {
         double h = name.getHeight();
+        menu.getPane().setMargin(menuName, new Insets(0, 0, h * 0.1, 0));
+        menuName.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         menuName.setFont(new Font(h * fontFactor));
         addTimetable.setFont(new Font(h * fontFactor));
         deleteTimetable.setFont(new Font(h * fontFactor));
         menu.getDone().setFont(new Font(h * fontFactor));
-        timetablePane.scale(h);
+        timetablePane.scale(h, menu.getPane().getWidth());
     }
 
     public void updateMenuData() {
@@ -844,13 +851,14 @@ public class GUI implements Initializable {
         tm.addTimetable();
         updateMenuTimetables();
         scaleMenu();
-        addTimetable();
+        updateMenuData();
     }
 
     public void deleteTimetable() {
         tm.deleteCurrentTimetable();
         updateMenuTimetables();
         initNewTimetable();
+        updateMenuData();
     }
 
     //
@@ -885,7 +893,8 @@ public class GUI implements Initializable {
             dayLabels[i].setFont(new Font(h * fontFactor));
             dayPanes[i].setPadding(new Insets(0, h * 0.1, 0, h * 0.4));
         }
-        dayContextMenu.getPane().setPadding(new Insets(h * 0.1, 0, 0, 0));
+        dayContextMenu.getPane().setPadding(new Insets(h * 0.2, 0, h * 0.2, 0));
+        dayContextMenu.getDone().setPadding(new Insets(h * 0.1, 0, 0, 0));
         dayContextMenu.getDone().setFont(new Font(h * fontFactor));
     }
 
@@ -1147,7 +1156,6 @@ public class GUI implements Initializable {
             tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
             initNewTimetable();
         }
-
     }
 
     public void moveSubjectUp(int i, int j) {
