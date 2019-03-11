@@ -920,8 +920,8 @@ public class GUI implements Initializable {
             dayLabels[i].setFont(new Font(h * fontFactor));
             dayPanes[i].setPadding(new Insets(0, h * 0.1, 0, h * 0.4));
         }
-        dayContextMenu.getPane().setPadding(new Insets(h * 0.2, 0, h * 0.2, 0));
-        dayContextMenu.getDone().setPadding(new Insets(h * 0.1, 0, 0, 0));
+        dayContextMenu.getPane().setPadding(new Insets(h * 0.2, 0, 0, 0));
+        dayContextMenu.getDone().setPadding(new Insets(h * 0.15, 0, h*0.15, 0));
         dayContextMenu.getDone().setFont(new Font(h * fontFactor));
     }
 
