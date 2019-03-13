@@ -942,6 +942,9 @@ public class GUI implements Initializable {
             tm.getCurrentTable().setDayDisplayed(dayToggles[i].isSelected(), i);
         }
         initNewTimetable();
+        Timeline t = new Timeline(
+                new KeyFrame(Duration.millis(1), n -> resizeFonts())
+        );
     }
 
     public void dayToggled() {
