@@ -198,7 +198,7 @@ public class AutocompletePane {
                 }
             } else {
                 autocompleteFucused = true;
-                autocompleteIndex = pane.getChildren().size() - 1;
+                autocompleteIndex = (pane.getChildren().size() - 2) / 3;
                 focus(autocompleteIndex);
             }
         }
@@ -208,7 +208,7 @@ public class AutocompletePane {
         if (pane.isVisible()) {
             if (autocompleteFucused) {
                 unfocus(autocompleteIndex);
-                if (autocompleteIndex >= pane.getChildren().size() - 1) {
+                if (autocompleteIndex >= (pane.getChildren().size() - 2) / 3) {
                     autocompleteFucused = false;
                 } else {
                     autocompleteIndex++;
