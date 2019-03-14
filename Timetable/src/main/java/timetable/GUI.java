@@ -33,6 +33,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -333,6 +334,7 @@ public class GUI implements Initializable {
 
         //menu
         menuOnShow = (Event event) -> {
+            hideOtherMenus(menu);
             updateMenuData();
             updateMenuTimetables();
             scaleMenu();
@@ -376,7 +378,7 @@ public class GUI implements Initializable {
             deleteTimetable();
         });
         menuScrollPane = new ScrollPane();
-        menuScrollPane.setPrefHeight(400);
+        menuScrollPane.setPrefHeight(500);
         menuScrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
         menuScrollPane.setStyle("-fx-focus-color: transparent;");
         menuScrollPane.addEventFilter(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
@@ -390,6 +392,9 @@ public class GUI implements Initializable {
         timetablePane = new TimetablePane();
         timetablePane.update(tm.getTimetables(), timetableButtonPressed, tm.getTimeTableIndex());
         menuScrollPane.setContent(timetablePane.getPane());
+        RowConstraints rc = new RowConstraints();
+        rc.setVgrow(Priority.ALWAYS);
+        menu.getPane().getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), new RowConstraints(), rc);
         menu.add(menuName);
         menu.add(addTimetable);
         menu.add(deleteTimetable);
@@ -831,6 +836,7 @@ public class GUI implements Initializable {
     //
     @FXML
     private void menu(ActionEvent event) {
+        hideOtherMenus(menu);
         menu.show(name);
     }
 
@@ -921,7 +927,7 @@ public class GUI implements Initializable {
             dayPanes[i].setPadding(new Insets(0, h * 0.1, 0, h * 0.4));
         }
         dayContextMenu.getPane().setPadding(new Insets(h * 0.2, 0, 0, 0));
-        dayContextMenu.getDone().setPadding(new Insets(h * 0.15, 0, h*0.15, 0));
+        dayContextMenu.getDone().setPadding(new Insets(h * 0.15, 0, h * 0.15, 0));
         dayContextMenu.getDone().setFont(new Font(h * fontFactor));
     }
 

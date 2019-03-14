@@ -9,10 +9,12 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -77,7 +79,7 @@ public class AutocompletePane {
     public void showOnCoordinates(double x, double y, JFXTextField source) {
         this.source = source;
 
-        int size = pane.getChildren().size();
+        int size = pane.getRowCount();
 
         double w = source.getHeight();
         double h = source.getHeight();
@@ -88,7 +90,7 @@ public class AutocompletePane {
     public void show(JFXTextField source) {
         this.source = source;
 
-        int size = pane.getChildren().size();
+        int size = pane.getRowCount();
 
         double x = source.getParent().getLayoutX();
         double y = source.getParent().getLayoutY();
@@ -99,7 +101,7 @@ public class AutocompletePane {
     }
 
     private void show(double x, double y, double w, double h) {
-        int size = pane.getChildren().size();
+        int size = pane.getRowCount();
 
         hidden = false;
 
@@ -145,19 +147,33 @@ public class AutocompletePane {
         pane.getChildren().removeIf(n -> (n.getClass() == Label.class));
 
         for (int i = 0; i < options.size(); i++) {
-            Label l = new Label(options.get(i).getSubject());
-            l.setPrefSize(500, 150);
-            l.setPadding(new Insets(0, 0, 0, source.getHeight() * paddingFactor));
-            l.setFont(new Font(source.getHeight() * fontFactor));
+            Label subject = new Label(options.get(i).getSubject());
+            subject.setPrefSize(500, 150);
+            subject.setPadding(new Insets(0, 0, 0, source.getHeight() * paddingFactor));
+            subject.setFont(new Font(source.getHeight() * fontFactor));
             if (onClick != null) {
-                l.addEventHandler(MouseEvent.MOUSE_CLICKED, onClick);
+                subject.addEventHandler(MouseEvent.MOUSE_CLICKED, onClick);
             }
             if (i == options.size() - 1) {
-                l.getStyleClass().add(bottomButtonStyle);
+                subject.getStyleClass().add(bottomButtonStyle);
             } else {
-                l.getStyleClass().add(defaultButtonStyle);
+                subject.getStyleClass().add(defaultButtonStyle);
             }
-            pane.add(l, 0, i, 1, 1);
+            Label room = new Label(options.get(i).getRoom());
+            room.setAlignment(Pos.TOP_RIGHT);
+            room.setPrefSize(500, 150);
+            room.setFont(new Font(source.getHeight() * fontFactor * 0.8));
+            room.setTextFill(Color.GRAY);
+            room.setPadding(new Insets(0, source.getHeight() * 0.1, 0, source.getHeight() * 0.1));
+            Label teacher = new Label(options.get(i).getTeacher());
+            teacher.setAlignment(Pos.BOTTOM_RIGHT);
+            teacher.setPrefSize(500, 150);
+            teacher.setFont(new Font(source.getHeight() * fontFactor * 0.8));
+            teacher.setTextFill(Color.GRAY);
+            teacher.setPadding(new Insets(0, source.getHeight() * 0.1, 0, source.getHeight() * 0.1));
+            pane.add(room, 0, i, 1, 1);
+            pane.add(teacher, 0, i, 1, 1);
+            pane.add(subject, 0, i, 1, 1);
         }
     }
 
@@ -181,7 +197,7 @@ public class AutocompletePane {
                 }
             } else {
                 autocompleteFucused = true;
-                autocompleteIndex = pane.getChildren().size() - 1;
+                autocompleteIndex = (pane.getChildren().size() - 2) / 3;
                 focus(autocompleteIndex);
             }
         }
@@ -191,7 +207,7 @@ public class AutocompletePane {
         if (pane.isVisible()) {
             if (autocompleteFucused) {
                 unfocus(autocompleteIndex);
-                if (autocompleteIndex >= pane.getChildren().size() - 1) {
+                if (autocompleteIndex >= (pane.getChildren().size() - 2) / 3) {
                     autocompleteFucused = false;
                 } else {
                     autocompleteIndex++;
@@ -206,11 +222,11 @@ public class AutocompletePane {
     }
 
     public void focus(int index) {
-        pane.getChildren().get(index).setStyle(GUI.selectedColor);
+        pane.getChildren().get(index * 3 + 2).setStyle(GUI.selectedColor);
     }
 
     public void unfocus(int index) {
-        pane.getChildren().get(index).setStyle(GUI.unselectedColor);
+        pane.getChildren().get(index * 3 + 2).setStyle(GUI.unselectedColor);
     }
 
     public double getWidthFactor() {
