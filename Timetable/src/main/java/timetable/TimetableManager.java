@@ -1,5 +1,6 @@
 package timetable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,9 @@ import java.util.List;
  * @author Tobias
  */
 public class TimetableManager {
+
+    final static String TIMETABLES_STRING = "timetables";
+    final static String CURRENT_TABLE_STRING = "currentTable";
 
     List<Timetable> timetables;
     Timetable currentTable;
@@ -21,27 +25,32 @@ public class TimetableManager {
     int tableCount = 0;
 
     public TimetableManager() {
-//        dm = new DataManager("timetables.cfg");
-//
-//        try {
-//            List<Timetable> tempTables = dm.readTimeTables();
-//            Timetable tempCurrentTable = dm.readCurrentTable();
-//            if (tempTables.size() > 0) {
-//                timetables = tempTables;
-//                currentTable = tempCurrentTable;
-//            } else {
-//                timetables = new ArrayList<Timetable>();
-//                addTimetable();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            timetables = new ArrayList<Timetable>();
-//            addTimetable();
-//        }
+        dm = new DataManager("timetables.cfg");
 
-        timetables = new ArrayList<Timetable>();
-        addTimetable();
+        Object tempTimetables = dm.readObject(TIMETABLES_STRING);
 
+        if (tempTimetables != null && tempTimetables.getClass() == List.class) {
+            timetables = (List<Timetable>) tempTimetables;
+
+            Object tempCurrentTable = dm.readObject(CURRENT_TABLE_STRING);
+
+            if (tempCurrentTable != null && tempCurrentTable.getClass() == Timetable.class) {
+                currentTable = (Timetable) tempCurrentTable;
+            } else if (timetables.size() > 0) {
+                currentTable = timetables.get(0);
+            } else {
+                addTimetable(tIndexI);
+            }
+
+        } else {
+            timetables = new ArrayList<Timetable>();
+            addTimetable();
+        }
+    }
+
+    public void writeDataToFile() {
+        dm.writeObject(TIMETABLES_STRING, (Serializable) timetables);
+        dm.writeObject(CURRENT_TABLE_STRING, currentTable);
     }
 
     public void addTimetable() {
@@ -160,4 +169,5 @@ public class TimetableManager {
     public void addSubjectBelow() {
         currentTable.addSubjectBelow(sIndexI, sIndexJ);
     }
+
 }

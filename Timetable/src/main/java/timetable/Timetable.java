@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Tobias
  */
-public class Timetable implements Serializable {
+public class Timetable implements Serializable{
 
     List<Subject> references = new LinkedList<Subject>();
     List<Subject> options;
@@ -25,6 +25,7 @@ public class Timetable implements Serializable {
     Subject[][] subjects = new Subject[7][10];
     LocalTime[] times = new LocalTime[10];
     boolean[] days = new boolean[7];
+    
     DateTimeFormatter HoursAndMinutes = DateTimeFormatter.ofPattern("HH:mm");
     LocalTime startTime = LocalTime.of(7, 30);
     int smallPause = 0;
@@ -170,7 +171,7 @@ public class Timetable implements Serializable {
     public List<Subject> getOptions() {
         return options;
     }
-    
+
     public Subject getOption(int i) {
         return options.get(i);
     }
