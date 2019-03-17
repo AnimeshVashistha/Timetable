@@ -5,11 +5,13 @@
  */
 package timetable;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Tobias
  */
-public class Subject {
+public class Subject implements Serializable {
 
     String subject = "";
     String room = "";
@@ -56,7 +58,5 @@ public class Subject {
     public void setTeacher(String teacher) {
         this.teacher = teacher;
     }
-    
-    
 
 }

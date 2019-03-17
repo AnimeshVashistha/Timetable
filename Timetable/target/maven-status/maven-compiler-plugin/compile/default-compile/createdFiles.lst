@@ -1,5 +1,6 @@
 timetable/DataManager.class
 timetable/TimetablePane.class
+timetable/GUI$2.class
 timetable/Subject.class
 timetable/OptionsPane.class
 timetable/Timetable.class
