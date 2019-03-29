@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import timetable.Datatypes.Timetable;
 
 /**
  *
@@ -30,20 +31,33 @@ public class TimetableManager {
 
         Object tempTimetables = dm.readObject(TIMETABLES_STRING);
 
-        if (tempTimetables != null && tempTimetables.getClass() == List.class) {
-            timetables = (ArrayList<Timetable>) tempTimetables;
+        if (tempTimetables != null && tempTimetables.getClass() == ArrayList.class) {
+            ArrayList<Timetable> tempTimetables2 = (ArrayList<Timetable>) tempTimetables;
 
-            Object tempCurrentTable = dm.readObject(CURRENT_TABLE_STRING);
+            try {
+                if (tempTimetables2.get(0).getClass() == Timetable.class) {
+                    Object tempCurrentTable = dm.readObject(CURRENT_TABLE_STRING);
+                    System.out.println(tempCurrentTable.getClass());
 
-            if (tempCurrentTable != null && tempCurrentTable.getClass() == Timetable.class) {
-                currentTable = (Timetable) tempCurrentTable;
-            } else if (timetables.size() > 0) {
-                currentTable = timetables.get(0);
-            } else {
-                addTimetable(tIndexI);
+                    if (tempCurrentTable != null && tempCurrentTable.getClass() == Timetable.class) {
+                        currentTable = (Timetable) tempCurrentTable;
+                    } else {
+                        addTimetable(tIndexI);
+                    }
+                } else {
+                    System.out.println("nope");
+                    timetables = new ArrayList<Timetable>();
+                    addTimetable();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("nope");
+                timetables = new ArrayList<Timetable>();
+                addTimetable();
             }
 
         } else {
+            System.out.println("nope");
             timetables = new ArrayList<Timetable>();
             addTimetable();
         }
@@ -54,10 +68,11 @@ public class TimetableManager {
             @Override
             public void run() {
                 writeDataToFile();
+                System.out.println("writing data");
             }
         };
 
-        timer.schedule(writeDataTask, 5000);
+        timer.schedule(writeDataTask, 1000, 5000);
 
     }
 
