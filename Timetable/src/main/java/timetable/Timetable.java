@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,8 +17,8 @@ import java.util.List;
  */
 public class Timetable implements Serializable{
 
-    List<Subject> references = new LinkedList<Subject>();
-    List<Subject> options;
+    ArrayList<Subject> references = new ArrayList<Subject>();
+    ArrayList<Subject> options;
     String name = "new Timetable";
     int lessons = 8;
     Subject[][] subjects = new Subject[7][10];
@@ -94,8 +93,8 @@ public class Timetable implements Serializable{
         }
     }
 
-    public List<Subject> getAutocompleteOptions(String subject) {
-        List<Subject> options = new ArrayList<Subject>();
+    public ArrayList<Subject> getAutocompleteOptions(String subject) {
+        ArrayList<Subject> options = new ArrayList<Subject>();
 
         for (Subject s : references) {
             if (s.getSubject().toLowerCase().startsWith(subject.toLowerCase())) {

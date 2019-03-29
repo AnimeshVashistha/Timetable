@@ -1,8 +1,9 @@
 package timetable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -13,7 +14,7 @@ public class TimetableManager {
     final static String TIMETABLES_STRING = "timetables";
     final static String CURRENT_TABLE_STRING = "currentTable";
 
-    List<Timetable> timetables;
+    ArrayList<Timetable> timetables;
     Timetable currentTable;
     DataManager dm;
 
@@ -30,7 +31,7 @@ public class TimetableManager {
         Object tempTimetables = dm.readObject(TIMETABLES_STRING);
 
         if (tempTimetables != null && tempTimetables.getClass() == List.class) {
-            timetables = (List<Timetable>) tempTimetables;
+            timetables = (ArrayList<Timetable>) tempTimetables;
 
             Object tempCurrentTable = dm.readObject(CURRENT_TABLE_STRING);
 
@@ -46,10 +47,22 @@ public class TimetableManager {
             timetables = new ArrayList<Timetable>();
             addTimetable();
         }
+
+        Timer timer = new Timer();
+
+        TimerTask writeDataTask = new TimerTask() {
+            @Override
+            public void run() {
+                writeDataToFile();
+            }
+        };
+
+        timer.schedule(writeDataTask, 5000);
+
     }
 
     public void writeDataToFile() {
-        dm.writeObject(TIMETABLES_STRING, (Serializable) timetables);
+        dm.writeObject(TIMETABLES_STRING, timetables);
         dm.writeObject(CURRENT_TABLE_STRING, currentTable);
     }
 

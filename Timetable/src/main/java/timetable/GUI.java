@@ -7,9 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
-import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
@@ -637,16 +634,6 @@ public class GUI implements Initializable {
         );
 
         unfocus.play();
-
-        TimerTask tt = new TimerTask() {
-            @Override
-            public void run() {
-                tm.writeDataToFile();
-            }
-        };
-
-        new Timer().schedule(tt, 0, 5000);
-
     }
 
     public void initControlArrays() {
