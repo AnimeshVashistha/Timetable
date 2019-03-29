@@ -6,7 +6,6 @@ timetable\GUI.class
 timetable\Datatypes\Timetable.class
 timetable\DataManager.class
 timetable\SomePane.class
-timetable\TimetableManager$1.class
 timetable\Datatypes\Subject.class
 timetable\AutocompletePane.class
 timetable\TimetableManager.class

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import timetable.Datatypes.Timetable;
 
 /**
@@ -62,21 +65,17 @@ public class TimetableManager {
             addTimetable();
         }
 
-        Timer timer = new Timer();
-
-        TimerTask writeDataTask = new TimerTask() {
-            @Override
-            public void run() {
-                writeDataToFile();
-                System.out.println("writing data");
-            }
-        };
-
-        timer.schedule(writeDataTask, 1000, 5000);
+        Timeline t = new Timeline(
+                new KeyFrame(Duration.millis(5000), n -> {
+                    writeDataToFile();
+                })
+        );
+        t.setCycleCount(Timeline.INDEFINITE);
 
     }
 
     public void writeDataToFile() {
+        System.out.println("writing data");
         dm.writeObject(TIMETABLES_STRING, timetables);
         dm.writeObject(CURRENT_TABLE_STRING, currentTable);
     }
