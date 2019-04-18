@@ -1,13 +1,12 @@
 timetable\TimetablePane.class
 timetable\GUI$1.class
-timetable\Timetable.class
 timetable\Main.class
 timetable\SidebarPane.class
 timetable\GUI.class
-timetable\Subject.class
+timetable\Datatypes\Timetable.class
 timetable\DataManager.class
 timetable\SomePane.class
-timetable\TimetableManager$1.class
+timetable\Datatypes\Subject.class
 timetable\AutocompletePane.class
 timetable\TimetableManager.class
 timetable\AdvancedOptionsPane.class

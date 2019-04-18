@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import timetable.Datatypes.Timetable;
 
 /**
  *
@@ -30,38 +34,48 @@ public class TimetableManager {
 
         Object tempTimetables = dm.readObject(TIMETABLES_STRING);
 
-        if (tempTimetables != null && tempTimetables.getClass() == List.class) {
-            timetables = (ArrayList<Timetable>) tempTimetables;
+        if (tempTimetables != null && tempTimetables.getClass() == ArrayList.class) {
+            ArrayList<Timetable> tempTimetables2 = (ArrayList<Timetable>) tempTimetables;
 
-            Object tempCurrentTable = dm.readObject(CURRENT_TABLE_STRING);
+            try {
+                if (tempTimetables2.get(0).getClass() == Timetable.class) {
+                    Object tempCurrentTable = dm.readObject(CURRENT_TABLE_STRING);
+                    System.out.println(tempCurrentTable.getClass());
 
-            if (tempCurrentTable != null && tempCurrentTable.getClass() == Timetable.class) {
-                currentTable = (Timetable) tempCurrentTable;
-            } else if (timetables.size() > 0) {
-                currentTable = timetables.get(0);
-            } else {
-                addTimetable(tIndexI);
+                    if (tempCurrentTable != null && tempCurrentTable.getClass() == Timetable.class) {
+                        currentTable = (Timetable) tempCurrentTable;
+                    } else {
+                        addTimetable(tIndexI);
+                    }
+                } else {
+                    System.out.println("nope");
+                    timetables = new ArrayList<Timetable>();
+                    addTimetable();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("nope");
+                timetables = new ArrayList<Timetable>();
+                addTimetable();
             }
 
         } else {
+            System.out.println("nope");
             timetables = new ArrayList<Timetable>();
             addTimetable();
         }
 
-        Timer timer = new Timer();
-
-        TimerTask writeDataTask = new TimerTask() {
-            @Override
-            public void run() {
-                writeDataToFile();
-            }
-        };
-
-        timer.schedule(writeDataTask, 5000);
+        Timeline t = new Timeline(
+                new KeyFrame(Duration.millis(5000), n -> {
+                    writeDataToFile();
+                })
+        );
+        t.setCycleCount(Timeline.INDEFINITE);
 
     }
 
     public void writeDataToFile() {
+        System.out.println("writing data");
         dm.writeObject(TIMETABLES_STRING, timetables);
         dm.writeObject(CURRENT_TABLE_STRING, currentTable);
     }

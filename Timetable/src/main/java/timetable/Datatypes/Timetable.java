@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package timetable;
+package timetable.Datatypes;
 
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -213,6 +213,10 @@ public class Timetable implements Serializable{
 
     public void setLessonlength(int lessonlength) {
         this.lessonlength = lessonlength;
+    }
+    
+    public boolean[] getDays() {
+        return days;
     }
 
     public void clearLessonRow(int index) {

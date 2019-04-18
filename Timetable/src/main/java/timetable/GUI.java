@@ -37,6 +37,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import timetable.Datatypes.Subject;
 
 /**
  *
@@ -1222,7 +1223,7 @@ public class GUI implements Initializable {
         tm.getCurrentTable().moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
         initNewTimetable();
         int days = 0;
-        for (int d = 0; d < tm.getCurrentTable().days.length; d++) {
+        for (int d = 0; d < tm.getCurrentTable().getDays().length; d++) {
             if (tm.getCurrentTable().isDayDisplayed(d)) {
                 days++;
             }

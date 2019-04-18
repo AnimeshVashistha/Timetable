@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import timetable.Datatypes.Timetable;
 
 /**
  *
