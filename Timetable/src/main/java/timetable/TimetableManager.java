@@ -71,7 +71,6 @@ public class TimetableManager {
                 })
         );
         t.setCycleCount(Timeline.INDEFINITE);
-
     }
 
     public void writeDataToFile() {

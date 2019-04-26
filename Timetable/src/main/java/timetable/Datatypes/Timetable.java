@@ -6,8 +6,6 @@
 package timetable.Datatypes;
 
 import java.io.Serializable;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +20,10 @@ public class Timetable implements Serializable{
     String name = "new Timetable";
     int lessons = 8;
     Subject[][] subjects = new Subject[7][10];
-    LocalTime[] times = new LocalTime[10];
+    SimpleTime[] times = new SimpleTime[10];
     boolean[] days = new boolean[7];
     
-    DateTimeFormatter HoursAndMinutes = DateTimeFormatter.ofPattern("HH:mm");
-    LocalTime startTime = LocalTime.of(7, 30);
+    SimpleTime startTime = new SimpleTime(7, 30);
     int smallPause = 0;
     int middlePause = 15;
     int bigPause = 30;
@@ -57,6 +54,8 @@ public class Timetable implements Serializable{
         int toAdd = 0;
         for (int i = 0; i < times.length; i++) {
             times[i] = startTime.plusMinutes(toAdd);
+            System.out.println(times[i].getHours() + ":" + times[i].getMinutes());
+            System.out.println(times[i].format());
             toAdd += lessonlength;
             if (i % 2 == 0) {
                 toAdd += smallPause;
@@ -132,14 +131,14 @@ public class Timetable implements Serializable{
     }
 
     public String getTimeText(int i) {
-        return times[i].format(HoursAndMinutes) + "\n" + times[i].plusMinutes(lessonlength).format(HoursAndMinutes);
+        return times[i].format() + "\n" + times[i].plusMinutes(45).format();
     }
 
-    public LocalTime getTime(int i) {
+    public SimpleTime getTime(int i) {
         return times[i];
     }
 
-    public void setTime(LocalTime time, int i) {
+    public void setTime(SimpleTime time, int i) {
         times[i] = time;
     }
 
@@ -175,11 +174,11 @@ public class Timetable implements Serializable{
         return options.get(i);
     }
 
-    public LocalTime getStartTime() {
+    public SimpleTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(SimpleTime startTime) {
         this.startTime = startTime;
     }
 
