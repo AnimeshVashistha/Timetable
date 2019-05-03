@@ -2,8 +2,6 @@ package timetable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -16,7 +14,7 @@ import timetable.Datatypes.Timetable;
 public class TimetableManager {
 
     final static String TIMETABLES_STRING = "timetables";
-    final static String CURRENT_TABLE_STRING = "currentTable";
+    final static String TIMETABLE_INDEX_STRING = "timetableIndex";
 
     ArrayList<Timetable> timetables;
     Timetable currentTable;
@@ -32,51 +30,59 @@ public class TimetableManager {
     public TimetableManager() {
         dm = new DataManager("timetables.cfg");
 
+        readDataFromFile();
+
+        Timeline t = new Timeline(
+                new KeyFrame(Duration.millis(1000), n -> {
+                    writeDataToFile();
+                })
+        );
+        t.setCycleCount(Timeline.INDEFINITE);
+
+        t.play();
+    }
+
+    public void writeDataToFile() {
+        dm.writeObject(TIMETABLES_STRING, timetables);
+        dm.writeObject(TIMETABLE_INDEX_STRING, timetableIndex);
+    }
+
+    public void readDataFromFile() {
         Object tempTimetables = dm.readObject(TIMETABLES_STRING);
+        Object tempTimetableIndex = dm.readObject(TIMETABLE_INDEX_STRING);
 
         if (tempTimetables != null && tempTimetables.getClass() == ArrayList.class) {
             ArrayList<Timetable> tempTimetables2 = (ArrayList<Timetable>) tempTimetables;
 
-            try {
-                if (tempTimetables2.get(0).getClass() == Timetable.class) {
-                    Object tempCurrentTable = dm.readObject(CURRENT_TABLE_STRING);
-                    System.out.println(tempCurrentTable.getClass());
+            if (tempTimetableIndex != null && tempTimetableIndex.getClass() == Integer.class) {
+                timetableIndex = (Integer) tempTimetableIndex;
 
-                    if (tempCurrentTable != null && tempCurrentTable.getClass() == Timetable.class) {
-                        currentTable = (Timetable) tempCurrentTable;
+                try {
+                    if (tempTimetables2.get(timetableIndex).getClass() == Timetable.class) {
+                        timetables = tempTimetables2;
+                        currentTable = timetables.get(timetableIndex);
+
                     } else {
-                        addTimetable(tIndexI);
+                        System.out.println("nope1");
+                        timetables = new ArrayList<Timetable>();
+                        addTimetable();
                     }
-                } else {
-                    System.out.println("nope");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("nope2");
                     timetables = new ArrayList<Timetable>();
                     addTimetable();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("nope");
+            } else {
                 timetables = new ArrayList<Timetable>();
                 addTimetable();
             }
 
         } else {
-            System.out.println("nope");
+            System.out.println("nope3");
             timetables = new ArrayList<Timetable>();
             addTimetable();
         }
-
-        Timeline t = new Timeline(
-                new KeyFrame(Duration.millis(5000), n -> {
-                    writeDataToFile();
-                })
-        );
-        t.setCycleCount(Timeline.INDEFINITE);
-    }
-
-    public void writeDataToFile() {
-        System.out.println("writing data");
-        dm.writeObject(TIMETABLES_STRING, timetables);
-        dm.writeObject(CURRENT_TABLE_STRING, currentTable);
     }
 
     public void addTimetable() {

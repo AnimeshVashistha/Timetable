@@ -18,7 +18,6 @@ public class DataManager {
     }
 
     public Object readObject(String name) {
-
         try {
             FileInputStream fis = new FileInputStream(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -47,5 +46,4 @@ public class DataManager {
             e.printStackTrace();
         }
     }
-
 }

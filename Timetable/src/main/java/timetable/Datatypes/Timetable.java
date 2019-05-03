@@ -54,8 +54,6 @@ public class Timetable implements Serializable{
         int toAdd = 0;
         for (int i = 0; i < times.length; i++) {
             times[i] = startTime.plusMinutes(toAdd);
-            System.out.println(times[i].getHours() + ":" + times[i].getMinutes());
-            System.out.println(times[i].format());
             toAdd += lessonlength;
             if (i % 2 == 0) {
                 toAdd += smallPause;

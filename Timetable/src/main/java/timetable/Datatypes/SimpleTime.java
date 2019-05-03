@@ -63,8 +63,6 @@ public class SimpleTime implements Serializable{
     public SimpleTime plusMinutes(int minutesToAdd) {
         int hours = this.hours + (minutesToAdd + this.minutes) / 60;
         int minutes = (this.minutes + minutesToAdd) % 60;
-        System.out.println(hours);
-        System.out.println(minutes);
         return new SimpleTime(hours, minutes);
     }
 
