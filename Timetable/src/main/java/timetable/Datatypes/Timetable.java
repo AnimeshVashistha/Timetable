@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Tobias
  */
-public class Timetable implements Serializable{
+public class Timetable implements Serializable {
 
     ArrayList<Subject> references = new ArrayList<Subject>();
     ArrayList<Subject> options;
@@ -22,7 +22,7 @@ public class Timetable implements Serializable{
     Subject[][] subjects = new Subject[7][10];
     SimpleTime[] times = new SimpleTime[10];
     boolean[] days = new boolean[7];
-    
+
     SimpleTime startTime = new SimpleTime(7, 30);
     int smallPause = 0;
     int middlePause = 15;
@@ -68,6 +68,7 @@ public class Timetable implements Serializable{
     }
 
     public void updateReferences() {
+        references.clear();
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
                 if (references.size() > 0) {
@@ -211,7 +212,7 @@ public class Timetable implements Serializable{
     public void setLessonlength(int lessonlength) {
         this.lessonlength = lessonlength;
     }
-    
+
     public boolean[] getDays() {
         return days;
     }

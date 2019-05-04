@@ -50,6 +50,7 @@ public class GUI implements Initializable {
     final static double focusAnimationOffsetFactor = 0.6;
     final static double fontFactor = 0.22;
     final static String[] englishDayNames = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    final static String[] germanDayNames = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
     static String primaryColor = "-fx-color: #66DD7744";
     static String selectedColor = "-fx-background-color: #66DD7744";
@@ -58,7 +59,13 @@ public class GUI implements Initializable {
     static String[] dayNames = englishDayNames;
 
     TimetableManager tm;
-
+    EventHandler<MouseEvent> dayPressed;
+    EventHandler<KeyEvent> dayKeyReleased;
+    EventHandler<MouseEvent> timePressed;
+    EventHandler<KeyEvent> timeKeyReleased;
+    EventHandler<ActionEvent> subjectAction;
+    EventHandler<MouseEvent> subjectPressed;
+    EventHandler<KeyEvent> subjectKeyReleased;
     JFXButton[] days;
     JFXButton[] times;
     JFXButton[][] subjects;
@@ -66,7 +73,8 @@ public class GUI implements Initializable {
     JFXButton selectedTime;
     JFXButton selectedSubject;
 
-    EventHandler<KeyEvent> hideAllMenus;
+    EventHandler<KeyEvent> hideAllMenusK;
+    EventHandler<ActionEvent> hideAllMenusA;
     List<SomePane> menus;
 
     //menu
@@ -137,180 +145,6 @@ public class GUI implements Initializable {
     @FXML
     private JFXButton name;
     @FXML
-    private JFXButton subject0000;
-    @FXML
-    private JFXButton subject0100;
-    @FXML
-    private JFXButton subject0200;
-    @FXML
-    private JFXButton subject0300;
-    @FXML
-    private JFXButton subject0400;
-    @FXML
-    private JFXButton subject0500;
-    @FXML
-    private JFXButton subject0600;
-    @FXML
-    private JFXButton subject0001;
-    @FXML
-    private JFXButton subject0101;
-    @FXML
-    private JFXButton subject0201;
-    @FXML
-    private JFXButton subject0301;
-    @FXML
-    private JFXButton subject0401;
-    @FXML
-    private JFXButton subject0501;
-    @FXML
-    private JFXButton subject0601;
-    @FXML
-    private JFXButton subject0002;
-    @FXML
-    private JFXButton subject0102;
-    @FXML
-    private JFXButton subject0202;
-    @FXML
-    private JFXButton subject0302;
-    @FXML
-    private JFXButton subject0402;
-    @FXML
-    private JFXButton subject0502;
-    @FXML
-    private JFXButton subject0602;
-    @FXML
-    private JFXButton subject0003;
-    @FXML
-    private JFXButton subject0103;
-    @FXML
-    private JFXButton subject0203;
-    @FXML
-    private JFXButton subject0303;
-    @FXML
-    private JFXButton subject0403;
-    @FXML
-    private JFXButton subject0503;
-    @FXML
-    private JFXButton subject0603;
-    @FXML
-    private JFXButton subject0004;
-    @FXML
-    private JFXButton subject0104;
-    @FXML
-    private JFXButton subject0204;
-    @FXML
-    private JFXButton subject0304;
-    @FXML
-    private JFXButton subject0404;
-    @FXML
-    private JFXButton subject0504;
-    @FXML
-    private JFXButton subject0604;
-    @FXML
-    private JFXButton subject0005;
-    @FXML
-    private JFXButton subject0105;
-    @FXML
-    private JFXButton subject0205;
-    @FXML
-    private JFXButton subject0305;
-    @FXML
-    private JFXButton subject0405;
-    @FXML
-    private JFXButton subject0505;
-    @FXML
-    private JFXButton subject0605;
-    @FXML
-    private JFXButton subject0006;
-    @FXML
-    private JFXButton subject0106;
-    @FXML
-    private JFXButton subject0206;
-    @FXML
-    private JFXButton subject0306;
-    @FXML
-    private JFXButton subject0406;
-    @FXML
-    private JFXButton subject0506;
-    @FXML
-    private JFXButton subject0606;
-    @FXML
-    private JFXButton subject0007;
-    @FXML
-    private JFXButton subject0107;
-    @FXML
-    private JFXButton subject0207;
-    @FXML
-    private JFXButton subject0307;
-    @FXML
-    private JFXButton subject0407;
-    @FXML
-    private JFXButton subject0507;
-    @FXML
-    private JFXButton subject0607;
-    @FXML
-    private JFXButton subject0008;
-    @FXML
-    private JFXButton subject0108;
-    @FXML
-    private JFXButton subject0208;
-    @FXML
-    private JFXButton subject0308;
-    @FXML
-    private JFXButton subject0408;
-    @FXML
-    private JFXButton subject0508;
-    @FXML
-    private JFXButton subject0608;
-    @FXML
-    private JFXButton subject0009;
-    @FXML
-    private JFXButton subject0109;
-    @FXML
-    private JFXButton subject0209;
-    @FXML
-    private JFXButton subject0309;
-    @FXML
-    private JFXButton subject0409;
-    @FXML
-    private JFXButton subject0509;
-    @FXML
-    private JFXButton subject0609;
-    @FXML
-    private JFXButton day00;
-    @FXML
-    private JFXButton day01;
-    @FXML
-    private JFXButton day02;
-    @FXML
-    private JFXButton day03;
-    @FXML
-    private JFXButton day04;
-    @FXML
-    private JFXButton day05;
-    @FXML
-    private JFXButton day06;
-    @FXML
-    private JFXButton time00;
-    @FXML
-    private JFXButton time01;
-    @FXML
-    private JFXButton time02;
-    @FXML
-    private JFXButton time03;
-    @FXML
-    private JFXButton time04;
-    @FXML
-    private JFXButton time05;
-    @FXML
-    private JFXButton time06;
-    @FXML
-    private JFXButton time07;
-    @FXML
-    private JFXButton time08;
-    @FXML
-    private JFXButton time09;
-    @FXML
     private ImageView menuIcon;
     @FXML
     private Label nameLabel;
@@ -320,17 +154,21 @@ public class GUI implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        hideAllMenusK = (KeyEvent event) -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                hideAllMenus();
+            }
+        };
+        hideAllMenusA = (ActionEvent event) -> {
+            hideAllMenus();
+        };
+
         initControlArrays();
 
         tm = new TimetableManager();
 
         initNewTimetable();
 
-        hideAllMenus = (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
-                hideAllMenus();
-            }
-        };
         menus = new ArrayList<SomePane>();
 
         //menu
@@ -360,13 +198,13 @@ public class GUI implements Initializable {
         menuName.setPrefWidth(500);
         menuName.setPromptText("name");
         menuName.getStyleClass().add("customTextfield");
-        menuName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        menuName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
         addTimetable = new JFXButton("add timetable");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(150);
         addTimetable.setRipplerFill(Color.web(ripplerFill));
-        addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             addTimetable();
         });
@@ -374,7 +212,7 @@ public class GUI implements Initializable {
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(150);
         deleteTimetable.setRipplerFill(Color.web(ripplerFill));
-        deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             deleteTimetable();
         });
@@ -427,7 +265,7 @@ public class GUI implements Initializable {
             dayToggles[i].getStyleClass().add("customToggleButton");
             dayToggles[i].setAlignment(Pos.CENTER);
             dayToggles[i].addEventHandler(EventType.ROOT, dayToggled);
-            dayToggles[i].addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+            dayToggles[i].addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
             dayLabels[i] = new Label(dayNames[i]);
 
             ColumnConstraints cc = new ColumnConstraints();
@@ -444,22 +282,22 @@ public class GUI implements Initializable {
         timeContextMenu = new OptionsPane(bg);
         menus.add(timeContextMenu);
         clearRow = new JFXButton("clear row");
-        clearRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        clearRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         clearRow.addEventHandler(ActionEvent.ACTION, event -> {
             clearRow();
         });
         deleteRow = new JFXButton("delete row");
-        deleteRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        deleteRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         deleteRow.addEventHandler(ActionEvent.ACTION, event -> {
             deleteRow();
         });
         addRowAbove = new JFXButton("add row above");
-        addRowAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addRowAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addRowAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addRowAbove();
         });
         addRowBelow = new JFXButton("add row below");
-        addRowBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addRowBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addRowBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addRowBelow();
         });
@@ -487,20 +325,20 @@ public class GUI implements Initializable {
         subjectMenu.setOnShow(subjectMenuOnShow);
         subjectMenu.setOnHide(subjectMenuOnHide);
         subjectName = new JFXTextField();
-        subjectName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         subjectName.setPrefWidth(500);
         subjectName.setPrefHeight(100);
         subjectName.setPromptText("name");
         subjectName.getStyleClass().add("customTextfield");
         subjectRoom = new JFXTextField();
-        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectRoom.setPrefWidth(500);
         subjectRoom.setPrefHeight(100);
         subjectRoom.getStyleClass().add("customTextfield");
         subjectRoom.setPromptText("room");
         subjectTeacher = new JFXTextField();
-        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectTeacher.setPrefWidth(500);
         subjectTeacher.setPrefHeight(100);
@@ -525,22 +363,22 @@ public class GUI implements Initializable {
         subjectContextMenu = new OptionsPane(bg);
         menus.add(subjectContextMenu);
         clear = new JFXButton("clear");
-        clear.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        clear.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         clear.addEventHandler(ActionEvent.ACTION, event -> {
             clear();
         });
         delete = new JFXButton("delete");
-        delete.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        delete.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         delete.addEventHandler(ActionEvent.ACTION, event -> {
             delete();
         });
         addAbove = new JFXButton("add above");
-        addAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addAbove();
         });
         addBelow = new JFXButton("add below");
-        addBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenus);
+        addBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addBelow();
         });
@@ -638,96 +476,65 @@ public class GUI implements Initializable {
     }
 
     public void initControlArrays() {
+
+        dayPressed = (MouseEvent event) -> {
+            dayPressed(event);
+        };
+        dayKeyReleased = (KeyEvent event) -> {
+            dayKeyReleased(event);
+        };
         days = new JFXButton[7];
-        days[0] = day00;
-        days[1] = day01;
-        days[2] = day02;
-        days[3] = day03;
-        days[4] = day04;
-        days[5] = day05;
-        days[6] = day06;
+        for (int i = 0; i < days.length; i++) {
+            JFXButton day = new JFXButton(englishDayNames[i]);
+            day.getStyleClass().add("dayButton");
+            day.setMinSize(100, 40);
+            day.setPrefSize(500, 150);
+            day.addEventHandler(ActionEvent.ANY, hideAllMenusA);
+            day.addEventHandler(MouseEvent.MOUSE_PRESSED, dayPressed);
+            day.addEventHandler(KeyEvent.KEY_RELEASED, dayKeyReleased);
+            days[i] = day;
+        }
+
+        timePressed = (MouseEvent event) -> {
+            timePressed(event);
+        };
+        timeKeyReleased = (KeyEvent event) -> {
+            timeKeyReleased(event);
+        };
         times = new JFXButton[10];
-        times[0] = time00;
-        times[1] = time01;
-        times[2] = time02;
-        times[3] = time03;
-        times[4] = time04;
-        times[5] = time05;
-        times[6] = time06;
-        times[7] = time07;
-        times[8] = time08;
-        times[9] = time09;
+        for (int i = 0; i < times.length; i++) {
+            JFXButton time = new JFXButton();
+            time.getStyleClass().add("timeButton");
+            time.setMinSize(100, 40);
+            time.setPrefSize(500, 150);
+            time.addEventHandler(ActionEvent.ANY, hideAllMenusA);
+            time.addEventHandler(MouseEvent.MOUSE_PRESSED, timePressed);
+            time.addEventHandler(KeyEvent.KEY_RELEASED, timeKeyReleased);
+            times[i] = time;
+        }
+
+        subjectAction = (ActionEvent event) -> {
+            subjectMenu(event);
+        };
+        subjectPressed = (MouseEvent event) -> {
+            subjectPressed(event);
+        };
+        subjectKeyReleased = (KeyEvent event) -> {
+            subjectKeyReleased(event);
+        };
         subjects = new JFXButton[7][10];
-        subjects[0][0] = subject0000;
-        subjects[0][1] = subject0001;
-        subjects[0][2] = subject0002;
-        subjects[0][3] = subject0003;
-        subjects[0][4] = subject0004;
-        subjects[0][5] = subject0005;
-        subjects[0][6] = subject0006;
-        subjects[0][7] = subject0007;
-        subjects[0][8] = subject0008;
-        subjects[0][9] = subject0009;
-        subjects[1][0] = subject0100;
-        subjects[1][1] = subject0101;
-        subjects[1][2] = subject0102;
-        subjects[1][3] = subject0103;
-        subjects[1][4] = subject0104;
-        subjects[1][5] = subject0105;
-        subjects[1][6] = subject0106;
-        subjects[1][7] = subject0107;
-        subjects[1][8] = subject0108;
-        subjects[1][9] = subject0109;
-        subjects[2][0] = subject0200;
-        subjects[2][1] = subject0201;
-        subjects[2][2] = subject0202;
-        subjects[2][3] = subject0203;
-        subjects[2][4] = subject0204;
-        subjects[2][5] = subject0205;
-        subjects[2][6] = subject0206;
-        subjects[2][7] = subject0207;
-        subjects[2][8] = subject0208;
-        subjects[2][9] = subject0209;
-        subjects[3][0] = subject0300;
-        subjects[3][1] = subject0301;
-        subjects[3][2] = subject0302;
-        subjects[3][3] = subject0303;
-        subjects[3][4] = subject0304;
-        subjects[3][5] = subject0305;
-        subjects[3][6] = subject0306;
-        subjects[3][7] = subject0307;
-        subjects[3][8] = subject0308;
-        subjects[3][9] = subject0309;
-        subjects[4][0] = subject0400;
-        subjects[4][1] = subject0401;
-        subjects[4][2] = subject0402;
-        subjects[4][3] = subject0403;
-        subjects[4][4] = subject0404;
-        subjects[4][5] = subject0405;
-        subjects[4][6] = subject0406;
-        subjects[4][7] = subject0407;
-        subjects[4][8] = subject0408;
-        subjects[4][9] = subject0409;
-        subjects[5][0] = subject0500;
-        subjects[5][1] = subject0501;
-        subjects[5][2] = subject0502;
-        subjects[5][3] = subject0503;
-        subjects[5][4] = subject0504;
-        subjects[5][5] = subject0505;
-        subjects[5][6] = subject0506;
-        subjects[5][7] = subject0507;
-        subjects[5][8] = subject0508;
-        subjects[5][9] = subject0509;
-        subjects[6][0] = subject0600;
-        subjects[6][1] = subject0601;
-        subjects[6][2] = subject0602;
-        subjects[6][3] = subject0603;
-        subjects[6][4] = subject0604;
-        subjects[6][5] = subject0605;
-        subjects[6][6] = subject0606;
-        subjects[6][7] = subject0607;
-        subjects[6][8] = subject0608;
-        subjects[6][9] = subject0609;
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                JFXButton subject = new JFXButton();
+                subject.getStyleClass().add("subjectButton");
+                subject.setMinSize(100, 40);
+                subject.setPrefSize(500, 150);
+                subject.addEventHandler(ActionEvent.ANY, subjectAction);
+                subject.addEventHandler(MouseEvent.MOUSE_PRESSED, subjectPressed);
+                subject.addEventHandler(KeyEvent.KEY_RELEASED, subjectKeyReleased);
+                subjects[i][j] = subject;
+            }
+        }
     }
 
     public void resizeFonts() {
@@ -809,11 +616,6 @@ public class GUI implements Initializable {
                 s.hide();
             }
         }
-    }
-
-    @FXML
-    private void hideAllMenus(ActionEvent event) {
-        hideAllMenus();
     }
 
     public void hideAllMenus() {
@@ -898,8 +700,7 @@ public class GUI implements Initializable {
     //
     //################################dayContextMenu################################
     //
-    @FXML
-    private void dayContextMenu(MouseEvent event) {
+    public void dayPressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedDay(event);
             dayContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedDay);
@@ -907,8 +708,7 @@ public class GUI implements Initializable {
         }
     }
 
-    @FXML
-    private void dayKeyReleased(KeyEvent event) {
+    public void dayKeyReleased(KeyEvent event) {
         if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
             getSelectedDay(event);
             dayContextMenu.show(selectedDay);
@@ -978,8 +778,7 @@ public class GUI implements Initializable {
     //
     //################################timeContextMenu################################
     //
-    @FXML
-    private void timeContextMenu(MouseEvent event) {
+    public void timePressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedTime(event);
             timeContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedTime);
@@ -987,8 +786,7 @@ public class GUI implements Initializable {
         }
     }
 
-    @FXML
-    private void timeKeyReleased(KeyEvent event) {
+    public void timeKeyReleased(KeyEvent event) {
         if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
             getSelectedTime(event);
             timeContextMenu.show(selectedTime);
@@ -1030,8 +828,7 @@ public class GUI implements Initializable {
     //
     //################################subjectMenu################################
     //
-    @FXML
-    private void subjectMenu(ActionEvent event) {
+    public void subjectMenu(ActionEvent event) {
         getSelectedSubject(event);
         subjectMenu.show(selectedSubject);
         hideOtherMenus(subjectMenu);
@@ -1131,8 +928,7 @@ public class GUI implements Initializable {
     //
     //################################subjectContextMenu################################
     //
-    @FXML
-    private void subjectContextMenu(MouseEvent event) {
+    public void subjectPressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedSubject(event);
             subjectContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedSubject);
@@ -1176,8 +972,7 @@ public class GUI implements Initializable {
     //
     //################################subjects################################
     //
-    @FXML
-    private void subjectKeyReleased(KeyEvent event) {
+    public void subjectKeyReleased(KeyEvent event) {
         getSelectedSubject(event);
         if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
             subjectContextMenu.show(selectedSubject);
