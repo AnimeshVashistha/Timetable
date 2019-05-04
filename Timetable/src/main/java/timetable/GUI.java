@@ -512,7 +512,7 @@ public class GUI implements Initializable {
             time.addEventHandler(KeyEvent.KEY_RELEASED, timeKeyReleased);
             times[i] = time;
         }
-
+        
         subjectAction = (ActionEvent event) -> {
             subjectMenu(event);
         };
