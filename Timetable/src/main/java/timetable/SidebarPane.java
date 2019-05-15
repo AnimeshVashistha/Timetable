@@ -60,8 +60,6 @@ public class SidebarPane extends SomePane {
         double w = source.getWidth() * getWidthFactor();
         double h = getParent().getHeight();
 
-        System.out.println("width: " + w);
-        
         getPane().setPrefWidth(w);
         getPane().setPrefHeight(h);
 
