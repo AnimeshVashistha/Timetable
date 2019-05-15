@@ -32,18 +32,18 @@ public class OptionsPane extends SomePane {
     public OptionsPane(Pane parent) {
         super(parent);
 
-        SlideIn = new TranslateTransition(Duration.millis(SomePane.animationDuration));
-        SlideIn.setFromY(SomePane.animationDistance);
+        SlideIn = new TranslateTransition(Duration.millis(SomePane.ANIMATION_DURATION));
+        SlideIn.setFromY(SomePane.ANIMATION_DISTANCE);
         SlideIn.setToY(0);
 
-        FadeIn = new FadeTransition(Duration.millis(SomePane.animationDuration));
+        FadeIn = new FadeTransition(Duration.millis(SomePane.ANIMATION_DURATION));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        SlideOut = new TranslateTransition(Duration.millis(SomePane.animationDuration));
-        SlideOut.setToY(SomePane.animationDistance);
+        SlideOut = new TranslateTransition(Duration.millis(SomePane.ANIMATION_DURATION));
+        SlideOut.setToY(SomePane.ANIMATION_DISTANCE);
 
-        FadeOut = new FadeTransition(Duration.millis(SomePane.animationDuration));
+        FadeOut = new FadeTransition(Duration.millis(SomePane.ANIMATION_DURATION));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(getPane());
@@ -102,7 +102,7 @@ public class OptionsPane extends SomePane {
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(SomePane.animationDuration * SomePane.focusAnimationOffsetFactor),
+                Duration.millis(SomePane.ANIMATION_DURATION * SomePane.FOCUS_ANIMATION_OFFSET_FACTOR),
                 n -> getPane().getChildren().get(0).requestFocus()));
         focus.play();
 
@@ -118,7 +118,7 @@ public class OptionsPane extends SomePane {
             getSource().requestFocus();
 
             new Timeline(
-                    new KeyFrame(Duration.millis(SomePane.animationDuration), n -> getPane().setVisible(false))
+                    new KeyFrame(Duration.millis(SomePane.ANIMATION_DURATION), n -> getPane().setVisible(false))
             ).play();
 
             hide.play();

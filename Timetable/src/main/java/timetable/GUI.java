@@ -3,28 +3,21 @@ package timetable;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
-import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -43,22 +36,28 @@ import timetable.Datatypes.Subject;
  *
  * @author Tobias
  */
-public class GUI implements Initializable {
+public class GUI {
 
-    final static int animationDuration = 200;
-    final static int animationDistance = 50;
-    final static double focusAnimationOffsetFactor = 0.6;
-    final static double fontFactor = 0.22;
-    final static String[] englishDayNames = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-    final static String[] germanDayNames = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
+    final static int ANIMATION_DURATION = 200;
+    final static int ANIMATION_DISTANCE = 50;
+    final static double GAP_SIZE = 2;
+    final static double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
+    final static double FONT_FACTOR = 0.22;
+    final static String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
     static String primaryColor = "-fx-color: #66DD7744";
     static String selectedColor = "-fx-background-color: #66DD7744";
     static String unselectedColor = "-fx-background-color: #00000000";
     static String ripplerFill = "#66DD77";
-    static String[] dayNames = englishDayNames;
+    static String[] dayNames = ENGLISH_DAY_NAMES;
 
     TimetableManager tm;
+
+    AnchorPane bg;
+    GridPane subjectGrid;
+
+    EventHandler<ActionEvent> nameAction;
     EventHandler<MouseEvent> dayPressed;
     EventHandler<KeyEvent> dayKeyReleased;
     EventHandler<MouseEvent> timePressed;
@@ -66,6 +65,7 @@ public class GUI implements Initializable {
     EventHandler<ActionEvent> subjectAction;
     EventHandler<MouseEvent> subjectPressed;
     EventHandler<KeyEvent> subjectKeyReleased;
+    MenuButton name;
     JFXButton[] days;
     JFXButton[] times;
     JFXButton[][] subjects;
@@ -119,15 +119,6 @@ public class GUI implements Initializable {
     EventHandler<MouseEvent> autocompleteOnClick;
     AutocompletePane autoCompletePane;
 
-    FadeTransition menuIconFadeIn;
-    TranslateTransition menuIconSlideIn;
-    FadeTransition menuIconFadeOut;
-    TranslateTransition menuIconSlideOut;
-    FadeTransition nameLabelFadeIn;
-    FadeTransition nameLabelFadeOut;
-    ParallelTransition showMenuIcon;
-    ParallelTransition hideMenuIcon;
-
     //subject context menu
     OptionsPane subjectContextMenu;
     JFXButton clear;
@@ -138,21 +129,18 @@ public class GUI implements Initializable {
     boolean menuPaneHidden = true;
     boolean dayOverlayHidden = true;
 
-    @FXML
-    private AnchorPane bg;
-    @FXML
-    private GridPane subjectGrid;
-    @FXML
-    private JFXButton name;
-    @FXML
-    private ImageView menuIcon;
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private Label nameBackground;
+    public GUI() {
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+        bg = new AnchorPane();
+        bg.setPrefSize(900, 600);
+        subjectGrid = new GridPane();
+        subjectGrid.setVgap(GAP_SIZE);
+        subjectGrid.setHgap(GAP_SIZE);
+        bg.getChildren().add(subjectGrid);
+        bg.setTopAnchor(subjectGrid, GAP_SIZE);
+        bg.setRightAnchor(subjectGrid, GAP_SIZE);
+        bg.setBottomAnchor(subjectGrid, GAP_SIZE);
+        bg.setLeftAnchor(subjectGrid, GAP_SIZE);
 
         hideAllMenusK = (KeyEvent event) -> {
             if (event.getCode() == KeyCode.ESCAPE) {
@@ -387,55 +375,6 @@ public class GUI implements Initializable {
         subjectContextMenu.addButton(addAbove);
         subjectContextMenu.addButton(addBelow);
 
-        //menu icon transitions
-        menuIconSlideIn = new TranslateTransition(Duration.millis(animationDuration), menuIcon);
-        menuIconSlideIn.setToX(0);
-
-        menuIconFadeIn = new FadeTransition(Duration.millis(animationDuration), menuIcon);
-        menuIconFadeIn.setToValue(1);
-
-        menuIconSlideOut = new TranslateTransition(Duration.millis(animationDuration), menuIcon);
-        menuIconSlideOut.setToX(-animationDistance);
-
-        menuIconFadeOut = new FadeTransition(Duration.millis(animationDuration), menuIcon);
-        menuIconFadeOut.setToValue(0);
-
-        nameLabelFadeIn = new FadeTransition(Duration.millis(animationDuration), nameLabel);
-        nameLabelFadeIn.setToValue(1);
-
-        nameLabelFadeOut = new FadeTransition(Duration.millis(animationDuration), nameLabel);
-        nameLabelFadeOut.setToValue(0);
-
-        showMenuIcon = new ParallelTransition();
-        showMenuIcon.getChildren().add(menuIconFadeIn);
-        showMenuIcon.getChildren().add(menuIconSlideIn);
-        showMenuIcon.getChildren().add(nameLabelFadeOut);
-
-        hideMenuIcon = new ParallelTransition();
-        hideMenuIcon.getChildren().add(menuIconFadeOut);
-        hideMenuIcon.getChildren().add(menuIconSlideOut);
-        hideMenuIcon.getChildren().add(nameLabelFadeIn);
-
-        nameLabel.setText(tm.getCurrentTable().getName());
-        nameLabel.toBack();
-        nameBackground.toBack();
-        menuIcon.toFront();
-
-        menuIcon.setTranslateX(-animationDistance);
-
-        name.setRipplerFill(Color.web("#888888"));
-        for (int i = 0; i < days.length; i++) {
-            days[i].setRipplerFill(Color.web("000000"));
-        }
-        for (int i = 0; i < times.length; i++) {
-            times[i].setRipplerFill(Color.web("#000000"));
-        }
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                subjects[i][j].setRipplerFill(Color.web(ripplerFill));
-            }
-        }
-
         bg.widthProperty().addListener(event -> {
             cancelMenus();
             Timeline timeline = new Timeline(
@@ -450,23 +389,11 @@ public class GUI implements Initializable {
             );
             timeline.play();
         });
-        name.focusedProperty().addListener(event -> {
-            if (name.isFocused()) {
-                showMenuIcon.play();
-            } else {
-                hideMenuIcon.play();
-            }
-        });
         subjectName.focusedProperty().addListener(event -> {
             if (!subjectName.isFocused()) {
                 autoCompletePane.hide();
             }
         });
-
-        menuIcon.fitHeightProperty().bind(nameBackground.heightProperty());
-        menuIcon.fitWidthProperty().bind(nameBackground.heightProperty());
-        name.prefHeightProperty().bind(nameBackground.heightProperty());
-        name.prefWidthProperty().bind(nameBackground.widthProperty());
 
         Timeline unfocus = new Timeline(
                 new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
@@ -477,6 +404,14 @@ public class GUI implements Initializable {
 
     public void initControlArrays() {
 
+        nameAction = (ActionEvent event) -> {
+            menu();
+        };
+        name = new MenuButton();
+        name.setRipplerFill(Color.web("#888888"));
+        name.addEventHandler(ActionEvent.ANY, nameAction);
+        subjectGrid.add(name, 0, 0, 1, 1);
+
         dayPressed = (MouseEvent event) -> {
             dayPressed(event);
         };
@@ -485,8 +420,9 @@ public class GUI implements Initializable {
         };
         days = new JFXButton[7];
         for (int i = 0; i < days.length; i++) {
-            JFXButton day = new JFXButton(englishDayNames[i]);
+            JFXButton day = new JFXButton(ENGLISH_DAY_NAMES[i]);
             day.getStyleClass().add("dayButton");
+            day.setRipplerFill(Color.web("000000"));
             day.setMinSize(100, 40);
             day.setPrefSize(500, 150);
             day.addEventHandler(ActionEvent.ANY, hideAllMenusA);
@@ -505,6 +441,7 @@ public class GUI implements Initializable {
         for (int i = 0; i < times.length; i++) {
             JFXButton time = new JFXButton();
             time.getStyleClass().add("timeButton");
+            time.setRipplerFill(Color.web("#000000"));
             time.setMinSize(100, 40);
             time.setPrefSize(500, 150);
             time.addEventHandler(ActionEvent.ANY, hideAllMenusA);
@@ -512,7 +449,7 @@ public class GUI implements Initializable {
             time.addEventHandler(KeyEvent.KEY_RELEASED, timeKeyReleased);
             times[i] = time;
         }
-        
+
         subjectAction = (ActionEvent event) -> {
             subjectMenu(event);
         };
@@ -527,6 +464,7 @@ public class GUI implements Initializable {
             for (int j = 0; j < subjects[0].length; j++) {
                 JFXButton subject = new JFXButton();
                 subject.getStyleClass().add("subjectButton");
+                subject.setRipplerFill(Color.web(ripplerFill));
                 subject.setMinSize(100, 40);
                 subject.setPrefSize(500, 150);
                 subject.addEventHandler(ActionEvent.ANY, subjectAction);
@@ -540,9 +478,9 @@ public class GUI implements Initializable {
     public void resizeFonts() {
         double scaleFactor1 = 0.09;
         double scaleFactorHeightDependent1 = 0.3;
-        double scaleFactorHeightDependent2 = 0.2;
+        double scaleFactorHeightDependent2 = 0.25;
 
-        nameLabel.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
+        name.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
 
         for (JFXButton b : days) {
             b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
@@ -562,7 +500,7 @@ public class GUI implements Initializable {
         subjectGrid.getColumnConstraints().clear();
         subjectGrid.getRowConstraints().clear();
 
-        subjectGrid.add(name, 0, 0, 1, 1);
+        name.setText(tm.getCurrentTable().getName());
 
         //display days
         int pos = 0;
@@ -624,33 +562,22 @@ public class GUI implements Initializable {
         }
     }
 
-    @FXML
-    private void showMenuIcon(MouseEvent event) {
-        showMenuIcon.play();
-    }
-
-    @FXML
-    private void hideMenuIcon(MouseEvent event) {
-        hideMenuIcon.play();
-    }
-
     //
     //################################menu################################
     //
-    @FXML
-    private void menu(ActionEvent event) {
+    public void menu() {
         hideOtherMenus(menu);
-        menu.show(name);
+        menu.show(name.getButton());
     }
 
     public void scaleMenu() {
-        double h = name.getPrefHeight();
+        double h = name.getButton().getHeight();
         menu.getPane().setMargin(menuName, new Insets(0, 0, h * 0.1, 0));
         menuName.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
-        menuName.setFont(new Font(h * fontFactor));
-        addTimetable.setFont(new Font(h * fontFactor));
-        deleteTimetable.setFont(new Font(h * fontFactor));
-        menu.getDone().setFont(new Font(h * fontFactor));
+        menuName.setFont(new Font(h * FONT_FACTOR));
+        addTimetable.setFont(new Font(h * FONT_FACTOR));
+        deleteTimetable.setFont(new Font(h * FONT_FACTOR));
+        menu.getDone().setFont(new Font(h * FONT_FACTOR));
         timetablePane.scale(h, menu.getPane().getPrefWidth());
     }
 
@@ -660,7 +587,7 @@ public class GUI implements Initializable {
 
     public void writeMenuData() {
         tm.getCurrentTable().setName(menuName.getText());
-        nameLabel.setText(menuName.getText());
+        name.setText(menuName.getText());
     }
 
     public void updateMenuTimetables() {
@@ -724,12 +651,12 @@ public class GUI implements Initializable {
             dayToggles[i].setMinHeight(h * dayContextMenu.getHeightFactor());
             dayToggles[i].setPrefHeight(h * dayContextMenu.getHeightFactor());
             dayToggles[i].setMaxHeight(h * dayContextMenu.getHeightFactor());
-            dayLabels[i].setFont(new Font(h * fontFactor));
+            dayLabels[i].setFont(new Font(h * FONT_FACTOR));
             dayPanes[i].setPadding(new Insets(0, h * 0.1, 0, h * 0.4));
         }
         dayContextMenu.getPane().setPadding(new Insets(h * 0.2, 0, 0, 0));
         dayContextMenu.getDone().setPadding(new Insets(h * 0.15, 0, h * 0.15, 0));
-        dayContextMenu.getDone().setFont(new Font(h * fontFactor));
+        dayContextMenu.getDone().setFont(new Font(h * FONT_FACTOR));
     }
 
     public void updateDayContextMenuData() {
@@ -843,10 +770,10 @@ public class GUI implements Initializable {
         subjectRoom.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         subjectTeacher.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         subjectMenu.getDone().setPadding(new Insets(h * 0.1));
-        subjectName.setFont(new Font(h * fontFactor));
-        subjectRoom.setFont(new Font(h * fontFactor));
-        subjectTeacher.setFont(new Font(h * fontFactor));
-        subjectMenu.getDone().setFont(new Font(h * fontFactor));
+        subjectName.setFont(new Font(h * FONT_FACTOR));
+        subjectRoom.setFont(new Font(h * FONT_FACTOR));
+        subjectTeacher.setFont(new Font(h * FONT_FACTOR));
+        subjectMenu.getDone().setFont(new Font(h * FONT_FACTOR));
     }
 
     public void updateSubjectMenuData() {
@@ -1028,4 +955,7 @@ public class GUI implements Initializable {
         }
     }
 
+    public Parent getParent() {
+        return bg;
+    }
 }

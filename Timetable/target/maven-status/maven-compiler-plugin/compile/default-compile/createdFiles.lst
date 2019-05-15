@@ -2,6 +2,7 @@ timetable\TimetablePane.class
 timetable\GUI$1.class
 timetable\Main.class
 timetable\SidebarPane.class
+timetable\MenuButton.class
 timetable\GUI.class
 timetable\Datatypes\Timetable.class
 timetable\DataManager.class

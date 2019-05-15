@@ -41,10 +41,10 @@ public class SidebarPane extends SomePane {
         setBottomButtonStyle("roundedBottomRightButton");
         setWidthFactor(1.2);
 
-        SlideIn = new TranslateTransition(Duration.millis(SomePane.animationDuration));
+        SlideIn = new TranslateTransition(Duration.millis(SomePane.ANIMATION_DURATION));
         SlideIn.setToX(0);
 
-        SlideOut = new TranslateTransition(Duration.millis(SomePane.animationDuration));
+        SlideOut = new TranslateTransition(Duration.millis(SomePane.ANIMATION_DURATION));
 
         show = new ParallelTransition(getPane());
         show.getChildren().add(SlideIn);
@@ -60,6 +60,8 @@ public class SidebarPane extends SomePane {
         double w = source.getWidth() * getWidthFactor();
         double h = getParent().getHeight();
 
+        System.out.println("width: " + w);
+        
         getPane().setPrefWidth(w);
         getPane().setPrefHeight(h);
 
@@ -78,7 +80,7 @@ public class SidebarPane extends SomePane {
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(SomePane.animationDuration * SomePane.focusAnimationOffsetFactor),
+                Duration.millis(SomePane.ANIMATION_DURATION * SomePane.FOCUS_ANIMATION_OFFSET_FACTOR),
                 n -> toFocus.requestFocus()));
         focus.play();
 
@@ -107,7 +109,7 @@ public class SidebarPane extends SomePane {
             SlideOut.setToX(-getPane().getWidth());
 
             new Timeline(
-                    new KeyFrame(Duration.millis(SomePane.animationDuration), n -> getPane().setVisible(false))
+                    new KeyFrame(Duration.millis(SomePane.ANIMATION_DURATION), n -> getPane().setVisible(false))
             ).play();
 
             hide.play();

@@ -10,9 +10,9 @@ import javafx.scene.layout.Pane;
  */
 public abstract class SomePane {
 
-    final static int animationDuration = 200;
-    final static int animationDistance = 50;
-    final static double focusAnimationOffsetFactor = 0.6;
+    final static int ANIMATION_DURATION = 200;
+    final static int ANIMATION_DISTANCE = 50;
+    final static double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
 
     private GridPane pane = new GridPane();
     private Pane parent;
@@ -21,7 +21,7 @@ public abstract class SomePane {
 
     private double widthFactor = 1.8;
     private double heightFactor = 0.6;
-    private double fontFactor = 0.2;
+    private double FONT_FACTOR = 0.2;
     private boolean hidden = true;
     private String bottomButtonStyle = "customButtonBottom";
 
@@ -83,12 +83,12 @@ public abstract class SomePane {
         this.heightFactor = heightFactor;
     }
 
-    public double getFontFactor() {
-        return fontFactor;
+    public double getFONT_FACTOR() {
+        return FONT_FACTOR;
     }
 
-    public void setFontFactor(double fontFactor) {
-        this.fontFactor = fontFactor;
+    public void setFONT_FACTOR(double FONT_FACTOR) {
+        this.FONT_FACTOR = FONT_FACTOR;
     }
 
     public GridPane getPane() {

@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import timetable.Datatypes.Subject;
+import static timetable.GUI.ANIMATION_DURATION;
 
 /**
  *
@@ -38,7 +39,7 @@ public class AutocompletePane {
 
     double widthFactor = 3;
     double heightFactor = 0.6;
-    double fontFactor = 0.3;
+    double FONT_FACTOR = 0.3;
     double paddingFactor = 0.1;
     boolean hidden = true;
 
@@ -55,17 +56,17 @@ public class AutocompletePane {
         this.parent = parent;
         parent.getChildren().add(pane);
 
-        ScaleUp = new ScaleTransition(Duration.millis(GUI.animationDuration));
+        ScaleUp = new ScaleTransition(Duration.millis(ANIMATION_DURATION));
         ScaleUp.setToY(1);
 
-        FadeIn = new FadeTransition(Duration.millis(GUI.animationDuration));
+        FadeIn = new FadeTransition(Duration.millis(ANIMATION_DURATION));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        ScaleDown = new ScaleTransition(Duration.millis(GUI.animationDuration));
+        ScaleDown = new ScaleTransition(Duration.millis(ANIMATION_DURATION));
         ScaleDown.setToY(0);
 
-        FadeOut = new FadeTransition(Duration.millis(GUI.animationDuration));
+        FadeOut = new FadeTransition(Duration.millis(ANIMATION_DURATION));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(pane);
@@ -125,7 +126,7 @@ public class AutocompletePane {
             autocompleteFucused = false;
 
             new Timeline(
-                    new KeyFrame(Duration.millis(GUI.animationDuration), n -> pane.setVisible(false))
+                    new KeyFrame(Duration.millis(ANIMATION_DURATION), n -> pane.setVisible(false))
             ).play();
 
             hide.play();
@@ -151,7 +152,7 @@ public class AutocompletePane {
             Label subject = new Label(options.get(i).getSubject());
             subject.setPrefSize(500, 150);
             subject.setPadding(new Insets(0, 0, 0, source.getHeight() * paddingFactor));
-            subject.setFont(new Font(source.getHeight() * fontFactor));
+            subject.setFont(new Font(source.getHeight() * FONT_FACTOR));
             if (onClick != null) {
                 subject.addEventHandler(MouseEvent.MOUSE_CLICKED, onClick);
             }
@@ -163,13 +164,13 @@ public class AutocompletePane {
             Label room = new Label(options.get(i).getRoom());
             room.setAlignment(Pos.TOP_RIGHT);
             room.setPrefSize(500, 150);
-            room.setFont(new Font(source.getHeight() * fontFactor * 0.8));
+            room.setFont(new Font(source.getHeight() * FONT_FACTOR * 0.8));
             room.setTextFill(Color.GRAY);
             room.setPadding(new Insets(source.getHeight() * 0.01, source.getHeight() * 0.1, source.getHeight() * 0.01, source.getHeight() * 0.1));
             Label teacher = new Label(options.get(i).getTeacher());
             teacher.setAlignment(Pos.BOTTOM_RIGHT);
             teacher.setPrefSize(500, 150);
-            teacher.setFont(new Font(source.getHeight() * fontFactor * 0.8));
+            teacher.setFont(new Font(source.getHeight() * FONT_FACTOR * 0.8));
             teacher.setTextFill(Color.GRAY);
             teacher.setPadding(new Insets(source.getHeight() * 0.01, source.getHeight() * 0.1, source.getHeight() * 0.01, source.getHeight() * 0.1));
             pane.add(room, 0, i, 1, 1);
@@ -246,12 +247,12 @@ public class AutocompletePane {
         this.heightFactor = heightFactor;
     }
 
-    public double getFontFactor() {
-        return fontFactor;
+    public double getFONT_FACTOR() {
+        return FONT_FACTOR;
     }
 
-    public void setFontFactor(double fontFactor) {
-        this.fontFactor = fontFactor;
+    public void setFONT_FACTOR(double FONT_FACTOR) {
+        this.FONT_FACTOR = FONT_FACTOR;
     }
 
     public GridPane getPane() {

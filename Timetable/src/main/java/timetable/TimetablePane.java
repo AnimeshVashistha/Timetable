@@ -48,7 +48,7 @@ public class TimetablePane {
 
         for (Node n : pane.getChildren()) {
             JFXButton button = (JFXButton) n;
-            button.setFont(new Font(h * GUI.fontFactor));
+            button.setFont(new Font(h * GUI.FONT_FACTOR));
         }
     }
 
