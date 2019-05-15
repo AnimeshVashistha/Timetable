@@ -10,10 +10,6 @@ import javafx.scene.layout.Pane;
  */
 public abstract class SomePane {
 
-    final static int ANIMATION_DURATION = 200;
-    final static int ANIMATION_DISTANCE = 50;
-    final static double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
-
     private GridPane pane = new GridPane();
     private Pane parent;
     private JFXButton done = new JFXButton();

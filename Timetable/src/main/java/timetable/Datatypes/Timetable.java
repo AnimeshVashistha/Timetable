@@ -217,6 +217,19 @@ public class Timetable implements Serializable {
         return days;
     }
 
+    public void clearLessonColumn(int index) {
+        for (int i = 0; i < subjects[0].length; i++) {
+            subjects[index][i] = new Subject();
+        }
+    }
+
+    public void deleteLessonColumn(int index) {
+        for (int i = 0; i < subjects[0].length; i++) {
+            subjects[index][i] = new Subject();
+        }
+        days[index] = false;
+    }
+
     public void clearLessonRow(int index) {
         for (int i = 0; i < subjects.length; i++) {
             subjects[i][index] = new Subject();

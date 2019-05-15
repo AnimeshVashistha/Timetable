@@ -12,6 +12,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import static timetable.GUI.ANIMATION_DISTANCE;
+import static timetable.GUI.ANIMATION_DURATION;
+import static timetable.GUI.FOCUS_ANIMATION_OFFSET_FACTOR;
 
 /**
  *
@@ -32,18 +35,18 @@ public class OptionsPane extends SomePane {
     public OptionsPane(Pane parent) {
         super(parent);
 
-        SlideIn = new TranslateTransition(Duration.millis(SomePane.ANIMATION_DURATION));
-        SlideIn.setFromY(SomePane.ANIMATION_DISTANCE);
+        SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
+        SlideIn.setFromY(ANIMATION_DISTANCE);
         SlideIn.setToY(0);
 
-        FadeIn = new FadeTransition(Duration.millis(SomePane.ANIMATION_DURATION));
+        FadeIn = new FadeTransition(Duration.millis(ANIMATION_DURATION));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        SlideOut = new TranslateTransition(Duration.millis(SomePane.ANIMATION_DURATION));
-        SlideOut.setToY(SomePane.ANIMATION_DISTANCE);
+        SlideOut = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
+        SlideOut.setToY(ANIMATION_DISTANCE);
 
-        FadeOut = new FadeTransition(Duration.millis(SomePane.ANIMATION_DURATION));
+        FadeOut = new FadeTransition(Duration.millis(ANIMATION_DURATION));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(getPane());
@@ -102,7 +105,7 @@ public class OptionsPane extends SomePane {
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(SomePane.ANIMATION_DURATION * SomePane.FOCUS_ANIMATION_OFFSET_FACTOR),
+                Duration.millis(ANIMATION_DURATION * FOCUS_ANIMATION_OFFSET_FACTOR),
                 n -> getPane().getChildren().get(0).requestFocus()));
         focus.play();
 
@@ -118,7 +121,7 @@ public class OptionsPane extends SomePane {
             getSource().requestFocus();
 
             new Timeline(
-                    new KeyFrame(Duration.millis(SomePane.ANIMATION_DURATION), n -> getPane().setVisible(false))
+                    new KeyFrame(Duration.millis(ANIMATION_DURATION), n -> getPane().setVisible(false))
             ).play();
 
             hide.play();

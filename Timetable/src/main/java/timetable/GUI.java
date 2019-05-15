@@ -58,6 +58,7 @@ public class GUI {
     GridPane subjectGrid;
 
     EventHandler<ActionEvent> nameAction;
+    EventHandler<ActionEvent> dayAction;
     EventHandler<MouseEvent> dayPressed;
     EventHandler<KeyEvent> dayKeyReleased;
     EventHandler<MouseEvent> timePressed;
@@ -89,14 +90,19 @@ public class GUI {
     ScrollPane menuScrollPane;
     TimetablePane timetablePane;
 
-    //day context menu
-    EventHandler<Event> dayContextMenuOnShow;
-    EventHandler<Event> dayContextMenuOnHide;
+    //day menu
+    EventHandler<Event> dayMenuOnShow;
+    EventHandler<Event> dayMenuOnHide;
     EventHandler<Event> dayToggled;
-    AdvancedOptionsPane dayContextMenu;
+    AdvancedOptionsPane dayMenu;
     GridPane[] dayPanes;
     JFXToggleButton[] dayToggles;
     Label[] dayLabels;
+
+    //day context menu
+    OptionsPane dayContextMenu;
+    JFXButton clearColumn;
+    JFXButton deleteColumn;
 
     //time context menu
     OptionsPane timeContextMenu;
@@ -227,22 +233,22 @@ public class GUI {
         menu.add(deleteTimetable);
         menu.add(menuScrollPane);
 
-        //day context menu
-        dayContextMenuOnShow = (Event event) -> {
+        //day menu
+        dayMenuOnShow = (Event event) -> {
             scaleDayContextMenu();
             updateDayContextMenuData();
         };
-        dayContextMenuOnHide = (Event event) -> {
+        dayMenuOnHide = (Event event) -> {
             writeDayData();
         };
         dayToggled = (Event event) -> {
             dayToggled();
         };
-        dayContextMenu = new AdvancedOptionsPane(bg);
-        menus.add(dayContextMenu);
-        dayContextMenu.setWidthFactor(2.7);
-        dayContextMenu.setOnShow(dayContextMenuOnShow);
-        dayContextMenu.setOnHide(dayContextMenuOnHide);
+        dayMenu = new AdvancedOptionsPane(bg);
+        menus.add(dayMenu);
+        dayMenu.setWidthFactor(2.7);
+        dayMenu.setOnShow(dayMenuOnShow);
+        dayMenu.setOnHide(dayMenuOnHide);
         dayPanes = new GridPane[7];
         dayToggles = new JFXToggleButton[dayPanes.length];
         dayLabels = new Label[dayPanes.length];
@@ -261,10 +267,26 @@ public class GUI {
             dayPanes[i].addColumn(0, dayLabels[i]);
             dayPanes[i].addColumn(2, dayToggles[i]);
             dayPanes[i].getColumnConstraints().add(cc);
-            dayContextMenu.add(dayPanes[i]);
+            dayMenu.add(dayPanes[i]);
         }
-        dayContextMenu.setSpecificFocus(dayToggles[0]);
-        dayContextMenu.setRequestSpecificFocus(true);
+        dayMenu.setSpecificFocus(dayToggles[0]);
+        dayMenu.setRequestSpecificFocus(true);
+
+        //day context menu 
+        dayContextMenu = new OptionsPane(bg);
+        menus.add(dayContextMenu);
+        clearColumn = new JFXButton("clear column");
+        clearColumn.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
+        clearColumn.addEventHandler(ActionEvent.ACTION, event -> {
+            clearColumn();
+        });
+        deleteColumn = new JFXButton("delete column");
+        deleteColumn.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
+        deleteColumn.addEventHandler(ActionEvent.ACTION, event -> {
+            deleteColumn();
+        });
+        dayContextMenu.addButton(clearColumn);
+        dayContextMenu.addButton(deleteColumn);
 
         //time context menu
         timeContextMenu = new OptionsPane(bg);
@@ -412,6 +434,9 @@ public class GUI {
         name.addEventHandler(ActionEvent.ANY, nameAction);
         subjectGrid.add(name, 0, 0, 1, 1);
 
+        dayAction = (ActionEvent event) -> {
+            dayMenu(event);
+        };
         dayPressed = (MouseEvent event) -> {
             dayPressed(event);
         };
@@ -425,7 +450,7 @@ public class GUI {
             day.setRipplerFill(Color.web("000000"));
             day.setMinSize(100, 40);
             day.setPrefSize(500, 150);
-            day.addEventHandler(ActionEvent.ANY, hideAllMenusA);
+            day.addEventHandler(ActionEvent.ANY, dayAction);
             day.addEventHandler(MouseEvent.MOUSE_PRESSED, dayPressed);
             day.addEventHandler(KeyEvent.KEY_RELEASED, dayKeyReleased);
             days[i] = day;
@@ -625,21 +650,12 @@ public class GUI {
     }
 
     //
-    //################################dayContextMenu################################
+    //################################dayMenu################################
     //
-    public void dayPressed(MouseEvent event) {
-        if (event.isSecondaryButtonDown()) {
-            getSelectedDay(event);
-            dayContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedDay);
-            hideOtherMenus(dayContextMenu);
-        }
-    }
-
-    public void dayKeyReleased(KeyEvent event) {
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
-            getSelectedDay(event);
-            dayContextMenu.show(selectedDay);
-        }
+    public void dayMenu(ActionEvent event) {
+        getSelectedDay(event);
+        dayMenu.show(selectedDay);
+        hideOtherMenus(dayMenu);
     }
 
     public void scaleDayContextMenu() {
@@ -648,15 +664,15 @@ public class GUI {
             dayToggles[i].setSelected(tm.getCurrentTable().isDayDisplayed(i));
             dayToggles[i].setScaleX(h * 0.012);
             dayToggles[i].setScaleY(h * 0.012);
-            dayToggles[i].setMinHeight(h * dayContextMenu.getHeightFactor());
-            dayToggles[i].setPrefHeight(h * dayContextMenu.getHeightFactor());
-            dayToggles[i].setMaxHeight(h * dayContextMenu.getHeightFactor());
+            dayToggles[i].setMinHeight(h * dayMenu.getHeightFactor());
+            dayToggles[i].setPrefHeight(h * dayMenu.getHeightFactor());
+            dayToggles[i].setMaxHeight(h * dayMenu.getHeightFactor());
             dayLabels[i].setFont(new Font(h * FONT_FACTOR));
             dayPanes[i].setPadding(new Insets(0, h * 0.1, 0, h * 0.4));
         }
-        dayContextMenu.getPane().setPadding(new Insets(h * 0.2, 0, 0, 0));
-        dayContextMenu.getDone().setPadding(new Insets(h * 0.15, 0, h * 0.15, 0));
-        dayContextMenu.getDone().setFont(new Font(h * FONT_FACTOR));
+        dayMenu.getPane().setPadding(new Insets(h * 0.2, 0, 0, 0));
+        dayMenu.getDone().setPadding(new Insets(h * 0.15, 0, h * 0.15, 0));
+        dayMenu.getDone().setFont(new Font(h * FONT_FACTOR));
     }
 
     public void updateDayContextMenuData() {
@@ -693,10 +709,40 @@ public class GUI {
         }
     }
 
+    //
+    //################################dayContextMenu################################
+    //
+    public void dayPressed(MouseEvent event) {
+        if (event.isSecondaryButtonDown()) {
+            getSelectedDay(event);
+            dayContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedDay);
+            hideOtherMenus(dayContextMenu);
+        }
+    }
+
+    public void dayKeyReleased(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            getSelectedDay(event);
+            dayContextMenu.show(selectedDay);
+            hideOtherMenus(dayContextMenu);
+        }
+    }
+
+    public void clearColumn() {
+        tm.clearColumn();
+        initNewTimetable();
+    }
+
+    public void deleteColumn() {
+        tm.deleteColumn();
+        initNewTimetable();
+    }
+
     private void getSelectedDay(Event event) {
         for (int i = 0; i < days.length; i++) {
             if (days[i] == event.getSource()) {
                 selectedDay = days[i];
+                tm.setdIndexI(i);
                 break;
             }
         }

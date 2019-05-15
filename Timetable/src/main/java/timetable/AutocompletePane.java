@@ -166,13 +166,13 @@ public class AutocompletePane {
             room.setPrefSize(500, 150);
             room.setFont(new Font(source.getHeight() * FONT_FACTOR * 0.8));
             room.setTextFill(Color.GRAY);
-            room.setPadding(new Insets(source.getHeight() * 0.01, source.getHeight() * 0.1, source.getHeight() * 0.01, source.getHeight() * 0.1));
+            room.setPadding(new Insets(source.getHeight() * 0.02, source.getHeight() * 0.1, source.getHeight() * 0.02, source.getHeight() * 0.1));
             Label teacher = new Label(options.get(i).getTeacher());
             teacher.setAlignment(Pos.BOTTOM_RIGHT);
             teacher.setPrefSize(500, 150);
             teacher.setFont(new Font(source.getHeight() * FONT_FACTOR * 0.8));
             teacher.setTextFill(Color.GRAY);
-            teacher.setPadding(new Insets(source.getHeight() * 0.01, source.getHeight() * 0.1, source.getHeight() * 0.01, source.getHeight() * 0.1));
+            teacher.setPadding(new Insets(source.getHeight() * 0.02, source.getHeight() * 0.1, source.getHeight() * 0.02, source.getHeight() * 0.1));
             pane.add(room, 0, i, 1, 1);
             pane.add(teacher, 0, i, 1, 1);
             pane.add(subject, 0, i, 1, 1);

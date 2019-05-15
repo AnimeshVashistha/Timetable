@@ -20,6 +20,7 @@ public class TimetableManager {
     Timetable currentTable;
     DataManager dm;
 
+    int dIndexI = 0;
     int tIndexI = 0;
     int sIndexI = 0;
     int sIndexJ = 0;
@@ -146,6 +147,14 @@ public class TimetableManager {
         return timetables;
     }
 
+    public int getdIndexI() {
+        return dIndexI;
+    }
+
+    public void setdIndexI(int dIndexI) {
+        this.dIndexI = dIndexI;
+    }
+
     public int gettIndexI() {
         return tIndexI;
     }
@@ -168,6 +177,14 @@ public class TimetableManager {
 
     public void setsIndexJ(int sIndexJ) {
         this.sIndexJ = sIndexJ;
+    }
+
+    public void clearColumn() {
+        currentTable.clearLessonColumn(dIndexI);
+    }
+
+    public void deleteColumn() {
+        currentTable.deleteLessonColumn(dIndexI);
     }
 
     public void clearRow() {
