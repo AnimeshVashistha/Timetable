@@ -98,7 +98,7 @@ public class SidebarPane extends SomePane {
 
     @Override
     public void hide() {
-        if (isHidden() == false) {
+        if (!isHidden()) {
             setHidden(true);
 
             if (onHide != null) {

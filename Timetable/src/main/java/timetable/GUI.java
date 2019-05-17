@@ -25,7 +25,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
@@ -85,7 +84,7 @@ public class GUI {
     EventHandler<KeyEvent> writeMenuData;
     EventHandler<ActionEvent> timetableButtonPressed;
     SidebarPane menu;
-    Pane menuBackgroundPane;
+    MenuBackgroundPane menuBackgroundPane;
     JFXTextField menuName;
     JFXButton settings;
     JFXButton addTimetable;
@@ -170,12 +169,14 @@ public class GUI {
 
         //menu
         menuOnShow = (Event event) -> {
-            hideOtherMenus(menu);
+            hideOtherMenus(menu, menuBackgroundPane);
             updateMenuData();
             updateMenuTimetables();
             scaleMenu();
+            menuBackgroundPane.show();
         };
         menuOnHide = (Event event) -> {
+            menuBackgroundPane.hide();
             writeMenuData();
         };
         writeMenuData = (KeyEvent event) -> {
@@ -186,16 +187,15 @@ public class GUI {
         timetableButtonPressed = (ActionEvent event) -> {
             timetableButtonPressed(event);
         };
+        menuBackgroundPane = new MenuBackgroundPane(bg);
+        menuBackgroundPane.setOnMousePressed(event -> {
+            menu.hide();
+        });
+        menus.add(menuBackgroundPane);
         menu = new SidebarPane(bg);
         menus.add(menu);
         menu.setOnShow(menuOnShow);
         menu.setOnHide(menuOnHide);
-        menuBackgroundPane = new Pane();
-        bg.getChildren().add(menuBackgroundPane);
-        bg.setTopAnchor(menuBackgroundPane, 0d);
-        bg.setRightAnchor(menuBackgroundPane, 0d);
-        bg.setBottomAnchor(menuBackgroundPane, 0d);
-        bg.setLeftAnchor(menuBackgroundPane, 0d);
         menuName = new JFXTextField();
         menuName.setPrefHeight(100);
         menuName.setPrefWidth(500);
@@ -607,10 +607,17 @@ public class GUI {
         }
     }
 
-    public void hideOtherMenus(SomePane sp) {
-        for (Hideable h : menus) {
-            if (!h.equals(sp)) {
-                h.hide();
+    public void hideOtherMenus(Hideable... hidables) {
+        for (Hideable h1 : menus) {
+            boolean hide = true;
+            for (Hideable h2 : hidables) {
+                if (h1.equals(h2)) {
+                    hide = false;
+                    break;
+                }
+            }
+            if (hide) {
+                h1.hide();
             }
         }
     }
@@ -625,7 +632,6 @@ public class GUI {
     //################################menu################################
     //
     public void menu() {
-        hideOtherMenus(menu);
         menu.show(name.getButton());
     }
 

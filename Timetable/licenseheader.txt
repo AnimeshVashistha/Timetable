@@ -1,8 +1,0 @@
-<#if licenseFirst??>
-${licenseFirst}
-</#if>
-${licensePrefix}This is property of Tobias Schmitz GmbH Eitorf
-${licensePrefix}
-<#if licenseLast??>
-${licenseLast}
-</#if>

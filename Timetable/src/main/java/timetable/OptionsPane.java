@@ -115,7 +115,7 @@ public class OptionsPane extends SomePane {
 
     @Override
     public void hide() {
-        if (isHidden() == false) {
+        if (!isHidden()) {
             setHidden(true);
 
             getSource().requestFocus();

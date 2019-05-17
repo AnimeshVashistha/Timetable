@@ -6,6 +6,7 @@ timetable\SidebarPane.class
 timetable\MenuButton.class
 timetable\GUI.class
 timetable\Datatypes\Timetable.class
+timetable\MenuBackgroundPane.class
 timetable\DataManager.class
 timetable\SomePane.class
 timetable\Datatypes\Subject.class
