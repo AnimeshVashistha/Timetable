@@ -10,6 +10,11 @@
     -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
 }
 
+.menuButton{
+    -fx-background-radius: 7;
+    -fx-cursor:hand;
+}
+
 .dayButton{
     -fx-background-color:#bbbbbb;
     -fx-background-radius:7;
@@ -55,6 +60,18 @@
     -fx-cursor:hand;
 }
 
+.roundedTopLeftButton{
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 7 0 0 0;
+    -fx-cursor:hand;
+}
+
+.roundedTopRightButton{
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 0 7 0 0;
+    -fx-cursor:hand;
+}
+
 .roundedBottomRightButton{
     -fx-background-color: #dddddd;
     -fx-background-radius: 0 0 7 0;
@@ -97,6 +114,10 @@
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 7 7 0;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.notRoundedPane{
+    -fx-background-color: #EEEEEE;
 }
 
 .menuBackgroundPane{

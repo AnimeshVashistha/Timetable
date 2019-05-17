@@ -9,9 +9,12 @@ import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import static timetable.GUI.ANIMATION_DISTANCE;
 import static timetable.GUI.ANIMATION_DURATION;
@@ -21,10 +24,17 @@ import static timetable.GUI.FOCUS_ANIMATION_OFFSET_FACTOR;
  *
  * @author Tobias
  */
-public class AdvancedOptionsPane extends SomePane {
+public class TimePickerPane extends SomePane {
 
-    Node specificFocus;
-    boolean requestSpecificFocus = false;
+    AnchorPane backgroundPane;
+    GridPane hourPane;
+    JFXButton hourButton;
+    Pane hourPaneOverlay;
+    Circle hourPreviewCircle;
+    GridPane minutePane;
+    JFXButton minuteButton;
+    Pane minutePaneOverlay;
+    Circle minutePreviewCircle;
 
     TranslateTransition SlideIn;
     FadeTransition FadeIn;
@@ -39,10 +49,11 @@ public class AdvancedOptionsPane extends SomePane {
     EventHandler<Event> onHide;
     Button hideEvent = new Button();
 
-    public AdvancedOptionsPane(Pane parent) {
+    public TimePickerPane(Pane parent) {
         super(parent);
 
         setWidthFactor(3);
+        setHeightFactor(1);
 
         SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
         SlideIn.setFromY(ANIMATION_DISTANCE);
@@ -65,6 +76,38 @@ public class AdvancedOptionsPane extends SomePane {
         hide = new ParallelTransition(getPane());
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
+
+        backgroundPane = new AnchorPane();
+        backgroundPane.setPrefSize(500, 500);
+        backgroundPane.getStyleClass().add("topRoundedPane");
+        hourPane = new GridPane();
+        hourButton = new JFXButton("hours");
+        hourButton.getStyleClass().add("roundedTopLeftButton");
+        hourButton.setPrefSize(500, 150);
+        hourPaneOverlay = new Pane();
+        hourPane.getChildren().add(hourPaneOverlay);
+        minutePane = new GridPane();
+        minuteButton = new JFXButton("minutes");
+        minuteButton.getStyleClass().add("roundedTopRightButton");
+        minuteButton.setPrefSize(500, 150);
+        minutePaneOverlay = new Pane();
+        minutePane.getChildren().add(minutePaneOverlay);
+        backgroundPane.getChildren().add(hourPane);
+        backgroundPane.getChildren().add(minutePane);
+
+        RowConstraints rc1 = new RowConstraints();
+        rc1.setPercentHeight(15);
+        RowConstraints rc2 = new RowConstraints();
+        rc2.setPercentHeight(70);
+        RowConstraints rc3 = new RowConstraints();
+        rc3.setPercentHeight(15);
+
+        getPane().getRowConstraints().addAll(rc1, rc2, rc3);
+        getPane().getChildren().remove(getDone());
+        getPane().add(hourButton, 0, 0, 1, 1);
+        getPane().add(minuteButton, 1, 0, 1, 1);
+        getPane().add(backgroundPane, 0, 1, 2, 1);
+        getPane().add(getDone(), 0, 2, 2, 1);
     }
 
     public void showOnCoordinates(double x, double y, JFXButton source) {
@@ -105,16 +148,9 @@ public class AdvancedOptionsPane extends SomePane {
             showEvent.fire();
         }
 
-        Node toFocus;
-        if (requestSpecificFocus) {
-            toFocus = specificFocus;
-        } else {
-            toFocus = getPane().getChildren().get(0);
-        }
-
         Timeline focus = new Timeline(new KeyFrame(
                 Duration.millis(ANIMATION_DURATION * FOCUS_ANIMATION_OFFSET_FACTOR),
-                n -> toFocus.requestFocus()));
+                n -> getPane().getChildren().get(0).requestFocus()));
         focus.play();
 
         Timeline reposition = new Timeline(new KeyFrame(Duration.millis(1), n -> {
@@ -183,29 +219,6 @@ public class AdvancedOptionsPane extends SomePane {
         }
         this.onHide = onHide;
         hideEvent.addEventHandler(EventType.ROOT, onHide);
-    }
-
-    public void add(Node n) {
-        int size = getPane().getChildren().size();
-        getPane().getChildren().remove(getDone());
-        getPane().add(n, 0, size - 1, 1, 1);
-        getPane().add(getDone(), 0, size, 1, 1);
-    }
-
-    public Node getSpecificFocus() {
-        return specificFocus;
-    }
-
-    public void setSpecificFocus(Node specificFocus) {
-        this.specificFocus = specificFocus;
-    }
-
-    public boolean isRequestSpecificFocus() {
-        return requestSpecificFocus;
-    }
-
-    public void setRequestSpecificFocus(boolean requestSpecificFocus) {
-        this.requestSpecificFocus = requestSpecificFocus;
     }
 
 }

@@ -25,6 +25,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
@@ -61,6 +62,7 @@ public class GUI {
     EventHandler<ActionEvent> dayAction;
     EventHandler<MouseEvent> dayPressed;
     EventHandler<KeyEvent> dayKeyReleased;
+    EventHandler<ActionEvent> timeAction;
     EventHandler<MouseEvent> timePressed;
     EventHandler<KeyEvent> timeKeyReleased;
     EventHandler<ActionEvent> subjectAction;
@@ -75,8 +77,7 @@ public class GUI {
     JFXButton selectedSubject;
 
     EventHandler<KeyEvent> hideAllMenusK;
-    EventHandler<ActionEvent> hideAllMenusA;
-    List<SomePane> menus;
+    List<Hideable> menus;
 
     //menu
     EventHandler<Event> menuOnShow;
@@ -84,7 +85,9 @@ public class GUI {
     EventHandler<KeyEvent> writeMenuData;
     EventHandler<ActionEvent> timetableButtonPressed;
     SidebarPane menu;
+    Pane menuBackgroundPane;
     JFXTextField menuName;
+    JFXButton settings;
     JFXButton addTimetable;
     JFXButton deleteTimetable;
     ScrollPane menuScrollPane;
@@ -103,6 +106,9 @@ public class GUI {
     OptionsPane dayContextMenu;
     JFXButton clearColumn;
     JFXButton deleteColumn;
+
+    //time menu
+    TimePickerPane timeMenu;
 
     //time context menu
     OptionsPane timeContextMenu;
@@ -153,9 +159,6 @@ public class GUI {
                 hideAllMenus();
             }
         };
-        hideAllMenusA = (ActionEvent event) -> {
-            hideAllMenus();
-        };
 
         initControlArrays();
 
@@ -163,7 +166,7 @@ public class GUI {
 
         initNewTimetable();
 
-        menus = new ArrayList<SomePane>();
+        menus = new ArrayList<Hideable>();
 
         //menu
         menuOnShow = (Event event) -> {
@@ -187,6 +190,12 @@ public class GUI {
         menus.add(menu);
         menu.setOnShow(menuOnShow);
         menu.setOnHide(menuOnHide);
+        menuBackgroundPane = new Pane();
+        bg.getChildren().add(menuBackgroundPane);
+        bg.setTopAnchor(menuBackgroundPane, 0d);
+        bg.setRightAnchor(menuBackgroundPane, 0d);
+        bg.setBottomAnchor(menuBackgroundPane, 0d);
+        bg.setLeftAnchor(menuBackgroundPane, 0d);
         menuName = new JFXTextField();
         menuName.setPrefHeight(100);
         menuName.setPrefWidth(500);
@@ -194,7 +203,17 @@ public class GUI {
         menuName.getStyleClass().add("customTextfield");
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
+        settings = new JFXButton("settings");
+        settings.getStyleClass().add("notRoundedButton");
+        settings.setPrefWidth(500);
+        settings.setPrefHeight(150);
+        settings.setRipplerFill(Color.web(ripplerFill));
+        settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
+        settings.addEventHandler(ActionEvent.ACTION, event -> {
+            System.out.println("todo: add settings");
+        });
         addTimetable = new JFXButton("add timetable");
+        addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(150);
         addTimetable.setRipplerFill(Color.web(ripplerFill));
@@ -203,6 +222,7 @@ public class GUI {
             addTimetable();
         });
         deleteTimetable = new JFXButton("delete timetable");
+        deleteTimetable.getStyleClass().add("notRoundedButton");
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(150);
         deleteTimetable.setRipplerFill(Color.web(ripplerFill));
@@ -226,9 +246,10 @@ public class GUI {
         timetablePane.update(tm.getTimetables(), timetableButtonPressed, tm.getTimeTableIndex());
         menuScrollPane.setContent(timetablePane.getPane());
         RowConstraints rc = new RowConstraints();
-        rc.setVgrow(Priority.ALWAYS);
-        menu.getPane().getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), new RowConstraints(), rc);
+        rc.setPercentHeight(60);
+        menu.getPane().getRowConstraints().addAll(new RowConstraints(), new RowConstraints(), new RowConstraints(), new RowConstraints(), rc);
         menu.add(menuName);
+        menu.add(settings);
         menu.add(addTimetable);
         menu.add(deleteTimetable);
         menu.add(menuScrollPane);
@@ -287,6 +308,10 @@ public class GUI {
         });
         dayContextMenu.addButton(clearColumn);
         dayContextMenu.addButton(deleteColumn);
+
+        //tim menu
+        timeMenu = new TimePickerPane(bg);
+        menus.add(timeMenu);
 
         //time context menu
         timeContextMenu = new OptionsPane(bg);
@@ -430,10 +455,14 @@ public class GUI {
             menu();
         };
         name = new MenuButton();
+        name.getStyleClass().add("menuButton");
         name.setRipplerFill(Color.web("#888888"));
+        name.setMinSize(100, 40);
+        name.setPrefSize(500, 150);
         name.addEventHandler(ActionEvent.ANY, nameAction);
         subjectGrid.add(name, 0, 0, 1, 1);
 
+        //days
         dayAction = (ActionEvent event) -> {
             dayMenu(event);
         };
@@ -456,6 +485,10 @@ public class GUI {
             days[i] = day;
         }
 
+        //times
+        timeAction = (ActionEvent event) -> {
+            timeMenu(event);
+        };
         timePressed = (MouseEvent event) -> {
             timePressed(event);
         };
@@ -469,12 +502,13 @@ public class GUI {
             time.setRipplerFill(Color.web("#000000"));
             time.setMinSize(100, 40);
             time.setPrefSize(500, 150);
-            time.addEventHandler(ActionEvent.ANY, hideAllMenusA);
+            time.addEventHandler(ActionEvent.ANY, timeAction);
             time.addEventHandler(MouseEvent.MOUSE_PRESSED, timePressed);
             time.addEventHandler(KeyEvent.KEY_RELEASED, timeKeyReleased);
             times[i] = time;
         }
 
+        //subjects
         subjectAction = (ActionEvent event) -> {
             subjectMenu(event);
         };
@@ -568,22 +602,22 @@ public class GUI {
     }
 
     public void cancelMenus() {
-        for (SomePane s : menus) {
-            s.cancel();
+        for (Hideable h : menus) {
+            h.cancel();
         }
     }
 
     public void hideOtherMenus(SomePane sp) {
-        for (SomePane s : menus) {
-            if (!s.equals(sp)) {
-                s.hide();
+        for (Hideable h : menus) {
+            if (!h.equals(sp)) {
+                h.hide();
             }
         }
     }
 
     public void hideAllMenus() {
-        for (SomePane s : menus) {
-            s.hide();
+        for (Hideable h : menus) {
+            h.hide();
         }
     }
 
@@ -746,6 +780,15 @@ public class GUI {
                 break;
             }
         }
+    }
+
+    //
+    //################################timeMenu################################
+    //
+    public void timeMenu(ActionEvent event) {
+        getSelectedTime(event);
+        timeMenu.show(selectedTime);
+        hideOtherMenus(timeMenu);
     }
 
     //

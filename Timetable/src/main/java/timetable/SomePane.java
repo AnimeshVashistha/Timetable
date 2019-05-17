@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
  *
  * @author Tobias
  */
-public abstract class SomePane {
+public abstract class SomePane implements Hideable{
 
     private GridPane pane = new GridPane();
     private Pane parent;
@@ -42,10 +42,6 @@ public abstract class SomePane {
 
         getPane().getChildren().add(getDone());
     }
-
-    public abstract void hide();
-
-    public abstract void cancel();
 
     public Pane getParent() {
         return parent;

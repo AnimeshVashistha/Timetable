@@ -1,4 +1,5 @@
 timetable\TimetablePane.class
+timetable\TimePickerPane.class
 timetable\GUI$1.class
 timetable\Main.class
 timetable\SidebarPane.class
@@ -12,4 +13,5 @@ timetable\Datatypes\SimpleTime.class
 timetable\AutocompletePane.class
 timetable\TimetableManager.class
 timetable\AdvancedOptionsPane.class
+timetable\Hideable.class
 timetable\OptionsPane.class

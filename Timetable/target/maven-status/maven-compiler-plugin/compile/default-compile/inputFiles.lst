@@ -1,4 +1,5 @@
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\Datatypes\Subject.java
+D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\Hideable.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\Main.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\AutocompletePane.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\DataManager.java
@@ -9,6 +10,7 @@ D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\Datatypes\Timeta
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\Datatypes\SimpleTime.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\AdvancedOptionsPane.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\TimetablePane.java
+D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\TimePickerPane.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\OptionsPane.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\GUI.java
 D:\Documents\xitHub\Timetable\Timetable\src\main\java\timetable\MenuButton.java
