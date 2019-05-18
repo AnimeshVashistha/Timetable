@@ -46,9 +46,11 @@ public class GUI {
     final static String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
-    static String primaryColor = "-fx-color: #66DD7744";
-    static String selectedColor = "-fx-background-color: #66DD7744";
-    static String unselectedColor = "-fx-background-color: #00000000";
+    static String primaryColor = "#66DD77";
+    static String selectedColor = "#66DD77";
+    static String unselectedColor = "#00000000";
+    static String foregroundColor = "#292929";
+    static String backgroundColor = "#EEEEEE";
     static String ripplerFill = "#66DD77";
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
@@ -793,7 +795,7 @@ public class GUI {
     //
     public void timeMenu(ActionEvent event) {
         getSelectedTime(event);
-        timeMenu.show(selectedTime);
+        timeMenu.show(selectedTime, tm.getCurrentTable().getTime(tm.gettIndexI()));
         hideOtherMenus(timeMenu);
     }
 

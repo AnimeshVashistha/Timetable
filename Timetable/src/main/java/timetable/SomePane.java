@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
  *
  * @author Tobias
  */
-public abstract class SomePane implements Hideable{
+public abstract class SomePane implements Hideable {
 
     private GridPane pane = new GridPane();
     private Pane parent;
@@ -17,7 +17,7 @@ public abstract class SomePane implements Hideable{
 
     private double widthFactor = 1.8;
     private double heightFactor = 0.6;
-    private double FONT_FACTOR = 0.2;
+    private double fontFactor = 0.2;
     private boolean hidden = true;
     private String bottomButtonStyle = "customButtonBottom";
 
@@ -75,12 +75,12 @@ public abstract class SomePane implements Hideable{
         this.heightFactor = heightFactor;
     }
 
-    public double getFONT_FACTOR() {
-        return FONT_FACTOR;
+    public double getFontFactor() {
+        return fontFactor;
     }
 
-    public void setFONT_FACTOR(double FONT_FACTOR) {
-        this.FONT_FACTOR = FONT_FACTOR;
+    public void setFontFactor(double fontFactor) {
+        this.fontFactor = fontFactor;
     }
 
     public GridPane getPane() {

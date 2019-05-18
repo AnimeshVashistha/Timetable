@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author tobi
  */
-public class SimpleTime implements Serializable{
+public class SimpleTime implements Serializable {
 
     int hours = 0;
     int minutes = 0;
@@ -25,7 +25,7 @@ public class SimpleTime implements Serializable{
     }
 
     public SimpleTime() {
-        
+
     }
 
     public int getHours() {
@@ -58,6 +58,14 @@ public class SimpleTime implements Serializable{
 
     public String format() {
         return String.format("%02d", hours) + ":" + String.format("%02d", minutes);
+    }
+
+    public String formatMinutes() {
+        return String.format("%02d", minutes);
+    }
+    
+    public String formatHours() {
+        return String.format("%02d", hours);
     }
 
     public SimpleTime plusMinutes(int minutesToAdd) {
