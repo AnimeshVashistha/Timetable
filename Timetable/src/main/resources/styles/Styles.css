@@ -61,19 +61,16 @@
 }
 
 .roundedTopLeftButton{
-    -fx-background-color: #dddddd;
     -fx-background-radius: 7 0 0 0;
     -fx-cursor:hand;
 }
 
 .roundedTopRightButton{
-    -fx-background-color: #dddddd;
     -fx-background-radius: 0 7 0 0;
     -fx-cursor:hand;
 }
 
 .roundedBottomRightButton{
-    -fx-background-color: #dddddd;
     -fx-background-radius: 0 0 7 0;
     -fx-cursor:hand;
 }
@@ -110,6 +107,12 @@
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
 }
 
+.darkerCustomPane{
+    -fx-background-color: #CCCCCC;
+    -fx-background-radius: 7;
+    -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
 .menuPane{
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 7 7 0;
@@ -128,4 +131,18 @@
     -fx-background-color: #EEEEEE;
     -fx-background-radius: 0 0 7 7;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
+}
+
+.selectedLeftTimeButton{
+    -fx-background-color: #EEEEEE;
+    -fx-effect: dropshadow(three-pass-box, gray, 3, 0, 2, 1)
+}
+
+.selectedRightTimeButton{
+    -fx-background-color: #EEEEEE;
+    -fx-effect: dropshadow(three-pass-box, gray, 3, 0, -2, 1)
+}
+
+.unselectedTimeButton{
+    -fx-background-color: #CCCCCC;
 }

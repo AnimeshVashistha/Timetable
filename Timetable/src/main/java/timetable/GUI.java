@@ -47,11 +47,10 @@ public class GUI {
     final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
     static String primaryColor = "#66DD77";
-    static String selectedColor = "#66DD77";
-    static String unselectedColor = "#00000000";
     static String foregroundColor = "#292929";
-    static String backgroundColor = "#EEEEEE";
-    static String ripplerFill = "#66DD77";
+    static String primaryBackgroundColor = "#EEEEEE";
+    static String secondaryBackgroundColor = "#CCCCCC";
+    static String unselectedColor = "#00000000";
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
     TimetableManager tm;
@@ -109,6 +108,7 @@ public class GUI {
     JFXButton deleteColumn;
 
     //time menu
+    EventHandler<Event> timeMenuOnHide;
     TimePickerPane timeMenu;
 
     //time context menu
@@ -209,7 +209,7 @@ public class GUI {
         settings.getStyleClass().add("notRoundedButton");
         settings.setPrefWidth(500);
         settings.setPrefHeight(150);
-        settings.setRipplerFill(Color.web(ripplerFill));
+        settings.setRipplerFill(Color.web(primaryColor));
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         settings.addEventHandler(ActionEvent.ACTION, event -> {
             System.out.println("todo: add settings");
@@ -218,7 +218,7 @@ public class GUI {
         addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(150);
-        addTimetable.setRipplerFill(Color.web(ripplerFill));
+        addTimetable.setRipplerFill(Color.web(primaryColor));
         addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             addTimetable();
@@ -227,7 +227,7 @@ public class GUI {
         deleteTimetable.getStyleClass().add("notRoundedButton");
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(150);
-        deleteTimetable.setRipplerFill(Color.web(ripplerFill));
+        deleteTimetable.setRipplerFill(Color.web(primaryColor));
         deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             deleteTimetable();
@@ -312,9 +312,14 @@ public class GUI {
         dayContextMenu.addButton(deleteColumn);
 
         //tim menu
+        timeMenuOnHide = (Event event) -> {
+            tm.getCurrentTable().setTime(timeMenu.getTime(), tm.gettIndexI());
+            initNewTimetable();
+        };
         timeMenu = new TimePickerPane(bg);
         menus.add(timeMenu);
-
+        timeMenu.setOnHide(timeMenuOnHide);
+        
         //time context menu
         timeContextMenu = new OptionsPane(bg);
         menus.add(timeContextMenu);
@@ -525,7 +530,7 @@ public class GUI {
             for (int j = 0; j < subjects[0].length; j++) {
                 JFXButton subject = new JFXButton();
                 subject.getStyleClass().add("subjectButton");
-                subject.setRipplerFill(Color.web(ripplerFill));
+                subject.setRipplerFill(Color.web(primaryColor));
                 subject.setMinSize(100, 40);
                 subject.setPrefSize(500, 150);
                 subject.addEventHandler(ActionEvent.ANY, subjectAction);
@@ -642,6 +647,7 @@ public class GUI {
         menu.getPane().setMargin(menuName, new Insets(0, 0, h * 0.1, 0));
         menuName.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         menuName.setFont(new Font(h * FONT_FACTOR));
+        settings.setFont(new Font(h * FONT_FACTOR));
         addTimetable.setFont(new Font(h * FONT_FACTOR));
         deleteTimetable.setFont(new Font(h * FONT_FACTOR));
         menu.getDone().setFont(new Font(h * FONT_FACTOR));

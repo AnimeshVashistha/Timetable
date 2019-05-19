@@ -11,6 +11,9 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
@@ -19,7 +22,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import timetable.Datatypes.SimpleTime;
 import static timetable.GUI.ANIMATION_DISTANCE;
@@ -34,15 +36,14 @@ public class TimePickerPane extends SomePane {
 
     AnchorPane backgroundPane;
     AnchorPane hourPane;
-    JFXButton hourButton;
+    Button hourButton;
     Line hourPreviewLine;
     Circle hourPreviewCircle;
-    Circle hourPreviewCircleHole;
     Label[] hourLabels;
     Pane hourPaneOverlay;
 
     AnchorPane minutePane;
-    JFXButton minuteButton;
+    Button minuteButton;
     Line minutePreviewLine;
     Circle minutePreviewCircle;
     Circle minutePreviewCircleHole;
@@ -62,11 +63,15 @@ public class TimePickerPane extends SomePane {
     EventHandler<Event> onHide;
     Button hideEvent = new Button();
 
+    SimpleTime simpleTime;
+
     public TimePickerPane(Pane parent) {
         super(parent);
-
+        
         setWidthFactor(3);
         setHeightFactor(1.05);
+        getPane().getStyleClass().remove("customPane");
+        getPane().getStyleClass().add("darkerCustomPane");
 
         SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
         SlideIn.setFromY(ANIMATION_DISTANCE);
@@ -98,12 +103,32 @@ public class TimePickerPane extends SomePane {
         hourPane = new AnchorPane();
         hourPane.getStyleClass().add("notRoundedPane");
 
-        hourButton = new JFXButton("hours");
-        hourButton.getStyleClass().add("roundedTopLeftButton");
+        hourButton = new Button("hours");
+        hourButton.getStyleClass().add("roundedTopButton");
         hourButton.setMinSize(0, 0);
         hourButton.setPrefSize(500, 150);
         hourButton.setOnAction(event -> {
-            hourPane.toFront();
+            selectHours();
+        });
+        hourButton.focusedProperty().addListener(event -> {
+            if (hourButton.isFocused()) {
+                selectHours();
+            }
+        });
+        hourButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals(KeyCode.UP)) {
+                setHours((simpleTime.getHours() + 1) % 24);
+                event.consume();
+            } else if (event.getCode().equals(KeyCode.DOWN)) {
+                setHours(Math.floorMod((simpleTime.getHours() - 1), 24));
+                event.consume();
+            } else if (event.getCode().equals(KeyCode.LEFT)) {
+                event.consume();
+            } else if (event.getCode().equals(KeyCode.ENTER)) {
+                hide();
+            } else if (event.getCode().equals(KeyCode.ESCAPE)) {
+                hide();
+            }
         });
 
         hourPreviewLine = new Line();
@@ -113,17 +138,24 @@ public class TimePickerPane extends SomePane {
         hourPreviewCircle = new Circle();
         hourPreviewCircle.setFill(Color.web(GUI.primaryColor));
 
-        hourPreviewCircleHole = new Circle();
-        hourPreviewCircleHole.setFill(Color.web(GUI.backgroundColor));
-        hourPreviewCircleHole.setVisible(false);
-
         hourLabels = new Label[24];
         for (int i = 0; i < hourLabels.length; i++) {
             hourLabels[i] = new Label(String.format("%02d", i));
         }
 
         hourPaneOverlay = new Pane();
-        hourPane.getChildren().addAll(hourPreviewLine, hourPreviewCircle, hourPreviewCircleHole);
+        hourPaneOverlay.setOnMousePressed(event -> {
+            setHours(event);
+        });
+        hourPaneOverlay.setOnMouseDragged(event -> {
+            setHours(event);
+        });
+        hourPaneOverlay.setOnMouseReleased(event -> {
+            setHours(event);
+            selectMinutes();
+        });
+
+        hourPane.getChildren().addAll(hourPreviewLine, hourPreviewCircle);
         hourPane.getChildren().addAll(hourLabels);
         hourPane.getChildren().add(hourPaneOverlay);
         hourPane.setTopAnchor(hourPaneOverlay, 0d);
@@ -141,12 +173,33 @@ public class TimePickerPane extends SomePane {
         minutePane = new AnchorPane();
         minutePane.getStyleClass().add("notRoundedPane");
 
-        minuteButton = new JFXButton("minutes");
-        minuteButton.getStyleClass().add("roundedTopRightButton");
+        minuteButton = new Button("minutes");
+        minuteButton.getStyleClass().add("roundedTopButton");
+        minuteButton.setStyle("-fx-focus-color: transparent;");
         minuteButton.setMinSize(0, 0);
         minuteButton.setPrefSize(500, 150);
         minuteButton.setOnAction(event -> {
-            minutePane.toFront();
+            selectMinutes();
+        });
+        minuteButton.focusedProperty().addListener(event -> {
+            if (minuteButton.isFocused()) {
+                selectMinutes();
+            }
+        });
+        minuteButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals(KeyCode.UP)) {
+                setMinutes((simpleTime.getMinutes() + 1) % 60);
+                event.consume();
+            } else if (event.getCode().equals(KeyCode.DOWN)) {
+                setMinutes(Math.floorMod((simpleTime.getMinutes() - 1), 60));
+                event.consume();
+            } else if (event.getCode().equals(KeyCode.RIGHT)) {
+                event.consume();
+            } else if (event.getCode().equals(KeyCode.ENTER)) {
+                hide();
+            } else if (event.getCode().equals(KeyCode.ESCAPE)) {
+                hide();
+            }
         });
 
         minutePreviewLine = new Line();
@@ -157,7 +210,7 @@ public class TimePickerPane extends SomePane {
         minutePreviewCircle.setFill(Color.web(GUI.primaryColor));
 
         minutePreviewCircleHole = new Circle();
-        minutePreviewCircleHole.setFill(Color.web(GUI.backgroundColor));
+        minutePreviewCircleHole.setFill(Color.web(GUI.primaryBackgroundColor));
         minutePreviewCircleHole.setVisible(false);
 
         minuteLabels = new Label[12];
@@ -166,6 +219,16 @@ public class TimePickerPane extends SomePane {
         }
 
         minutePaneOverlay = new Pane();
+        minutePaneOverlay.setOnMousePressed(event -> {
+            setMinutes(event);
+        });
+        minutePaneOverlay.setOnMouseDragged(event -> {
+            setMinutes(event);
+        });
+        minutePaneOverlay.setOnMouseReleased(event -> {
+            setMinutes(event);
+            hide();
+        });
 
         minutePane.getChildren().addAll(minutePreviewLine, minutePreviewCircle, minutePreviewCircleHole);
         minutePane.getChildren().addAll(minuteLabels);
@@ -230,6 +293,8 @@ public class TimePickerPane extends SomePane {
         getPane().setLayoutX(x);
         getPane().setLayoutY(y);
 
+        this.simpleTime = simpleTime;
+
         arrangeComponents(w * getWidthFactor(), h * size * getHeightFactor(), simpleTime);
 
         getDone().setFont(new Font(getSource().getHeight() * getFontFactor()));
@@ -240,7 +305,7 @@ public class TimePickerPane extends SomePane {
 
         Timeline focus = new Timeline(new KeyFrame(
                 Duration.millis(ANIMATION_DURATION * FOCUS_ANIMATION_OFFSET_FACTOR),
-                n -> getPane().getChildren().get(0).requestFocus()));
+                n -> hourButton.requestFocus()));
         focus.play();
 
         Timeline reposition = new Timeline(new KeyFrame(Duration.millis(1), n -> {
@@ -312,7 +377,7 @@ public class TimePickerPane extends SomePane {
     }
 
     public void arrangeComponents(double w, double h, SimpleTime simpleTime) {
-        hourPane.toFront();
+        selectHours();
 
         //hourPane
         hourButton.setText(simpleTime.formatHours());
@@ -346,11 +411,12 @@ public class TimePickerPane extends SomePane {
                 radius = w * 0.25;
                 hourLabels[i].setFont(new Font(getSource().getHeight() * 0.15));
             }
-            if(simpleTime.getHours() == i){
-                hourLabels[i].setTextFill(Color.web(GUI.backgroundColor));
-            }else{
+            if (simpleTime.getHours() == i) {
+                hourLabels[i].setTextFill(Color.web(GUI.primaryBackgroundColor));
+            } else {
                 hourLabels[i].setTextFill(Color.web(GUI.foregroundColor));
             }
+            hourLabels[i].autosize();
             hourLabels[i].setLayoutX(Math.cos(angle) * radius + w / 2 - hourLabels[i].getWidth() / 2);
             hourLabels[i].setLayoutY(Math.sin(angle) * radius + w / 2 - hourLabels[i].getHeight() / 2);
         }
@@ -383,11 +449,128 @@ public class TimePickerPane extends SomePane {
         for (int i = 0; i < minuteLabels.length; i++) {
             double angle = Math.PI * 2d * ((double) i / minuteLabels.length) - Math.PI / 2;
             double radius = w * 0.4;
+            if (simpleTime.getMinutes() == i * 5) {
+                minuteLabels[i].setTextFill(Color.web(GUI.primaryBackgroundColor));
+            } else {
+                minuteLabels[i].setTextFill(Color.web(GUI.foregroundColor));
+            }
             minuteLabels[i].setFont(new Font(getSource().getHeight() * 0.2));
-            minuteLabels[i].applyCss();
+            minuteLabels[i].autosize();
             minuteLabels[i].setLayoutX(Math.cos(angle) * radius + w / 2 - minuteLabels[i].getWidth() / 2);
             minuteLabels[i].setLayoutY(Math.sin(angle) * radius + w / 2 - minuteLabels[i].getHeight() / 2);
         }
     }
 
+    private void setHours(MouseEvent event) {
+        double angle = calculateAngle(getPane().getWidth() / 2, getPane().getWidth() / 2, event.getX(), event.getY());
+        double distance = distance(getPane().getWidth() / 2, getPane().getWidth() / 2, event.getX(), event.getY());
+        boolean outside;
+        int pos = (int) Math.round((-angle + Math.PI * 3) % (Math.PI * 2) / ((Math.PI * 2) / 12d));
+        if (distance > getPane().getWidth() * 0.325) {
+            pos = pos % 12;
+        } else {
+            pos = pos % 12 + 12;
+        }
+        setHours(pos);
+    }
+
+    private void setHours(int pos) {
+        double w = getPane().getWidth();
+        double hourRadius;
+        if (pos < 12) {
+            hourRadius = w * 0.4;
+        } else {
+            hourRadius = w * 0.25;
+        }
+        double angle = Math.PI * 2d * ((double) pos / 12d) - Math.PI / 2;
+
+        hourLabels[simpleTime.getHours()].setTextFill(Color.web(GUI.foregroundColor));
+        simpleTime.setHours(pos);
+        hourLabels[simpleTime.getHours()].setTextFill(Color.web(GUI.primaryBackgroundColor));
+        hourButton.setText(simpleTime.formatHours());
+
+        hourPreviewLine.setStartX(w / 2);
+        hourPreviewLine.setStartY(w / 2);
+        hourPreviewLine.setEndX(Math.cos(angle) * hourRadius + w / 2);
+        hourPreviewLine.setEndY(Math.sin(angle) * hourRadius + w / 2);
+
+        hourPreviewCircle.setRadius(w / 12);
+        hourPreviewCircle.setCenterX(Math.cos(angle) * hourRadius + w / 2);
+        hourPreviewCircle.setCenterY(Math.sin(angle) * hourRadius + w / 2);
+    }
+
+    private void setMinutes(MouseEvent event) {
+        double angle = calculateAngle(getPane().getWidth() / 2, getPane().getWidth() / 2, event.getX(), event.getY());
+        int pos = (int) Math.round((-angle + Math.PI * 3) % (Math.PI * 2) / ((Math.PI * 2) / 60d));
+        pos = pos % 60;
+        setMinutes(pos);
+    }
+
+    private void setMinutes(int pos) {
+        double w = getPane().getWidth();
+        double angle = Math.PI * 2d * ((double) pos / 60d) - Math.PI / 2;
+
+        if (simpleTime.getMinutes() % 5 == 0) {
+            minuteLabels[simpleTime.getMinutes() / 5].setTextFill(Color.web(GUI.foregroundColor));
+        }
+        simpleTime.setMinutes(pos);
+        if (pos % 5 == 0) {
+            minuteLabels[simpleTime.getMinutes() / 5].setTextFill(Color.web(GUI.primaryBackgroundColor));
+        }
+        minuteButton.setText(simpleTime.formatMinutes());
+
+        minutePreviewLine.setStartX(w / 2);
+        minutePreviewLine.setStartY(w / 2);
+        minutePreviewLine.setEndX(Math.cos(angle) * w * 0.4 + w / 2);
+        minutePreviewLine.setEndY(Math.sin(angle) * w * 0.4 + w / 2);
+
+        minutePreviewCircle.setCenterX(Math.cos(angle) * w * 0.4 + w / 2);
+        minutePreviewCircle.setCenterY(Math.sin(angle) * w * 0.4 + w / 2);
+        minutePreviewCircle.setRadius(w / 12);
+
+        if (pos % 5 == 0) {
+            minutePreviewCircleHole.setVisible(false);
+        } else {
+            minutePreviewCircleHole.setVisible(true);
+            minutePreviewCircleHole.setRadius(w / 80);
+            minutePreviewCircleHole.setCenterX(Math.cos(angle) * w * 0.4 + w / 2);
+            minutePreviewCircleHole.setCenterY(Math.sin(angle) * w * 0.4 + w / 2);
+        }
+    }
+
+    public void selectHours() {
+        hourButton.toFront();
+        backgroundPane.toFront();
+        hourPane.toFront();
+        minuteButton.getStyleClass().removeIf(s -> (s == "selectedRightTimeButton"));
+        minuteButton.getStyleClass().add("unselectedTimeButton");
+        hourButton.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        hourButton.getStyleClass().add("selectedLeftTimeButton");
+    }
+
+    public void selectMinutes() {
+        minuteButton.toFront();
+        backgroundPane.toFront();
+        minutePane.toFront();
+        hourButton.getStyleClass().removeIf(s -> (s == "selectedLeftTimeButton"));
+        hourButton.getStyleClass().add("unselectedTimeButton");
+        minuteButton.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        minuteButton.getStyleClass().add("selectedRightTimeButton");
+    }
+
+    public double calculateAngle(double x1, double y1, double x2, double y2) {
+        double cat1 = x2 - x1;
+        double cat2 = y2 - y1;
+        return Math.atan2(cat1, cat2);
+    }
+
+    public double distance(double x1, double y1, double x2, double y2) {
+        double cat1 = x2 - x1;
+        double cat2 = y2 - y1;
+        return Math.sqrt(cat1 * cat1 + cat2 * cat2);
+    }
+
+    public SimpleTime getTime() {
+        return simpleTime;
+    }
 }

@@ -141,7 +141,7 @@ public class OptionsPane extends SomePane {
         } else {
             button.getStyleClass().add(topButtonStyle);
         }
-        button.setRipplerFill(Color.web(GUI.ripplerFill));
+        button.setRipplerFill(Color.web(GUI.primaryColor));
         button.setPrefWidth(500);
         button.setPrefHeight(150);
 
