@@ -67,7 +67,7 @@ public class TimePickerPane extends SomePane {
 
     public TimePickerPane(Pane parent) {
         super(parent);
-        
+
         setWidthFactor(3);
         setHeightFactor(1.05);
         getPane().getStyleClass().remove("customPane");
@@ -117,10 +117,18 @@ public class TimePickerPane extends SomePane {
         });
         hourButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals(KeyCode.UP)) {
-                setHours((simpleTime.getHours() + 1) % 24);
+                if (event.isControlDown()) {
+                    setHours((simpleTime.getHours() + 3) % 24);
+                } else {
+                    setHours((simpleTime.getHours() + 1) % 24);
+                }
                 event.consume();
             } else if (event.getCode().equals(KeyCode.DOWN)) {
-                setHours(Math.floorMod((simpleTime.getHours() - 1), 24));
+                if (event.isControlDown()) {
+                    setHours(Math.floorMod((simpleTime.getHours() - 3), 24));
+                } else {
+                    setHours(Math.floorMod((simpleTime.getHours() - 1), 24));
+                }
                 event.consume();
             } else if (event.getCode().equals(KeyCode.LEFT)) {
                 event.consume();
@@ -188,10 +196,18 @@ public class TimePickerPane extends SomePane {
         });
         minuteButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals(KeyCode.UP)) {
-                setMinutes((simpleTime.getMinutes() + 1) % 60);
+                if (event.isControlDown()) {
+                    setMinutes((simpleTime.getMinutes() + 5) % 60);
+                } else {
+                    setMinutes((simpleTime.getMinutes() + 1) % 60);
+                }
                 event.consume();
             } else if (event.getCode().equals(KeyCode.DOWN)) {
-                setMinutes(Math.floorMod((simpleTime.getMinutes() - 1), 60));
+                if (event.isControlDown()) {
+                    setMinutes(Math.floorMod((simpleTime.getMinutes() - 5), 60));
+                } else {
+                    setMinutes(Math.floorMod((simpleTime.getMinutes() - 1), 60));
+                }
                 event.consume();
             } else if (event.getCode().equals(KeyCode.RIGHT)) {
                 event.consume();
