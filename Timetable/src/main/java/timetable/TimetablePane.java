@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import timetable.Datatypes.Timetable;
+import timetable.Datatypes.TimetablePair;
 
 /**
  *
@@ -25,7 +26,7 @@ public class TimetablePane {
         pane = new GridPane();
     }
 
-    public void update(List<Timetable> timetables, EventHandler<ActionEvent> buttonPressed, int index) {
+    public void update(List<TimetablePair> timetables, EventHandler<ActionEvent> buttonPressed, int index) {
         pane.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
         for (int i = 0; i < timetables.size(); i++) {
             JFXButton button = new JFXButton(timetables.get(i).getName());

@@ -6,6 +6,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import timetable.Datatypes.Timetable;
+import timetable.Datatypes.TimetablePair;
 
 /**
  *
@@ -16,10 +17,11 @@ public class TimetableManager {
     final static String TIMETABLES_STRING = "timetables";
     final static String TIMETABLE_INDEX_STRING = "timetableIndex";
 
-    ArrayList<Timetable> timetables;
-    Timetable currentTable;
+    ArrayList<TimetablePair> timetables;
+    TimetablePair currentTablePair;
     DataManager dm;
 
+    boolean isA = true;
     int dIndexI = 0;
     int tIndexI = 0;
     int sIndexI = 0;
@@ -49,71 +51,71 @@ public class TimetableManager {
     }
 
     public void readDataFromFile() {
-        Object tempTimetables = dm.readObject(TIMETABLES_STRING);
+        Object tempTimetablePairs = dm.readObject(TIMETABLES_STRING);
         Object tempTimetableIndex = dm.readObject(TIMETABLE_INDEX_STRING);
 
-        if (tempTimetables != null && tempTimetables.getClass() == ArrayList.class) {
-            ArrayList<Timetable> tempTimetables2 = (ArrayList<Timetable>) tempTimetables;
+        if (tempTimetablePairs != null && tempTimetablePairs.getClass() == ArrayList.class) {
+            ArrayList<TimetablePair> tempTimetablePairs2 = (ArrayList<TimetablePair>) tempTimetablePairs;
 
             if (tempTimetableIndex != null && tempTimetableIndex.getClass() == Integer.class) {
                 timetableIndex = (Integer) tempTimetableIndex;
 
                 try {
-                    if (tempTimetables2.get(timetableIndex).getClass() == Timetable.class) {
-                        timetables = tempTimetables2;
-                        currentTable = timetables.get(timetableIndex);
+                    if (tempTimetablePairs2.get(timetableIndex).getClass() == TimetablePair.class) {
+                        timetables = tempTimetablePairs2;
+                        currentTablePair = timetables.get(timetableIndex);
 
                     } else {
                         System.out.println("nope1");
-                        timetables = new ArrayList<Timetable>();
-                        addTimetable();
+                        timetables = new ArrayList<TimetablePair>();
+                        addTimetablePair();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("nope2");
-                    timetables = new ArrayList<Timetable>();
-                    addTimetable();
+                    timetables = new ArrayList<TimetablePair>();
+                    addTimetablePair();
                 }
             } else {
-                timetables = new ArrayList<Timetable>();
-                addTimetable();
+                timetables = new ArrayList<TimetablePair>();
+                addTimetablePair();
             }
 
         } else {
             System.out.println("nope3");
-            timetables = new ArrayList<Timetable>();
-            addTimetable();
+            timetables = new ArrayList<TimetablePair>();
+            addTimetablePair();
         }
     }
 
-    public void addTimetable() {
-        currentTable = new Timetable("Timetable " + tableCount);
-        timetables.add(currentTable);
+    public void addTimetablePair() {
+        currentTablePair = new TimetablePair("Timetable " + tableCount);
+        timetables.add(currentTablePair);
         timetableIndex = timetables.size() - 1;
         tableCount++;
     }
 
-    public void addTimetable(int index) {
-        currentTable = new Timetable("Timetable " + tableCount);
-        timetables.add(currentTable);
+    public void addTimetablePair(int index) {
+        currentTablePair = new TimetablePair("Timetable " + tableCount);
+        timetables.add(currentTablePair);
         timetableIndex = index;
         tableCount++;
     }
 
-    public void deleteCurrentTimetable() {
-        timetables.remove(currentTable);
+    public void deleteCurrentTimetablePair() {
+        timetables.remove(currentTablePair);
 
         if (timetables.size() == 0) {
-            addTimetable();
+            addTimetablePair();
         } else if (timetableIndex < timetables.size()) {
-            currentTable = timetables.get(timetableIndex);
+            currentTablePair = timetables.get(timetableIndex);
         } else {
             timetableIndex--;
-            currentTable = timetables.get(timetableIndex);
+            currentTablePair = timetables.get(timetableIndex);
         }
     }
 
-    public void deleteTimetable(int index) {
+    public void deleteTimetablePair(int index) {
         timetables.remove(index);
         if (timetableIndex >= index) {
             timetableIndex--;
@@ -124,11 +126,11 @@ public class TimetableManager {
         return timetableIndex;
     }
 
-    public Timetable getCurrentTable() {
-        return currentTable;
+    public TimetablePair getCurrentTablePair() {
+        return currentTablePair;
     }
 
-    public Timetable getTimetable(int index) {
+    public TimetablePair getTimetablePair(int index) {
         return timetables.get(index);
     }
 
@@ -136,15 +138,19 @@ public class TimetableManager {
         this.timetableIndex = timetableIndex;
     }
 
-    public void setCurrentTable(int index) {
+    public void setCurrentTablePair(int index) {
         if (index < timetables.size()) {
-            currentTable = timetables.get(index);
+            currentTablePair = timetables.get(index);
             timetableIndex = index;
         }
     }
 
-    public List<Timetable> getTimetables() {
+    public List<TimetablePair> getTimetablePairs() {
         return timetables;
+    }
+    
+    public Timetable getCurrentTable(){
+        return currentTablePair.get(isA);
     }
 
     public int getdIndexI() {
@@ -180,43 +186,43 @@ public class TimetableManager {
     }
 
     public void clearColumn() {
-        currentTable.clearLessonColumn(dIndexI);
+        currentTablePair.get(isA).clearLessonColumn(dIndexI);
     }
 
     public void deleteColumn() {
-        currentTable.deleteLessonColumn(dIndexI);
+        currentTablePair.get(isA).deleteLessonColumn(dIndexI);
     }
 
     public void clearRow() {
-        currentTable.clearLessonRow(tIndexI);
+        currentTablePair.get(isA).clearLessonRow(tIndexI);
     }
 
     public void deleteRow() {
-        currentTable.deleteLessonRow(tIndexI);
+        currentTablePair.get(isA).deleteLessonRow(tIndexI);
     }
 
     public void addRowAbove() {
-        currentTable.addLessonRowAbove(tIndexI);
+        currentTablePair.get(isA).addLessonRowAbove(tIndexI);
     }
 
     public void addRowBelow() {
-        currentTable.addLessonRowBelow(tIndexI);
+        currentTablePair.get(isA).addLessonRowBelow(tIndexI);
     }
 
     public void clearSubject() {
-        currentTable.clearSubject(sIndexI, sIndexJ);
+        currentTablePair.get(isA).clearSubject(sIndexI, sIndexJ);
     }
 
     public void deleteSubject() {
-        currentTable.deleteSubject(sIndexI, sIndexJ);
+        currentTablePair.get(isA).deleteSubject(sIndexI, sIndexJ);
     }
 
     public void addSubjectAbove() {
-        currentTable.addSubjectAbove(sIndexI, sIndexJ);
+        currentTablePair.get(isA).addSubjectAbove(sIndexI, sIndexJ);
     }
 
     public void addSubjectBelow() {
-        currentTable.addSubjectBelow(sIndexI, sIndexJ);
+        currentTablePair.get(isA).addSubjectBelow(sIndexI, sIndexJ);
     }
 
 }

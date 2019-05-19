@@ -15,9 +15,6 @@ import java.util.List;
  */
 public class Timetable implements Serializable {
 
-    ArrayList<Subject> references = new ArrayList<Subject>();
-    ArrayList<Subject> options;
-    String name = "new Timetable";
     int lessons = 8;
     Subject[][] subjects = new Subject[7][10];
     SimpleTime[] times = new SimpleTime[10];
@@ -31,11 +28,6 @@ public class Timetable implements Serializable {
 
     public Timetable() {
         init();
-    }
-
-    public Timetable(String name) {
-        init();
-        this.name = name;
     }
 
     public void init() {
@@ -65,156 +57,6 @@ public class Timetable implements Serializable {
                 toAdd += bigPause;
             }
         }
-    }
-
-    public void updateReferences() {
-        references.clear();
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                if (references.size() > 0) {
-                    boolean n = true;
-                    for (int c = 0; c < references.size(); c++) {
-                        if (subjects[i][j].getSubject().equals(references.get(c).getSubject())
-                                && subjects[i][j].getRoom().equals(references.get(c).getRoom())
-                                && subjects[i][j].getTeacher().equals(references.get(c).getTeacher())) {
-                            n = false;
-                            break;
-                        }
-                    }
-                    if (n && subjects[i][j].getSubject().length() > 0) {
-                        references.add(subjects[i][j]);
-                    }
-                } else if (subjects[i][j].getSubject().length() > 0) {
-                    references.add(subjects[i][j]);
-                }
-            }
-        }
-    }
-
-    public ArrayList<Subject> getAutocompleteOptions(String subject) {
-        ArrayList<Subject> options = new ArrayList<Subject>();
-
-        for (Subject s : references) {
-            if (s.getSubject().toLowerCase().startsWith(subject.toLowerCase())) {
-                options.add(s);
-            }
-        }
-
-        this.options = options;
-
-        return options;
-    }
-
-    public String getSubjectText(int i, int j) {
-        return subjects[i][j].getSubject();
-    }
-
-    public String getRoomText(int i, int j) {
-        return subjects[i][j].getRoom();
-    }
-
-    public String getTeacherText(int i, int j) {
-        return subjects[i][j].getTeacher();
-    }
-
-    public void setSubjectText(String s, int i, int j) {
-        subjects[i][j].setSubject(s);
-    }
-
-    public void setRoomText(String s, int i, int j) {
-        subjects[i][j].setRoom(s);
-    }
-
-    public void setTeacherText(String s, int i, int j) {
-        subjects[i][j].setTeacher(s);
-    }
-
-    public String getTimeText(int i) {
-        return times[i].format() + "\n" + times[i].plusMinutes(45).format();
-    }
-
-    public SimpleTime getTime(int i) {
-        return times[i];
-    }
-
-    public void setTime(SimpleTime time, int i) {
-        times[i] = time;
-    }
-
-    public boolean isDayDisplayed(int i) {
-        return days[i];
-    }
-
-    public void setDayDisplayed(boolean day, int i) {
-        days[i] = day;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getLessons() {
-        return lessons;
-    }
-
-    public void setLessons(int lessons) {
-        this.lessons = lessons;
-    }
-
-    public List<Subject> getOptions() {
-        return options;
-    }
-
-    public Subject getOption(int i) {
-        return options.get(i);
-    }
-
-    public SimpleTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(SimpleTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public int getSmallPause() {
-        return smallPause;
-    }
-
-    public void setSmallPause(int smallPause) {
-        this.smallPause = smallPause;
-    }
-
-    public int getMiddlePause() {
-        return middlePause;
-    }
-
-    public void setMiddlePause(int middlePause) {
-        this.middlePause = middlePause;
-    }
-
-    public int getBigPause() {
-        return bigPause;
-    }
-
-    public void setBigPause(int bigPause) {
-        this.bigPause = bigPause;
-    }
-
-    public int getLessonlength() {
-        return lessonlength;
-    }
-
-    public void setLessonlength(int lessonlength) {
-        this.lessonlength = lessonlength;
-    }
-
-    public boolean[] getDays() {
-        return days;
     }
 
     public void clearLessonColumn(int index) {
@@ -341,6 +183,110 @@ public class Timetable implements Serializable {
         Subject temp = subjects[i1][j1];
         subjects[i1][j1] = subjects[i2][j2];
         subjects[i2][j2] = temp;
+    }
+
+    public String getSubjectText(int i, int j) {
+        return subjects[i][j].getSubject();
+    }
+
+    public String getRoomText(int i, int j) {
+        return subjects[i][j].getRoom();
+    }
+
+    public String getTeacherText(int i, int j) {
+        return subjects[i][j].getTeacher();
+    }
+
+    public void setSubjectText(String s, int i, int j) {
+        subjects[i][j].setSubject(s);
+    }
+
+    public void setRoomText(String s, int i, int j) {
+        subjects[i][j].setRoom(s);
+    }
+
+    public void setTeacherText(String s, int i, int j) {
+        subjects[i][j].setTeacher(s);
+    }
+
+    public String getTimeText(int i) {
+        return times[i].format() + "\n" + times[i].plusMinutes(45).format();
+    }
+
+    public SimpleTime getTime(int i) {
+        return times[i];
+    }
+
+    public void setTime(SimpleTime time, int i) {
+        times[i] = time;
+    }
+
+    public boolean isDayDisplayed(int i) {
+        return days[i];
+    }
+
+    public void setDayDisplayed(boolean day, int i) {
+        days[i] = day;
+    }
+
+    public int getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(int lessons) {
+        this.lessons = lessons;
+    }
+
+    public SimpleTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(SimpleTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getSmallPause() {
+        return smallPause;
+    }
+
+    public void setSmallPause(int smallPause) {
+        this.smallPause = smallPause;
+    }
+
+    public int getMiddlePause() {
+        return middlePause;
+    }
+
+    public void setMiddlePause(int middlePause) {
+        this.middlePause = middlePause;
+    }
+
+    public int getBigPause() {
+        return bigPause;
+    }
+
+    public void setBigPause(int bigPause) {
+        this.bigPause = bigPause;
+    }
+
+    public int getLessonlength() {
+        return lessonlength;
+    }
+
+    public void setLessonlength(int lessonlength) {
+        this.lessonlength = lessonlength;
+    }
+
+    public boolean[] getDays() {
+        return days;
+    }
+
+    public Subject[][] getSubjects() {
+        return subjects;
+    }
+
+    public SimpleTime[] getTimes() {
+        return times;
     }
 
 }

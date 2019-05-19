@@ -245,7 +245,7 @@ public class GUI {
             }
         });
         timetablePane = new TimetablePane();
-        timetablePane.update(tm.getTimetables(), timetableButtonPressed, tm.getTimeTableIndex());
+        timetablePane.update(tm.getTimetablePairs(), timetableButtonPressed, tm.getTimeTableIndex());
         menuScrollPane.setContent(timetablePane.getPane());
         RowConstraints rc = new RowConstraints();
         rc.setPercentHeight(60);
@@ -258,7 +258,7 @@ public class GUI {
 
         //day menu
         dayMenuOnShow = (Event event) -> {
-            scaleDayContextMenu();
+            scaleDayMenu();
             updateDayContextMenuData();
         };
         dayMenuOnHide = (Event event) -> {
@@ -269,7 +269,7 @@ public class GUI {
         };
         dayMenu = new AdvancedOptionsPane(bg);
         menus.add(dayMenu);
-        dayMenu.setWidthFactor(2.7);
+        dayMenu.setWidthFactor(3);
         dayMenu.setOnShow(dayMenuOnShow);
         dayMenu.setOnHide(dayMenuOnHide);
         dayPanes = new GridPane[7];
@@ -319,7 +319,7 @@ public class GUI {
         timeMenu = new TimePickerPane(bg);
         menus.add(timeMenu);
         timeMenu.setOnHide(timeMenuOnHide);
-        
+
         //time context menu
         timeContextMenu = new OptionsPane(bg);
         menus.add(timeContextMenu);
@@ -566,7 +566,7 @@ public class GUI {
         subjectGrid.getColumnConstraints().clear();
         subjectGrid.getRowConstraints().clear();
 
-        name.setText(tm.getCurrentTable().getName());
+        name.setText(tm.getCurrentTablePair().getName());
 
         //display days
         int pos = 0;
@@ -655,16 +655,16 @@ public class GUI {
     }
 
     public void updateMenuData() {
-        menuName.setText(tm.getCurrentTable().getName());
+        menuName.setText(tm.getCurrentTablePair().getName());
     }
 
     public void writeMenuData() {
-        tm.getCurrentTable().setName(menuName.getText());
+        tm.getCurrentTablePair().setName(menuName.getText());
         name.setText(menuName.getText());
     }
 
     public void updateMenuTimetables() {
-        timetablePane.update(tm.getTimetables(), timetableButtonPressed, tm.getTimeTableIndex());
+        timetablePane.update(tm.getTimetablePairs(), timetableButtonPressed, tm.getTimeTableIndex());
     }
 
     public void timetableButtonPressed(ActionEvent event) {
@@ -672,7 +672,7 @@ public class GUI {
         for (int i = 0; i < size; i++) {
             if (event.getSource().equals(timetablePane.getPane().getChildren().get(i))) {
                 writeMenuData();
-                tm.setCurrentTable(i);
+                tm.setCurrentTablePair(i);
                 initNewTimetable();
                 updateMenuData();
                 updateMenuTimetables();
@@ -682,7 +682,7 @@ public class GUI {
     }
 
     public void addTimetable() {
-        tm.addTimetable();
+        tm.addTimetablePair();
         updateMenuTimetables();
         scaleMenu();
         initNewTimetable();
@@ -690,7 +690,7 @@ public class GUI {
     }
 
     public void deleteTimetable() {
-        tm.deleteCurrentTimetable();
+        tm.deleteCurrentTimetablePair();
         updateMenuTimetables();
         scaleMenu();
         initNewTimetable();
@@ -706,12 +706,14 @@ public class GUI {
         hideOtherMenus(dayMenu);
     }
 
-    public void scaleDayContextMenu() {
+    public void scaleDayMenu() {
         double h = selectedDay.getHeight();
         for (int i = 0; i < dayToggles.length; i++) {
             dayToggles[i].setSelected(tm.getCurrentTable().isDayDisplayed(i));
             dayToggles[i].setScaleX(h * 0.012);
             dayToggles[i].setScaleY(h * 0.012);
+            dayToggles[i].autosize();
+            dayToggles[i].setPadding(new Insets(0, h * 0.2, 0, 0));
             dayToggles[i].setMinHeight(h * dayMenu.getHeightFactor());
             dayToggles[i].setPrefHeight(h * dayMenu.getHeightFactor());
             dayToggles[i].setMaxHeight(h * dayMenu.getHeightFactor());
@@ -903,7 +905,7 @@ public class GUI {
     //
     public void autocompleteLabelClicked(MouseEvent event) {
         Label l = (Label) event.getSource();
-        for (int i = 0; i < tm.getCurrentTable().getOptions().size(); i++) {
+        for (int i = 0; i < tm.getCurrentTablePair().getOptions().size(); i++) {
             if (l == autoCompletePane.getPane().getChildren().get(i)) {
                 writeAutocomplete(i);
             }
@@ -934,8 +936,8 @@ public class GUI {
 
     private void handleInput() {
         if (subjectName.getText().length() > 0) {
-            tm.getCurrentTable().updateReferences();
-            List<Subject> options = tm.getCurrentTable().getAutocompleteOptions(subjectName.getText());
+            tm.getCurrentTablePair().updateReferences();
+            List<Subject> options = tm.getCurrentTablePair().getAutocompleteOptions(subjectName.getText());
             if (options.size() > 0) {
                 autoCompletePane.setFields(subjectName, options);
                 autoCompletePane.show(subjectName);
@@ -946,12 +948,12 @@ public class GUI {
     }
 
     private void writeAutocomplete() {
-        setSubjectMenuFields(tm.getCurrentTable().getOption(autoCompletePane.getAutocompleteIndex()));
+        setSubjectMenuFields(tm.getCurrentTablePair().getOption(autoCompletePane.getAutocompleteIndex()));
         autoCompletePane.hide();
     }
 
     private void writeAutocomplete(int index) {
-        setSubjectMenuFields(tm.getCurrentTable().getOption(index));
+        setSubjectMenuFields(tm.getCurrentTablePair().getOption(index));
         autoCompletePane.hide();
     }
 
