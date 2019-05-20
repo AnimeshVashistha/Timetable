@@ -279,6 +279,16 @@ public class Timetable implements Serializable {
         return days;
     }
 
+    public int getDisplayedDayCout() {
+        int count = 0;
+        for (boolean b : days) {
+            if (b) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public Subject[][] getSubjects() {
         return subjects;
     }

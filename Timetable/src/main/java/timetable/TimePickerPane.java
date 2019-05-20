@@ -118,14 +118,18 @@ public class TimePickerPane extends SomePane {
         hourButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals(KeyCode.UP)) {
                 if (event.isControlDown()) {
-                    setHours((simpleTime.getHours() + 3) % 24);
+                    setHours((simpleTime.getHours() + 3 - simpleTime.getHours() % 3) % 24);
                 } else {
                     setHours((simpleTime.getHours() + 1) % 24);
                 }
                 event.consume();
             } else if (event.getCode().equals(KeyCode.DOWN)) {
                 if (event.isControlDown()) {
-                    setHours(Math.floorMod((simpleTime.getHours() - 3), 24));
+                    if (simpleTime.getHours() % 3 == 0) {
+                        setHours(Math.floorMod((simpleTime.getHours() - 3), 24));
+                    } else {
+                        setHours(Math.floorMod((simpleTime.getHours() - simpleTime.getHours() % 3), 24));
+                    }
                 } else {
                     setHours(Math.floorMod((simpleTime.getHours() - 1), 24));
                 }
@@ -197,14 +201,18 @@ public class TimePickerPane extends SomePane {
         minuteButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals(KeyCode.UP)) {
                 if (event.isControlDown()) {
-                    setMinutes((simpleTime.getMinutes() + 5) % 60);
+                    setMinutes((simpleTime.getMinutes() + 5 - simpleTime.getMinutes() % 5) % 60);
                 } else {
                     setMinutes((simpleTime.getMinutes() + 1) % 60);
                 }
                 event.consume();
             } else if (event.getCode().equals(KeyCode.DOWN)) {
                 if (event.isControlDown()) {
-                    setMinutes(Math.floorMod((simpleTime.getMinutes() - 5), 60));
+                    if (simpleTime.getMinutes() % 5 == 0) {
+                        setHours(Math.floorMod((simpleTime.getMinutes() - 5), 60));
+                    } else {
+                        setHours(Math.floorMod((simpleTime.getMinutes() - simpleTime.getMinutes() % 5), 60));
+                    }
                 } else {
                     setMinutes(Math.floorMod((simpleTime.getMinutes() - 1), 60));
                 }
@@ -532,6 +540,13 @@ public class TimePickerPane extends SomePane {
         simpleTime.setMinutes(pos);
         if (pos % 5 == 0) {
             minuteLabels[simpleTime.getMinutes() / 5].setTextFill(Color.web(GUI.primaryBackgroundColor));
+            minutePreviewCircleHole.setVisible(false);
+
+        } else {
+            minutePreviewCircleHole.setVisible(true);
+            minutePreviewCircleHole.setRadius(w / 80);
+            minutePreviewCircleHole.setCenterX(Math.cos(angle) * w * 0.4 + w / 2);
+            minutePreviewCircleHole.setCenterY(Math.sin(angle) * w * 0.4 + w / 2);
         }
         minuteButton.setText(simpleTime.formatMinutes());
 
@@ -543,15 +558,6 @@ public class TimePickerPane extends SomePane {
         minutePreviewCircle.setCenterX(Math.cos(angle) * w * 0.4 + w / 2);
         minutePreviewCircle.setCenterY(Math.sin(angle) * w * 0.4 + w / 2);
         minutePreviewCircle.setRadius(w / 12);
-
-        if (pos % 5 == 0) {
-            minutePreviewCircleHole.setVisible(false);
-        } else {
-            minutePreviewCircleHole.setVisible(true);
-            minutePreviewCircleHole.setRadius(w / 80);
-            minutePreviewCircleHole.setCenterX(Math.cos(angle) * w * 0.4 + w / 2);
-            minutePreviewCircleHole.setCenterY(Math.sin(angle) * w * 0.4 + w / 2);
-        }
     }
 
     public void selectHours() {

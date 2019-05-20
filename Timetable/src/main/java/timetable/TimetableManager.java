@@ -148,9 +148,17 @@ public class TimetableManager {
     public List<TimetablePair> getTimetablePairs() {
         return timetables;
     }
-    
-    public Timetable getCurrentTable(){
+
+    public Timetable getCurrentTable() {
         return currentTablePair.get(isA);
+    }
+
+    public boolean IsA() {
+        return isA;
+    }
+
+    public void setIsA(boolean isA) {
+        this.isA = isA;
     }
 
     public int getdIndexI() {

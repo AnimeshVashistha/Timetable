@@ -3,8 +3,11 @@ package timetable;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -25,6 +28,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
@@ -69,6 +73,9 @@ public class GUI {
     EventHandler<MouseEvent> subjectPressed;
     EventHandler<KeyEvent> subjectKeyReleased;
     MenuButton name;
+    HBox tabBox;
+    Label tabA;
+    Label tabB;
     JFXButton[] days;
     JFXButton[] times;
     JFXButton[][] subjects;
@@ -431,17 +438,15 @@ public class GUI {
 
         bg.widthProperty().addListener(event -> {
             cancelMenus();
-            Timeline timeline = new Timeline(
+            new Timeline(
                     new KeyFrame(Duration.millis(1), n -> resizeFonts())
-            );
-            timeline.play();
+            ).play();
         });
         bg.heightProperty().addListener(event -> {
             cancelMenus();
-            Timeline timeline = new Timeline(
+            new Timeline(
                     new KeyFrame(Duration.millis(1), n -> resizeFonts())
-            );
-            timeline.play();
+            ).play();
         });
         subjectName.focusedProperty().addListener(event -> {
             if (!subjectName.isFocused()) {
@@ -449,15 +454,21 @@ public class GUI {
             }
         });
 
-        Timeline unfocus = new Timeline(
+        new Timeline(
                 new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
-        );
+        ).play();
 
-        unfocus.play();
+        Locale l = Locale.getDefault();
+        if (LocalDate.now().get(WeekFields.of(l).weekOfWeekBasedYear()) % 2 == 0) {
+            selectTabA();
+        } else {
+            selectTabB();
+        }
     }
 
     public void initControlArrays() {
 
+        //name
         nameAction = (ActionEvent event) -> {
             menu();
         };
@@ -467,7 +478,33 @@ public class GUI {
         name.setMinSize(100, 40);
         name.setPrefSize(500, 150);
         name.addEventHandler(ActionEvent.ANY, nameAction);
-        subjectGrid.add(name, 0, 0, 1, 1);
+        subjectGrid.add(name, 0, 0, 1, 2);
+
+        //tabs
+        tabBox = new HBox();
+        tabBox.getStyleClass().add("roundedTopButton");
+        tabBox.getStyleClass().add("unselectedTimeButton");
+        tabBox.setSpacing(GAP_SIZE * 3);
+
+        tabA = new Label("A");
+        tabA.setAlignment(Pos.CENTER);
+        tabA.setMinSize(0, 0);
+        tabA.setPrefSize(1000, 110);
+        tabA.getStyleClass().add("roundedTopButton");
+        tabA.setOnMousePressed(event -> {
+            selectTabA();
+        });
+
+        tabB = new Label("B");
+        tabB.setAlignment(Pos.CENTER);
+        tabB.setMinSize(0, 0);
+        tabB.setPrefSize(1000, 110);
+        tabB.getStyleClass().add("roundedTopButton");
+        tabB.setOnMousePressed(event -> {
+            selectTabB();
+        });
+
+        tabBox.getChildren().addAll(tabA, tabB);
 
         //days
         dayAction = (ActionEvent event) -> {
@@ -546,33 +583,44 @@ public class GUI {
         double scaleFactorHeightDependent1 = 0.3;
         double scaleFactorHeightDependent2 = 0.25;
 
-        name.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
+        double w = times[0].getWidth();
+        double h = times[0].getHeight();
+
+        name.setFont(new Font((h + w) * scaleFactor1));
+
+        tabA.setFont(new Font((h) * scaleFactorHeightDependent2));
+        tabB.setFont(new Font((h) * scaleFactorHeightDependent2));
 
         for (JFXButton b : days) {
-            b.setFont(new Font((name.getHeight() + name.getWidth()) * scaleFactor1));
+            b.setFont(new Font((h + w) * scaleFactor1));
         }
         for (JFXButton b : times) {
-            b.setFont(new Font((name.getHeight()) * scaleFactorHeightDependent1));
+            b.setFont(new Font((h) * scaleFactorHeightDependent1));
         }
         for (JFXButton[] ba : subjects) {
             for (JFXButton b : ba) {
-                b.setFont(new Font((name.getHeight()) * scaleFactorHeightDependent2));
+                b.setFont(new Font((h) * scaleFactorHeightDependent2));
             }
         }
     }
 
     public void initNewTimetable() {
         subjectGrid.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
-        subjectGrid.getColumnConstraints().clear();
+        subjectGrid.getChildren().remove(tabBox);
         subjectGrid.getRowConstraints().clear();
+        RowConstraints rc = new RowConstraints();
+        rc.setPercentHeight(5);
+        subjectGrid.getRowConstraints().add(rc);
 
         name.setText(tm.getCurrentTablePair().getName());
+
+        subjectGrid.add(tabBox, 1, 0, tm.getCurrentTable().getDisplayedDayCout(), 1);
 
         //display days
         int pos = 0;
         for (int i = 0; i < days.length; i++) {
             if (tm.getCurrentTable().isDayDisplayed(i)) {
-                subjectGrid.add(days[i], pos + 1, 0, 1, 1);
+                subjectGrid.add(days[i], pos + 1, 1, 1, 1);
                 pos++;
             }
         }
@@ -580,7 +628,7 @@ public class GUI {
         //display times
         for (int i = 0; i < times.length; i++) {
             if (i < tm.getCurrentTable().getLessons()) {
-                subjectGrid.add(times[i], 0, i + 1, 1, 1);
+                subjectGrid.add(times[i], 0, i + 2, 1, 1);
                 times[i].setText(tm.getCurrentTable().getTimeText(i));
             }
         }
@@ -590,7 +638,7 @@ public class GUI {
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
                 if (j < tm.getCurrentTable().getLessons() && tm.getCurrentTable().isDayDisplayed(i)) {
-                    subjectGrid.add(subjects[i][j], pos + 1, j + 1, 1, 1);
+                    subjectGrid.add(subjects[i][j], pos + 1, j + 2, 1, 1);
                     subjects[i][j].setText(
                             tm.getCurrentTable().getSubjectText(i, j)
                             + "\n" + tm.getCurrentTable().getRoomText(i, j)
@@ -602,10 +650,13 @@ public class GUI {
             }
         }
 
-        Timeline timeline = new Timeline(
+        new Timeline(
                 new KeyFrame(Duration.millis(1), event -> resizeFonts())
-        );
-        timeline.play();
+        ).play();;
+    }
+    
+    public void updateColors(){
+        
     }
 
     public void cancelMenus() {
@@ -638,12 +689,49 @@ public class GUI {
     //
     //################################menu################################
     //
+    public void selectTabA() {
+        hideAllMenus();
+        tm.setIsA(true);
+        tabB.getStyleClass().removeIf(s -> (s == "selectedRightTabButton"));
+        tabB.getStyleClass().add("unselectedTimeButton");
+        tabA.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        tabA.getStyleClass().add("selectedLeftTabButton");
+        initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(2), n -> resizeFonts())
+        ).play();
+    }
+
+    public void selectTabB() {
+        hideAllMenus();
+        tm.setIsA(false);
+        tabA.getStyleClass().removeIf(s -> (s == "selectedLeftTabButton"));
+        tabA.getStyleClass().add("unselectedTimeButton");
+        tabB.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        tabB.getStyleClass().add("selectedRightTabButton");
+        initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(2), n -> resizeFonts())
+        ).play();
+    }
+
+    public void switchTab() {
+        if (tm.IsA()) {
+            selectTabB();
+        } else {
+            selectTabA();
+        }
+    }
+
+    //
+    //################################menu################################
+    //
     public void menu() {
         menu.show(name.getButton());
     }
 
     public void scaleMenu() {
-        double h = name.getButton().getHeight();
+        double h = times[0].getHeight();
         menu.getPane().setMargin(menuName, new Insets(0, 0, h * 0.1, 0));
         menuName.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
         menuName.setFont(new Font(h * FONT_FACTOR));
@@ -736,9 +824,9 @@ public class GUI {
             tm.getCurrentTable().setDayDisplayed(dayToggles[i].isSelected(), i);
         }
         initNewTimetable();
-        Timeline t = new Timeline(
+        new Timeline(
                 new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        );
+        ).play();
     }
 
     public void dayToggled() {

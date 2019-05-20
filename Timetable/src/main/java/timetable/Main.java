@@ -19,8 +19,16 @@ public class Main extends Application {
         Scene scene = new Scene(gui.getParent());
         scene.getStylesheets().add("/styles/Styles.css");
         scene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.M) {
-                gui.menu();
+            if (event.isControlDown()) {
+                if (event.getCode() == KeyCode.TAB) {
+                    gui.switchTab();
+                } else if (event.getCode() == KeyCode.N) {
+                    gui.addTimetable();
+                }
+            } else {
+                if (event.getCode() == KeyCode.M) {
+                    gui.menu();
+                }
             }
         });
 

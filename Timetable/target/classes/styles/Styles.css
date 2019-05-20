@@ -146,3 +146,13 @@
 .unselectedTimeButton{
     -fx-background-color: #CCCCCC;
 }
+
+.selectedRightTabButton{
+    -fx-background-color: #EEEEEE;
+    -fx-effect: dropshadow(three-pass-box, gray, 2, -3, -1, -1)
+}
+
+.selectedLeftTabButton{
+    -fx-background-color: #EEEEEE;
+    -fx-effect: dropshadow(three-pass-box, gray, 2, -3, 2, -1)
+}
