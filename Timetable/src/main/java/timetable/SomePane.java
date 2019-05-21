@@ -20,7 +20,7 @@ public abstract class SomePane implements Hideable {
     private double heightFactor = 0.6;
     private double fontFactor = 0.2;
     private boolean hidden = true;
-    private String bottomButtonStyle = "customButtonBottom";
+    private String bottomButtonStyle = "roundedBottomButton";
 
     public SomePane(Pane parent) {
         setParent(parent);

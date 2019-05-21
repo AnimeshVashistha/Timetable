@@ -52,8 +52,8 @@ public class GUI {
 
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
-    static String ac1 = "#66DD77";
-    static String ac2 = "#44CC55";
+    static String ac1 = "#6677DD";
+    static String ac2 = "#4455CC";
     static String fg2 = "#888888";
     static String fg1 = "#FFFFFF";
     static String bg1 = "#EEEEEE";
@@ -410,6 +410,7 @@ public class GUI {
             autocompleteLabelClicked(event);
         };
         autoCompletePane = new AutocompletePane(bg);
+        menus.add(autoCompletePane);
         subjectName.addEventHandler(KeyEvent.KEY_RELEASED, subjectMenuKeyPressed);
         autoCompletePane.setOnClick(autocompleteOnClick);
 
@@ -454,11 +455,6 @@ public class GUI {
             new Timeline(
                     new KeyFrame(Duration.millis(1), n -> resizeFonts())
             ).play();
-        });
-        subjectName.focusedProperty().addListener(event -> {
-            if (!subjectName.isFocused()) {
-                autoCompletePane.hide();
-            }
         });
 
         new Timeline(
@@ -691,14 +687,14 @@ public class GUI {
         addTimetable.setTextFill(Color.web(text));
         deleteTimetable.setRipplerFill(Color.web(ac1));
         deleteTimetable.setTextFill(Color.web(text));
-        menuScrollPane.setStyle("-fx-background-color: bg1;");
+        menuScrollPane.setStyle("-fx-background-color:" + bg1);
         timetablePane.updateColor();
         //day menu
         dayMenu.updateBaseColor();
-        for(Label l : dayLabels){
+        for (Label l : dayLabels) {
             l.setTextFill(Color.web(text));
         }
-        for(JFXToggleButton t : dayToggles){
+        for (JFXToggleButton t : dayToggles) {
             t.setToggleColor(Color.web(ac1));
             t.setToggleLineColor(Color.web(ac2));
             t.setUnToggleColor(Color.web(fg1));
@@ -708,6 +704,23 @@ public class GUI {
         dayContextMenu.updateColor();
         //timeMenu
         timeMenu.updateColor();
+        //time context menu
+        timeContextMenu.updateColor();
+        //subject menu
+        subjectMenu.updateBaseColor();
+        subjectName.setStyle("-fx-prompt-text-fill:" + fg2);
+        subjectName.setUnFocusColor(Color.web(fg2));
+        subjectName.setFocusColor(Color.web(ac1));
+        subjectRoom.setStyle("-fx-prompt-text-fill:" + fg2);
+        subjectRoom.setUnFocusColor(Color.web(fg2));
+        subjectRoom.setFocusColor(Color.web(ac1));
+        subjectTeacher.setStyle("-fx-prompt-text-fill:" + fg2);
+        subjectTeacher.setUnFocusColor(Color.web(fg2));
+        subjectTeacher.setFocusColor(Color.web(ac1));
+        //autocomplete pane        
+        autoCompletePane.updateColor();
+        //subject context menu
+        subjectContextMenu.updateColor();
     }
 
     public void cancelMenus() {
