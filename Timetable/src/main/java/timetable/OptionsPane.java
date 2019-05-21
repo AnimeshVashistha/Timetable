@@ -141,7 +141,7 @@ public class OptionsPane extends SomePane {
         } else {
             button.getStyleClass().add(topButtonStyle);
         }
-        button.setRipplerFill(Color.web(GUI.primaryColor));
+        button.setRipplerFill(Color.web(GUI.ac1));
         button.setPrefWidth(500);
         button.setPrefHeight(150);
 
@@ -154,6 +154,15 @@ public class OptionsPane extends SomePane {
         getPane().getChildren().remove(getDone());
         getPane().add(button, 0, size - 1, 1, 1);
         getPane().add(getDone(), 0, size, 1, 1);
+    }
+
+    public void updateColor() {
+        updateBaseColor();
+        for (int i = 0; i < getPane().getChildren().size() - 1; i++) {
+            JFXButton b = (JFXButton) getPane().getChildren().get(i);
+            b.setRipplerFill(Color.web(GUI.ac1));
+            b.setTextFill(Color.web(GUI.text));
+        }
     }
 
 }

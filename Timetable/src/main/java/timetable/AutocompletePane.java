@@ -224,11 +224,11 @@ public class AutocompletePane {
     }
 
     public void focus(int index) {
-        pane.getChildren().get(index * 3 + 2).setStyle("-fx-background-color:" + GUI.primaryColor + "44");
+        pane.getChildren().get(index * 3 + 2).setStyle("-fx-background-color:" + GUI.ac1 + "44");
     }
 
     public void unfocus(int index) {
-        pane.getChildren().get(index * 3 + 2).setStyle("-fx-background-color:" + GUI.unselectedColor);
+        pane.getChildren().get(index * 3 + 2).setStyle("-fx-background-color:" + GUI.transparent);
     }
 
     public double getWidthFactor() {

@@ -17,6 +17,7 @@ import timetable.Datatypes.TimetablePair;
 public class TimetablePane {
 
     final static double heightFactor = 0.4;
+    int index;
 
     GridPane pane;
     String buttonStyle = "notRoundedButton";
@@ -26,19 +27,20 @@ public class TimetablePane {
     }
 
     public void update(List<TimetablePair> timetables, EventHandler<ActionEvent> buttonPressed, int index) {
+        this.index = index;
         pane.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
         for (int i = 0; i < timetables.size(); i++) {
             JFXButton button = new JFXButton(timetables.get(i).getName());
             button.getStyleClass().add(buttonStyle);
-            button.setRipplerFill(Color.web(GUI.primaryColor));
             button.setPrefWidth(500);
             button.setPrefHeight(150);
-            if(i == index){
-                button.setStyle("-fx-background-color:" + GUI.primaryColor + "44");
+            if (i == index) {
+                button.setStyle("-fx-background-color:" + GUI.ac1 + "44");
             }
             button.addEventHandler(ActionEvent.ACTION, buttonPressed);
             pane.add(button, 0, i, 1, 1);
         }
+        updateColor();
     }
 
     public void scale(double h, double w) {
@@ -49,6 +51,16 @@ public class TimetablePane {
         for (Node n : pane.getChildren()) {
             JFXButton button = (JFXButton) n;
             button.setFont(new Font(h * GUI.FONT_FACTOR));
+        }
+    }
+
+    public void updateColor() {
+        pane.setStyle("-fx-background-color:" + GUI.bg1);
+        pane.getChildren().get(index).setStyle("-fx-background-color:" + GUI.ac1 + "44");
+        for (Node n : getPane().getChildren()) {
+            JFXButton b = (JFXButton) n;
+            b.setRipplerFill(Color.web(GUI.ac1));
+            b.setTextFill(Color.web(GUI.text));
         }
     }
 

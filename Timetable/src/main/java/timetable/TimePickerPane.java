@@ -144,11 +144,11 @@ public class TimePickerPane extends SomePane {
         });
 
         hourPreviewLine = new Line();
-        hourPreviewLine.setStroke(Color.web(GUI.primaryColor));
+        hourPreviewLine.setStroke(Color.web(GUI.ac1));
         hourPreviewLine.setStrokeLineCap(StrokeLineCap.ROUND);
 
         hourPreviewCircle = new Circle();
-        hourPreviewCircle.setFill(Color.web(GUI.primaryColor));
+        hourPreviewCircle.setFill(Color.web(GUI.ac1));
 
         hourLabels = new Label[24];
         for (int i = 0; i < hourLabels.length; i++) {
@@ -227,14 +227,14 @@ public class TimePickerPane extends SomePane {
         });
 
         minutePreviewLine = new Line();
-        minutePreviewLine.setStroke(Color.web(GUI.primaryColor));
+        minutePreviewLine.setStroke(Color.web(GUI.ac1));
         minutePreviewLine.setStrokeLineCap(StrokeLineCap.ROUND);
 
         minutePreviewCircle = new Circle();
-        minutePreviewCircle.setFill(Color.web(GUI.primaryColor));
+        minutePreviewCircle.setFill(Color.web(GUI.ac1));
 
         minutePreviewCircleHole = new Circle();
-        minutePreviewCircleHole.setFill(Color.web(GUI.primaryBackgroundColor));
+        minutePreviewCircleHole.setFill(Color.web(GUI.bg1));
         minutePreviewCircleHole.setVisible(false);
 
         minuteLabels = new Label[12];
@@ -399,6 +399,10 @@ public class TimePickerPane extends SomePane {
         this.onHide = onHide;
         hideEvent.addEventHandler(EventType.ROOT, onHide);
     }
+    
+    public void updateColor(){
+        updateBaseColor();
+    }
 
     public void arrangeComponents(double w, double h, SimpleTime simpleTime) {
         selectHours();
@@ -436,9 +440,9 @@ public class TimePickerPane extends SomePane {
                 hourLabels[i].setFont(new Font(getSource().getHeight() * 0.15));
             }
             if (simpleTime.getHours() == i) {
-                hourLabels[i].setTextFill(Color.web(GUI.primaryBackgroundColor));
+                hourLabels[i].setTextFill(Color.web(GUI.bg1));
             } else {
-                hourLabels[i].setTextFill(Color.web(GUI.foregroundColor));
+                hourLabels[i].setTextFill(Color.web(GUI.text));
             }
             hourLabels[i].autosize();
             hourLabels[i].setLayoutX(Math.cos(angle) * radius + w / 2 - hourLabels[i].getWidth() / 2);
@@ -474,9 +478,9 @@ public class TimePickerPane extends SomePane {
             double angle = Math.PI * 2d * ((double) i / minuteLabels.length) - Math.PI / 2;
             double radius = w * 0.4;
             if (simpleTime.getMinutes() == i * 5) {
-                minuteLabels[i].setTextFill(Color.web(GUI.primaryBackgroundColor));
+                minuteLabels[i].setTextFill(Color.web(GUI.bg1));
             } else {
-                minuteLabels[i].setTextFill(Color.web(GUI.foregroundColor));
+                minuteLabels[i].setTextFill(Color.web(GUI.text));
             }
             minuteLabels[i].setFont(new Font(getSource().getHeight() * 0.2));
             minuteLabels[i].autosize();
@@ -508,9 +512,9 @@ public class TimePickerPane extends SomePane {
         }
         double angle = Math.PI * 2d * ((double) pos / 12d) - Math.PI / 2;
 
-        hourLabels[simpleTime.getHours()].setTextFill(Color.web(GUI.foregroundColor));
+        hourLabels[simpleTime.getHours()].setTextFill(Color.web(GUI.text));
         simpleTime.setHours(pos);
-        hourLabels[simpleTime.getHours()].setTextFill(Color.web(GUI.primaryBackgroundColor));
+        hourLabels[simpleTime.getHours()].setTextFill(Color.web(GUI.bg1));
         hourButton.setText(simpleTime.formatHours());
 
         hourPreviewLine.setStartX(w / 2);
@@ -535,11 +539,11 @@ public class TimePickerPane extends SomePane {
         double angle = Math.PI * 2d * ((double) pos / 60d) - Math.PI / 2;
 
         if (simpleTime.getMinutes() % 5 == 0) {
-            minuteLabels[simpleTime.getMinutes() / 5].setTextFill(Color.web(GUI.foregroundColor));
+            minuteLabels[simpleTime.getMinutes() / 5].setTextFill(Color.web(GUI.text));
         }
         simpleTime.setMinutes(pos);
         if (pos % 5 == 0) {
-            minuteLabels[simpleTime.getMinutes() / 5].setTextFill(Color.web(GUI.primaryBackgroundColor));
+            minuteLabels[simpleTime.getMinutes() / 5].setTextFill(Color.web(GUI.bg1));
             minutePreviewCircleHole.setVisible(false);
 
         } else {
@@ -565,9 +569,9 @@ public class TimePickerPane extends SomePane {
         backgroundPane.toFront();
         hourPane.toFront();
         minuteButton.getStyleClass().removeIf(s -> (s == "selectedRightTimeButton"));
-        minuteButton.getStyleClass().add("unselectedTimeButton");
-        hourButton.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        minuteButton.setStyle("-fx-background-color: bg4;");
         hourButton.getStyleClass().add("selectedLeftTimeButton");
+        hourButton.setStyle("-fx-background-color: bg1;");
     }
 
     public void selectMinutes() {
@@ -575,9 +579,9 @@ public class TimePickerPane extends SomePane {
         backgroundPane.toFront();
         minutePane.toFront();
         hourButton.getStyleClass().removeIf(s -> (s == "selectedLeftTimeButton"));
-        hourButton.getStyleClass().add("unselectedTimeButton");
-        minuteButton.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        hourButton.setStyle("-fx-background-color: bg4;");
         minuteButton.getStyleClass().add("selectedRightTimeButton");
+        minuteButton.setStyle("-fx-background-color: bg1;");
     }
 
     public double calculateAngle(double x1, double y1, double x2, double y2) {

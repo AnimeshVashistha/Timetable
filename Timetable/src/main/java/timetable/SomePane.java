@@ -3,6 +3,7 @@ package timetable;
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -40,7 +41,14 @@ public abstract class SomePane implements Hideable {
             hide();
         });
 
+        updateBaseColor();
         getPane().getChildren().add(getDone());
+    }
+
+    public void updateBaseColor() {
+        getPane().setStyle("-fx-background-color:" + GUI.bg1);
+        getDone().setStyle("-fx-background-color:" + GUI.bg3);
+        getDone().setTextFill(Color.web(GUI.text));
     }
 
     public Pane getParent() {

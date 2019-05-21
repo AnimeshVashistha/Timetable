@@ -50,12 +50,20 @@ public class GUI {
     final static String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
-    static String primaryColor = "#66DD77";
-    static String foregroundColor = "#292929";
-    static String primaryBackgroundColor = "#EEEEEE";
-    static String secondaryBackgroundColor = "#CCCCCC";
-    static String unselectedColor = "#00000000";
     static String[] dayNames = ENGLISH_DAY_NAMES;
+
+    static String ac1 = "#66DD77";
+    static String ac2 = "#44CC55";
+    static String fg2 = "#888888";
+    static String fg1 = "#FFFFFF";
+    static String bg1 = "#EEEEEE";
+    static String bg2 = "#E8E8E8";
+    static String bg3 = "#DDDDDD";
+    static String bg4 = "#CCCCCC";
+    static String rpf = "#000000";
+    static String text = "#292929";
+    static String transparent = "#00000000";
+    static String semiTransparent = "#00000055";
 
     TimetableManager tm;
 
@@ -216,7 +224,6 @@ public class GUI {
         settings.getStyleClass().add("notRoundedButton");
         settings.setPrefWidth(500);
         settings.setPrefHeight(150);
-        settings.setRipplerFill(Color.web(primaryColor));
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         settings.addEventHandler(ActionEvent.ACTION, event -> {
             System.out.println("todo: add settings");
@@ -225,7 +232,6 @@ public class GUI {
         addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(150);
-        addTimetable.setRipplerFill(Color.web(primaryColor));
         addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             addTimetable();
@@ -234,7 +240,6 @@ public class GUI {
         deleteTimetable.getStyleClass().add("notRoundedButton");
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(150);
-        deleteTimetable.setRipplerFill(Color.web(primaryColor));
         deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             deleteTimetable();
@@ -436,6 +441,8 @@ public class GUI {
         subjectContextMenu.addButton(addAbove);
         subjectContextMenu.addButton(addBelow);
 
+        updateColors();
+
         bg.widthProperty().addListener(event -> {
             cancelMenus();
             new Timeline(
@@ -474,7 +481,6 @@ public class GUI {
         };
         name = new MenuButton();
         name.getStyleClass().add("menuButton");
-        name.setRipplerFill(Color.web("#888888"));
         name.setMinSize(100, 40);
         name.setPrefSize(500, 150);
         name.addEventHandler(ActionEvent.ANY, nameAction);
@@ -520,7 +526,6 @@ public class GUI {
         for (int i = 0; i < days.length; i++) {
             JFXButton day = new JFXButton(ENGLISH_DAY_NAMES[i]);
             day.getStyleClass().add("dayButton");
-            day.setRipplerFill(Color.web("000000"));
             day.setMinSize(100, 40);
             day.setPrefSize(500, 150);
             day.addEventHandler(ActionEvent.ANY, dayAction);
@@ -543,7 +548,6 @@ public class GUI {
         for (int i = 0; i < times.length; i++) {
             JFXButton time = new JFXButton();
             time.getStyleClass().add("timeButton");
-            time.setRipplerFill(Color.web("#000000"));
             time.setMinSize(100, 40);
             time.setPrefSize(500, 150);
             time.addEventHandler(ActionEvent.ANY, timeAction);
@@ -567,7 +571,6 @@ public class GUI {
             for (int j = 0; j < subjects[0].length; j++) {
                 JFXButton subject = new JFXButton();
                 subject.getStyleClass().add("subjectButton");
-                subject.setRipplerFill(Color.web(primaryColor));
                 subject.setMinSize(100, 40);
                 subject.setPrefSize(500, 150);
                 subject.addEventHandler(ActionEvent.ANY, subjectAction);
@@ -654,9 +657,57 @@ public class GUI {
                 new KeyFrame(Duration.millis(1), event -> resizeFonts())
         ).play();;
     }
-    
-    public void updateColors(){
-        
+
+    public void updateColors() {
+        //base controls
+        bg.setStyle("-fx-background-color:" + bg1);
+        name.updateColor();
+        name.setRipplerFill(Color.web(GUI.fg2));
+        tabBox.setStyle("-fx-background-color:" + bg4);
+        selectTabA();
+        for (JFXButton day : days) {
+            day.setStyle("-fx-background-color:" + bg4);
+            day.setRipplerFill(Color.web(rpf));
+        }
+        for (JFXButton time : times) {
+            time.setStyle("-fx-background-color:" + bg3);
+            time.setRipplerFill(Color.web(rpf));
+        }
+        for (JFXButton[] subjectA : subjects) {
+            for (JFXButton subject : subjectA) {
+                subject.setStyle("-fx-background-color:" + bg2);
+                subject.setRipplerFill(Color.web(ac1));
+            }
+        }
+        //menu
+        menu.updateBaseColor();
+        menuBackgroundPane.updateColor();
+        menuName.setStyle("-fx-prompt-text-fill:" + fg2);
+        menuName.setUnFocusColor(Color.web(fg2));
+        menuName.setFocusColor(Color.web(ac1));
+        settings.setTextFill(Color.web(text));
+        settings.setRipplerFill(Color.web(ac1));
+        addTimetable.setRipplerFill(Color.web(ac1));
+        addTimetable.setTextFill(Color.web(text));
+        deleteTimetable.setRipplerFill(Color.web(ac1));
+        deleteTimetable.setTextFill(Color.web(text));
+        menuScrollPane.setStyle("-fx-background-color: bg1;");
+        timetablePane.updateColor();
+        //day menu
+        dayMenu.updateBaseColor();
+        for(Label l : dayLabels){
+            l.setTextFill(Color.web(text));
+        }
+        for(JFXToggleButton t : dayToggles){
+            t.setToggleColor(Color.web(ac1));
+            t.setToggleLineColor(Color.web(ac2));
+            t.setUnToggleColor(Color.web(fg1));
+            t.setUnToggleLineColor(Color.web(fg2));
+        }
+        //day context menu
+        dayContextMenu.updateColor();
+        //timeMenu
+        timeMenu.updateColor();
     }
 
     public void cancelMenus() {
@@ -693,9 +744,9 @@ public class GUI {
         hideAllMenus();
         tm.setIsA(true);
         tabB.getStyleClass().removeIf(s -> (s == "selectedRightTabButton"));
-        tabB.getStyleClass().add("unselectedTimeButton");
-        tabA.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        tabB.setStyle("-fx-background-color:" + bg4);
         tabA.getStyleClass().add("selectedLeftTabButton");
+        tabA.setStyle("-fx-background-color:" + bg1);
         initNewTimetable();
         new Timeline(
                 new KeyFrame(Duration.millis(2), n -> resizeFonts())
@@ -706,9 +757,9 @@ public class GUI {
         hideAllMenus();
         tm.setIsA(false);
         tabA.getStyleClass().removeIf(s -> (s == "selectedLeftTabButton"));
-        tabA.getStyleClass().add("unselectedTimeButton");
-        tabB.getStyleClass().removeIf(s -> (s == "unselectedTimeButton"));
+        tabA.setStyle("-fx-background-color:" + bg4);
         tabB.getStyleClass().add("selectedRightTabButton");
+        tabB.setStyle("-fx-background-color:" + bg1);
         initNewTimetable();
         new Timeline(
                 new KeyFrame(Duration.millis(2), n -> resizeFonts())

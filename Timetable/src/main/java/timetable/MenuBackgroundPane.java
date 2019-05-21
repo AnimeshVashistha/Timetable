@@ -26,6 +26,7 @@ public class MenuBackgroundPane extends Pane implements Hideable {
         fadeOut.setToValue(0);
 
         this.getStyleClass().add("menuBackgroundPane");
+        updateColor();
         this.setVisible(false);
 
         parent.getChildren().add(this);
@@ -58,6 +59,10 @@ public class MenuBackgroundPane extends Pane implements Hideable {
             hidden = true;
             setVisible(false);
         }
+    }
+    
+    public void updateColor(){
+        setStyle("fx-background-color:" + GUI.semiTransparent);
     }
 
 }

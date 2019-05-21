@@ -4,43 +4,28 @@
 }
 
 .nameButton{
-    -fx-background-color: -accent-color-primary;
     -fx-background-radius: 7;
     -fx-cursor:hand;
     -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
 }
 
-.menuButton{
-    -fx-background-radius: 7;
-    -fx-cursor:hand;
-}
-
 .dayButton{
-    -fx-background-color:#bbbbbb;
     -fx-background-radius:7;
     -fx-cursor:hand;
     -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
 }
 
 .timeButton{
-    -fx-background-color:#dddddd;
     -fx-background-radius:7;
     -fx-cursor:hand;
 }
 
 .subjectButton{
-    -fx-background-color:#e8e8e8;
     -fx-background-radius: 7;
     -fx-cursor:hand;
 }
 
-.customButtonNoFill{
-    -fx-background-color: transparent;
-    -fx-cursor:hand;
-}
-
 .customButtonBottom{
-    -fx-background-color: #dddddd;
     -fx-background-radius: 0 0 7 7;
     -fx-cursor:hand;
 }
@@ -76,33 +61,20 @@
 }
 
 .notRoundedButton{
-    -fx-border-radius: 0;
     -fx-background-radius: 0;
     -fx-cursor:hand;
 }
 
 .customTextfield{
-    -fx-prompt-text-fill: #888888;
-    -jfx-focus-color: -accent-color-primary;
-    -jfx-unfocus-color: #888888;
     -jfx-label-float: true;
 }
 
 .customToggleButton{
     -fx-align-content: right;
     -fx-cursor:hand;
-    -jfx-toggle-color: -accent-color-primary;
-    -jfx-untoggle-color: #ffffff;
-    -jfx-toggle-line-color: -accent-color-secondary;
-    -jfx-untoggle-line-color: #888888;
-}
-
-.customTimepicker{
-    -jfx-default-color: -accent-color-primary;
 }
 
 .customPane{
-    -fx-background-color: #EEEEEE;
     -fx-background-radius: 7;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
 }
@@ -134,25 +106,17 @@
 }
 
 .selectedLeftTimeButton{
-    -fx-background-color: #EEEEEE;
     -fx-effect: dropshadow(three-pass-box, gray, 3, 0, 2, 1)
 }
 
 .selectedRightTimeButton{
-    -fx-background-color: #EEEEEE;
     -fx-effect: dropshadow(three-pass-box, gray, 3, 0, -2, 1)
 }
 
-.unselectedTimeButton{
-    -fx-background-color: #CCCCCC;
-}
-
 .selectedRightTabButton{
-    -fx-background-color: #EEEEEE;
     -fx-effect: dropshadow(three-pass-box, gray, 2, -3, -1, -1)
 }
 
 .selectedLeftTabButton{
-    -fx-background-color: #EEEEEE;
     -fx-effect: dropshadow(three-pass-box, gray, 2, -3, 2, -1)
 }
