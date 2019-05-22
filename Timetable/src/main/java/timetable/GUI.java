@@ -52,8 +52,8 @@ public class GUI {
 
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
-    static String ac1 = "#6677DD";
-    static String ac2 = "#4455CC";
+    static String ac1 = "#DD6677";
+    static String ac2 = "#CC4455";
     static String fg2 = "#888888";
     static String fg1 = "#FFFFFF";
     static String bg1 = "#EEEEEE";
@@ -227,6 +227,9 @@ public class GUI {
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         settings.addEventHandler(ActionEvent.ACTION, event -> {
             System.out.println("todo: add settings");
+            ac1 = "#6677DD";
+            ac2 = "#4455CC";
+            updateColors();
         });
         addTimetable = new JFXButton("add timetable");
         addTimetable.getStyleClass().add("notRoundedButton");
@@ -521,7 +524,7 @@ public class GUI {
         days = new JFXButton[7];
         for (int i = 0; i < days.length; i++) {
             JFXButton day = new JFXButton(ENGLISH_DAY_NAMES[i]);
-            day.getStyleClass().add("dayButton");
+            day.getStyleClass().add("roundedShadowedButton");
             day.setMinSize(100, 40);
             day.setPrefSize(500, 150);
             day.addEventHandler(ActionEvent.ANY, dayAction);
@@ -543,7 +546,7 @@ public class GUI {
         times = new JFXButton[10];
         for (int i = 0; i < times.length; i++) {
             JFXButton time = new JFXButton();
-            time.getStyleClass().add("timeButton");
+            time.getStyleClass().add("roundedButton");
             time.setMinSize(100, 40);
             time.setPrefSize(500, 150);
             time.addEventHandler(ActionEvent.ANY, timeAction);
@@ -566,7 +569,7 @@ public class GUI {
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
                 JFXButton subject = new JFXButton();
-                subject.getStyleClass().add("subjectButton");
+                subject.getStyleClass().add("roundedButton");
                 subject.setMinSize(100, 40);
                 subject.setPrefSize(500, 150);
                 subject.addEventHandler(ActionEvent.ANY, subjectAction);
@@ -655,6 +658,8 @@ public class GUI {
     }
 
     public void updateColors() {
+        cancelMenus();
+        
         //base controls
         bg.setStyle("-fx-background-color:" + bg1);
         name.updateColor();
@@ -681,8 +686,8 @@ public class GUI {
         menuName.setStyle("-fx-prompt-text-fill:" + fg2);
         menuName.setUnFocusColor(Color.web(fg2));
         menuName.setFocusColor(Color.web(ac1));
-        settings.setTextFill(Color.web(text));
         settings.setRipplerFill(Color.web(ac1));
+        settings.setTextFill(Color.web(text));
         addTimetable.setRipplerFill(Color.web(ac1));
         addTimetable.setTextFill(Color.web(text));
         deleteTimetable.setRipplerFill(Color.web(ac1));

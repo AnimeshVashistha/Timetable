@@ -44,7 +44,7 @@ public class MenuButton extends AnchorPane {
     public MenuButton() {
         this.setPrefSize(500, 150);
         background = new Label();
-        background.getStyleClass().add("nameButton");
+        background.getStyleClass().add("roundedShadowedButton");
         label = new Label();
         label.setAlignment(Pos.CENTER);
         menuIcon = new Pane();
@@ -69,6 +69,7 @@ public class MenuButton extends AnchorPane {
         menuIcon.getChildren().add(1, bar2);
         menuIcon.getChildren().add(2, bar3);
         button = new JFXButton();
+        button.getStyleClass().add("roundedButton");
 
         this.getChildren().addAll(background, label, menuIcon, button);
 

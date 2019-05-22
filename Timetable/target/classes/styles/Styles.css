@@ -1,23 +1,7 @@
-.nameButton{
-    -fx-background-radius: 7;
-    -fx-cursor:hand;
-    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
-}
-
-.dayButton{
+.roundedShadowedButton{
     -fx-background-radius:7;
     -fx-cursor:hand;
     -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
-}
-
-.timeButton{
-    -fx-background-radius:7;
-    -fx-cursor:hand;
-}
-
-.subjectButton{
-    -fx-background-radius: 7;
-    -fx-cursor:hand;
 }
 
 .roundedButton{
@@ -32,16 +16,6 @@
 
 .roundedBottomButton{
     -fx-background-radius: 0 0 7 7;
-    -fx-cursor:hand;
-}
-
-.roundedTopLeftButton{
-    -fx-background-radius: 7 0 0 0;
-    -fx-cursor:hand;
-}
-
-.roundedTopRightButton{
-    -fx-background-radius: 0 7 0 0;
     -fx-cursor:hand;
 }
 
