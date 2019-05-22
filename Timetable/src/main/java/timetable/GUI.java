@@ -226,10 +226,7 @@ public class GUI {
         settings.setPrefHeight(150);
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         settings.addEventHandler(ActionEvent.ACTION, event -> {
-            System.out.println("todo: add settings");
-            ac1 = "#6677DD";
-            ac2 = "#4455CC";
-            updateColors();
+            System.out.println("todo add settings");
         });
         addTimetable = new JFXButton("add timetable");
         addTimetable.getStyleClass().add("notRoundedButton");
@@ -658,14 +655,24 @@ public class GUI {
     }
 
     public void updateColors() {
-        cancelMenus();
-        
+
         //base controls
         bg.setStyle("-fx-background-color:" + bg1);
         name.updateColor();
         name.setRipplerFill(Color.web(GUI.fg2));
         tabBox.setStyle("-fx-background-color:" + bg4);
-        selectTabA();
+
+        if (tm.IsA()) {
+            tabB.getStyleClass().removeIf(s -> (s == "selectedRightTabButton"));
+            tabB.setStyle("-fx-background-color:" + bg4);
+            tabA.getStyleClass().add("selectedLeftTabButton");
+            tabA.setStyle("-fx-background-color:" + bg1);
+        } else {
+            tabA.getStyleClass().removeIf(s -> (s == "selectedLeftTabButton"));
+            tabA.setStyle("-fx-background-color:" + bg4);
+            tabB.getStyleClass().add("selectedRightTabButton");
+            tabB.setStyle("-fx-background-color:" + bg1);
+        }
         for (JFXButton day : days) {
             day.setStyle("-fx-background-color:" + bg4);
             day.setRipplerFill(Color.web(rpf));
