@@ -13,9 +13,11 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
+    GUI gui;
+    
     @Override
     public void start(Stage stage) throws Exception {
-        GUI gui = new GUI();
+        gui = new GUI();
         Scene scene = new Scene(gui.getParent());
         scene.getStylesheets().add("/styles/Styles.css");
         scene.setOnKeyPressed(event -> {
@@ -36,6 +38,11 @@ public class Main extends Application {
         stage.getIcons().add(new Image("/images/Timetable.png"));
         stage.setScene(scene);
         stage.show();
+    }
+    
+    @Override
+    public void stop(){
+        gui.tm.writeDataToFile();
     }
 
     public static void main(String[] args) {

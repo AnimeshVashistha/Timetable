@@ -6,7 +6,6 @@
 package timetable.Datatypes;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 
 /**
  *
@@ -14,10 +13,10 @@ import java.lang.reflect.Array;
  */
 public class Timetable implements Serializable {
 
-    int lessons = 8;
     Subject[][] subjects = new Subject[7][10];
     SimpleTime[] times = new SimpleTime[10];
     boolean[] days = new boolean[7];
+    int lessons = 8;
 
     SimpleTime startTime = new SimpleTime(7, 30);
     int smallPause = 0;

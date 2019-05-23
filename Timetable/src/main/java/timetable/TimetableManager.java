@@ -1,17 +1,10 @@
 package timetable;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import timetable.Datatypes.Timetable;
 import timetable.Datatypes.TimetablePair;
 
@@ -43,7 +36,7 @@ public class TimetableManager {
         readDataFromFile();
 
         Timeline t = new Timeline(
-                new KeyFrame(Duration.millis(1000), n -> {
+                new KeyFrame(Duration.seconds(30), n -> {
                     writeDataToFile();
                 })
         );
@@ -55,6 +48,7 @@ public class TimetableManager {
     public void writeDataToFile() {
         dm.writeObject(TIMETABLES_STRING, timetables);
         dm.writeObject(TIMETABLE_INDEX_STRING, timetableIndex);
+        dm.writeData(timetables, timetableIndex);
     }
 
     public void readDataFromFile() {
