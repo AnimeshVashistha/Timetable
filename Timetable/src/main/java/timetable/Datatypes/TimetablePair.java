@@ -113,4 +113,12 @@ public class TimetablePair implements Serializable {
         return options.get(i);
     }
 
+    public void duplicateA() {
+        b = a.duplicate();
+    }
+
+    public void duplicateB() {
+        a = b.duplicate();
+    }
+
 }

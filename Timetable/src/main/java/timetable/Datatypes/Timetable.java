@@ -6,6 +6,7 @@
 package timetable.Datatypes;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 
 /**
  *
@@ -55,6 +56,35 @@ public class Timetable implements Serializable {
                 toAdd += bigPause;
             }
         }
+    }
+
+    public Timetable duplicate() {
+        Timetable duplicate = new Timetable();
+
+        duplicate.days = days.clone();
+
+        SimpleTime[] duplicateTimes = new SimpleTime[times.length];
+        for (int i = 0; i < times.length; i++) {
+            duplicateTimes[i] = new SimpleTime(times[i].getHours(), times[i].getMinutes());
+        }
+        duplicate.times = duplicateTimes;
+
+        Subject[][] duplicateSubjects = new Subject[subjects.length][subjects[0].length];
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                duplicateSubjects[i][j] = new Subject(subjects[i][j].getSubject(), subjects[i][j].getRoom(), subjects[i][j].getTeacher());
+            }
+        }
+        duplicate.subjects = duplicateSubjects;
+
+        duplicate.setLessons(lessons);
+        duplicate.setStartTime(new SimpleTime(startTime.getHours(), startTime.getMinutes()));
+        duplicate.setSmallPause(smallPause);
+        duplicate.setMiddlePause(middlePause);
+        duplicate.setBigPause(bigPause);
+        duplicate.setLessonlength(lessonlength);
+
+        return duplicate;
     }
 
     public void clearLessonColumn(int index) {

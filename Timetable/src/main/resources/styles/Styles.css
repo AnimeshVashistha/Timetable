@@ -1,7 +1,15 @@
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
 .roundedShadowedButton{
     -fx-background-radius:7;
     -fx-cursor:hand;
-    -fx-effect: dropshadow(three-pass-box, lightgray, 4, 0, 1, 4);
+    -fx-effect: dropshadow(three-pass-box, lightgray, 2, 0, 1, 2);
 }
 
 .roundedButton{

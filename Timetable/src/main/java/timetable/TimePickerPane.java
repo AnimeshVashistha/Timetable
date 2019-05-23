@@ -203,9 +203,9 @@ public class TimePickerPane extends SomePane {
             } else if (event.getCode().equals(KeyCode.DOWN)) {
                 if (event.isControlDown()) {
                     if (simpleTime.getMinutes() % 5 == 0) {
-                        setHours(Math.floorMod((simpleTime.getMinutes() - 5), 60));
+                        setMinutes(Math.floorMod((simpleTime.getMinutes() - 5), 60));
                     } else {
-                        setHours(Math.floorMod((simpleTime.getMinutes() - simpleTime.getMinutes() % 5), 60));
+                        setMinutes(Math.floorMod((simpleTime.getMinutes() - simpleTime.getMinutes() % 5), 60));
                     }
                 } else {
                     setMinutes(Math.floorMod((simpleTime.getMinutes() - 1), 60));

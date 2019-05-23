@@ -35,6 +35,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import timetable.Datatypes.Subject;
+import timetable.Datatypes.Timetable;
 
 /**
  *
@@ -47,23 +48,49 @@ public class GUI {
     final static double GAP_SIZE = 2;
     final static double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
     final static double FONT_FACTOR = 0.22;
+
+    final static String lightfg1 = "#FFFFFF";
+    final static String lightfg2 = "#888888";
+    final static String lightbg1 = "#EEEEEE";
+    final static String lightbg2 = "#E8E8E8";
+    final static String lightbg3 = "#DDDDDD";
+    final static String lightbg4 = "#CCCCCC";
+    final static String lightrpf = "#000000";
+    final static String lighttext = "#292929";
+    final static String lighttransparent = "#00000000";
+    final static String lightsemiTransparent = "#00000055";
+
+    final static String darkfg1 = "#BBBBBB";
+    final static String darkfg2 = "#555555";
+    final static String darkbg1 = "#111111";
+    final static String darkbg2 = "#181818";
+    final static String darkbg3 = "#222222";
+    final static String darkbg4 = "#333333";
+    final static String darkrpf = "#000000";
+    final static String darktext = "#CCCCCC";
+    final static String darktransparent = "#00000000";
+    final static String darksemiTransparent = "#00000055";
+
+    final static String[] ac1s = {"#DD6677", "#66DD77"};
+    final static String[] ac2s = {"#CC4455", "#44CC55"};
+
     final static String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
-    static String[] dayNames = ENGLISH_DAY_NAMES;
+    static String ac1 = ac1s[0];
+    static String ac2 = ac2s[0];
+    static String fg1 = lightfg1;
+    static String fg2 = lightfg2;
+    static String bg1 = lightbg1;
+    static String bg2 = lightbg2;
+    static String bg3 = lightbg3;
+    static String bg4 = lightbg4;
+    static String rpf = lightrpf;
+    static String text = lighttext;
+    static String transparent = lighttransparent;
+    static String semiTransparent = lightsemiTransparent;
 
-    static String ac1 = "#DD6677";
-    static String ac2 = "#CC4455";
-    static String fg2 = "#888888";
-    static String fg1 = "#FFFFFF";
-    static String bg1 = "#EEEEEE";
-    static String bg2 = "#E8E8E8";
-    static String bg3 = "#DDDDDD";
-    static String bg4 = "#CCCCCC";
-    static String rpf = "#000000";
-    static String text = "#292929";
-    static String transparent = "#00000000";
-    static String semiTransparent = "#00000055";
+    static String[] dayNames = ENGLISH_DAY_NAMES;
 
     TimetableManager tm;
 
@@ -71,6 +98,8 @@ public class GUI {
     GridPane subjectGrid;
 
     EventHandler<ActionEvent> nameAction;
+    EventHandler<MouseEvent> namePressed;
+    EventHandler<KeyEvent> nameKeyReleased;
     EventHandler<ActionEvent> dayAction;
     EventHandler<MouseEvent> dayPressed;
     EventHandler<KeyEvent> dayKeyReleased;
@@ -107,6 +136,12 @@ public class GUI {
     JFXButton deleteTimetable;
     ScrollPane menuScrollPane;
     TimetablePane timetablePane;
+
+    //context menu
+    OptionsPane contextMenu;
+    JFXButton clearTimetable;
+    JFXButton duplicateA;
+    JFXButton duplicateB;
 
     //day menu
     EventHandler<Event> dayMenuOnShow;
@@ -226,7 +261,12 @@ public class GUI {
         settings.setPrefHeight(150);
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         settings.addEventHandler(ActionEvent.ACTION, event -> {
-            System.out.println("todo add settings");
+            if (tm.IsA()) {
+                setDarkColors();
+            } else {
+                setLightColors();
+            }
+            updateColors();
         });
         addTimetable = new JFXButton("add timetable");
         addTimetable.getStyleClass().add("notRoundedButton");
@@ -267,6 +307,41 @@ public class GUI {
         menu.add(addTimetable);
         menu.add(deleteTimetable);
         menu.add(menuScrollPane);
+
+        //context menu
+        contextMenu = new OptionsPane(bg);
+        menus.add(contextMenu);
+        clearTimetable = new JFXButton("clear timetable");
+        clearTimetable.addEventHandler(ActionEvent.ACTION, event -> {
+            if (tm.IsA()) {
+                tm.getCurrentTablePair().setA(new Timetable());
+            } else {
+                tm.getCurrentTablePair().setB(new Timetable());
+            }
+            initNewTimetable();
+            new Timeline(
+                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
+            ).play();
+        });
+        duplicateA = new JFXButton("duplicate a");
+        duplicateA.addEventHandler(ActionEvent.ACTION, event -> {
+            tm.getCurrentTablePair().duplicateA();
+            initNewTimetable();
+            new Timeline(
+                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
+            ).play();
+        });
+        duplicateB = new JFXButton("duplicate b");
+        duplicateB.addEventHandler(ActionEvent.ACTION, event -> {
+            tm.getCurrentTablePair().duplicateB();
+            initNewTimetable();
+            new Timeline(
+                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
+            ).play();
+        });
+        contextMenu.addButton(clearTimetable);
+        contextMenu.addButton(duplicateA);
+        contextMenu.addButton(duplicateB);
 
         //day menu
         dayMenuOnShow = (Event event) -> {
@@ -456,6 +531,11 @@ public class GUI {
                     new KeyFrame(Duration.millis(1), n -> resizeFonts())
             ).play();
         });
+        subjectName.focusedProperty().addListener(event -> {
+            if (!subjectName.isFocused()) {
+                autoCompletePane.hide();
+            }
+        });
 
         new Timeline(
                 new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
@@ -475,11 +555,20 @@ public class GUI {
         nameAction = (ActionEvent event) -> {
             menu();
         };
+        namePressed = (MouseEvent event) -> {
+            namePressed(event);
+        };
+        nameKeyReleased = (KeyEvent event) -> {
+            nameKeyReleased(event);
+        };
+
         name = new MenuButton();
         name.getStyleClass().add("menuButton");
         name.setMinSize(100, 40);
         name.setPrefSize(500, 150);
-        name.addEventHandler(ActionEvent.ANY, nameAction);
+        name.getButton().addEventHandler(ActionEvent.ANY, nameAction);
+        name.getButton().addEventHandler(MouseEvent.MOUSE_PRESSED, namePressed);
+        name.getButton().addEventHandler(KeyEvent.KEY_RELEASED, nameKeyReleased);
         subjectGrid.add(name, 0, 0, 1, 2);
 
         //tabs
@@ -659,47 +748,48 @@ public class GUI {
         //base controls
         bg.setStyle("-fx-background-color:" + bg1);
         name.updateColor();
-        name.setRipplerFill(Color.web(GUI.fg2));
         tabBox.setStyle("-fx-background-color:" + bg4);
 
         if (tm.IsA()) {
-            tabB.getStyleClass().removeIf(s -> (s == "selectedRightTabButton"));
             tabB.setStyle("-fx-background-color:" + bg4);
-            tabA.getStyleClass().add("selectedLeftTabButton");
             tabA.setStyle("-fx-background-color:" + bg1);
         } else {
-            tabA.getStyleClass().removeIf(s -> (s == "selectedLeftTabButton"));
             tabA.setStyle("-fx-background-color:" + bg4);
-            tabB.getStyleClass().add("selectedRightTabButton");
             tabB.setStyle("-fx-background-color:" + bg1);
         }
+        tabA.setTextFill(Color.web(text));
+        tabB.setTextFill(Color.web(text));
+
         for (JFXButton day : days) {
             day.setStyle("-fx-background-color:" + bg4);
+            day.setTextFill(Color.web(text));
             day.setRipplerFill(Color.web(rpf));
         }
         for (JFXButton time : times) {
             time.setStyle("-fx-background-color:" + bg3);
+            time.setTextFill(Color.web(text));
             time.setRipplerFill(Color.web(rpf));
         }
         for (JFXButton[] subjectA : subjects) {
             for (JFXButton subject : subjectA) {
                 subject.setStyle("-fx-background-color:" + bg2);
+                subject.setTextFill(Color.web(text));
                 subject.setRipplerFill(Color.web(ac1));
             }
         }
         //menu
         menu.updateBaseColor();
         menuBackgroundPane.updateColor();
-        menuName.setStyle("-fx-prompt-text-fill:" + fg2);
-        menuName.setUnFocusColor(Color.web(fg2));
         menuName.setFocusColor(Color.web(ac1));
+        menuName.setUnFocusColor(Color.web(text));
+        menuName.setStyle("-fx-prompt-text-fill:" + text);
+        menuName.setStyle("-fx-text-inner-color:" + text);
         settings.setRipplerFill(Color.web(ac1));
         settings.setTextFill(Color.web(text));
         addTimetable.setRipplerFill(Color.web(ac1));
         addTimetable.setTextFill(Color.web(text));
         deleteTimetable.setRipplerFill(Color.web(ac1));
         deleteTimetable.setTextFill(Color.web(text));
-        menuScrollPane.setStyle("-fx-background-color:" + bg1);
         timetablePane.updateColor();
         //day menu
         dayMenu.updateBaseColor();
@@ -720,19 +810,48 @@ public class GUI {
         timeContextMenu.updateColor();
         //subject menu
         subjectMenu.updateBaseColor();
-        subjectName.setStyle("-fx-prompt-text-fill:" + fg2);
-        subjectName.setUnFocusColor(Color.web(fg2));
         subjectName.setFocusColor(Color.web(ac1));
-        subjectRoom.setStyle("-fx-prompt-text-fill:" + fg2);
-        subjectRoom.setUnFocusColor(Color.web(fg2));
+        subjectName.setUnFocusColor(Color.web(text));
+        subjectName.setStyle("-fx-prompt-text-fill:" + text);
+        subjectName.setStyle("-fx-text-inner-color:" + text);
         subjectRoom.setFocusColor(Color.web(ac1));
-        subjectTeacher.setStyle("-fx-prompt-text-fill:" + fg2);
-        subjectTeacher.setUnFocusColor(Color.web(fg2));
+        subjectRoom.setUnFocusColor(Color.web(text));
+        subjectRoom.setStyle("-fx-prompt-text-fill:" + text);
+        subjectRoom.setStyle("-fx-text-inner-color:" + text);
         subjectTeacher.setFocusColor(Color.web(ac1));
+        subjectTeacher.setUnFocusColor(Color.web(text));
+        subjectTeacher.setStyle("-fx-prompt-text-fill:" + text);
+        subjectTeacher.setStyle("-fx-text-inner-color:" + text);
         //autocomplete pane        
         autoCompletePane.updateColor();
         //subject context menu
         subjectContextMenu.updateColor();
+    }
+
+    public void setLightColors() {
+        fg1 = lightfg1;
+        fg2 = lightfg2;
+        bg1 = lightbg1;
+        bg2 = lightbg2;
+        bg3 = lightbg3;
+        bg4 = lightbg4;
+        rpf = lightrpf;
+        text = lighttext;
+        transparent = lighttransparent;
+        semiTransparent = lightsemiTransparent;
+    }
+
+    public void setDarkColors() {
+        fg1 = darkfg1;
+        fg2 = darkfg2;
+        bg1 = darkbg1;
+        bg2 = darkbg2;
+        bg3 = darkbg3;
+        bg4 = darkbg4;
+        rpf = darkrpf;
+        text = darktext;
+        transparent = darktransparent;
+        semiTransparent = darksemiTransparent;
     }
 
     public void cancelMenus() {
@@ -862,6 +981,23 @@ public class GUI {
     }
 
     //
+    //################################contextMenu################################
+    //
+    public void namePressed(MouseEvent event) {
+        if (event.isSecondaryButtonDown()) {
+            contextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), times[0]);
+            hideOtherMenus(contextMenu);
+        }
+    }
+
+    public void nameKeyReleased(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            contextMenu.showOnCoordinates(name.getLayoutX(), name.getLayoutY(), times[0]);
+            hideOtherMenus(contextMenu);
+        }
+    }
+
+    //
     //################################dayMenu################################
     //
     public void dayMenu(ActionEvent event) {
@@ -945,11 +1081,17 @@ public class GUI {
     public void clearColumn() {
         tm.clearColumn();
         initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(1), n -> resizeFonts())
+        ).play();
     }
 
     public void deleteColumn() {
         tm.deleteColumn();
         initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(1), n -> resizeFonts())
+        ).play();
     }
 
     private void getSelectedDay(Event event) {
@@ -994,21 +1136,33 @@ public class GUI {
     public void clearRow() {
         tm.clearRow();
         initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(1), n -> resizeFonts())
+        ).play();
     }
 
     public void deleteRow() {
         tm.deleteRow();
         initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(1), n -> resizeFonts())
+        ).play();
     }
 
     public void addRowAbove() {
         tm.addRowAbove();
         initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(1), n -> resizeFonts())
+        ).play();
     }
 
     public void addRowBelow() {
         tm.addRowBelow();
         initNewTimetable();
+        new Timeline(
+                new KeyFrame(Duration.millis(1), n -> resizeFonts())
+        ).play();
     }
 
     private void getSelectedTime(Event event) {
@@ -1068,10 +1222,9 @@ public class GUI {
     //################################autoCompletePane################################
     //
     public void autocompleteLabelClicked(MouseEvent event) {
-        Label l = (Label) event.getSource();
-        for (int i = 0; i < tm.getCurrentTablePair().getOptions().size(); i++) {
-            if (l == autoCompletePane.getPane().getChildren().get(i)) {
-                writeAutocomplete(i);
+        for (int i = 0; i < autoCompletePane.getPane().getChildren().size(); i++) {
+            if (event.getSource() == autoCompletePane.getPane().getChildren().get(i)) {
+                writeAutocomplete(i / 3);
             }
         }
     }
@@ -1170,16 +1323,21 @@ public class GUI {
     //
     public void subjectKeyReleased(KeyEvent event) {
         getSelectedSubject(event);
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
-            subjectContextMenu.show(selectedSubject);
-        } else if (event.isControlDown() && event.getCode() == KeyCode.UP) {
-            moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
-        } else if (event.isControlDown() && event.getCode() == KeyCode.DOWN) {
-            moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
-        } else if (event.isControlDown() && event.getCode() == KeyCode.LEFT) {
-            moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
-        } else if (event.isControlDown() && event.getCode() == KeyCode.RIGHT) {
-            moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
+        if (event.isControlDown()) {
+            if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
+                subjectContextMenu.show(selectedSubject);
+            } else if (event.getCode() == KeyCode.UP) {
+                moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
+            } else if (event.getCode() == KeyCode.DOWN) {
+                moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
+            } else if (event.getCode() == KeyCode.LEFT) {
+                moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
+            } else if (event.getCode() == KeyCode.RIGHT) {
+                moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
+            } else if (event.getCode() == KeyCode.D) {
+                tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
+                initNewTimetable();
+            }
         } else if (event.getCode() == KeyCode.DELETE) {
             tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
             initNewTimetable();

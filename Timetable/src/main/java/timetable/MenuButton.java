@@ -135,6 +135,7 @@ public class MenuButton extends AnchorPane {
         bar1.setFill(Color.web(GUI.text));
         bar2.setFill(Color.web(GUI.text));
         bar3.setFill(Color.web(GUI.text));
+        button.setRipplerFill(Color.web(GUI.fg2));
     }
 
     public void setFont(Font font) {

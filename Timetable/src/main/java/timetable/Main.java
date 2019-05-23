@@ -24,7 +24,7 @@ public class Main extends Application {
                     gui.switchTab();
                 } else if (event.getCode() == KeyCode.N) {
                     gui.addTimetable();
-                }
+                } 
             } else {
                 if (event.getCode() == KeyCode.M) {
                     gui.menu();
