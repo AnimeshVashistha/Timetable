@@ -66,10 +66,10 @@ public class GUI {
     final static String darkbg2 = "#181818";
     final static String darkbg3 = "#222222";
     final static String darkbg4 = "#333333";
-    final static String darkrpf = "#000000";
+    final static String darkrpf = "#FFFFFF";
     final static String darktext = "#CCCCCC";
     final static String darktransparent = "#00000000";
-    final static String darksemiTransparent = "#00000055";
+    final static String darksemiTransparent = "#BBBBBB55";
 
     final static String[] ac1s = {"#DD6677", "#66DD77"};
     final static String[] ac2s = {"#CC4455", "#44CC55"};
@@ -89,6 +89,7 @@ public class GUI {
     static String text = lighttext;
     static String transparent = lighttransparent;
     static String semiTransparent = lightsemiTransparent;
+    static boolean lightMode = true;
 
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
@@ -189,9 +190,6 @@ public class GUI {
     JFXButton addAbove;
     JFXButton addBelow;
 
-    boolean menuPaneHidden = true;
-    boolean dayOverlayHidden = true;
-
     public GUI() {
 
         bg = new AnchorPane();
@@ -261,11 +259,7 @@ public class GUI {
         settings.setPrefHeight(150);
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         settings.addEventHandler(ActionEvent.ACTION, event -> {
-            if (tm.IsA()) {
-                setDarkColors();
-            } else {
-                setLightColors();
-            }
+            toggleColorMode();
             updateColors();
         });
         addTimetable = new JFXButton("add timetable");
@@ -610,7 +604,7 @@ public class GUI {
         days = new JFXButton[7];
         for (int i = 0; i < days.length; i++) {
             JFXButton day = new JFXButton(ENGLISH_DAY_NAMES[i]);
-            day.getStyleClass().add("roundedShadowedButton");
+            day.getStyleClass().add("lightRoundedShadowedButton");
             day.setMinSize(100, 40);
             day.setPrefSize(500, 150);
             day.addEventHandler(ActionEvent.ANY, dayAction);
@@ -749,7 +743,6 @@ public class GUI {
         bg.setStyle("-fx-background-color:" + bg1);
         name.updateColor();
         tabBox.setStyle("-fx-background-color:" + bg4);
-
         if (tm.IsA()) {
             tabB.setStyle("-fx-background-color:" + bg4);
             tabA.setStyle("-fx-background-color:" + bg1);
@@ -764,6 +757,13 @@ public class GUI {
             day.setStyle("-fx-background-color:" + bg4);
             day.setTextFill(Color.web(text));
             day.setRipplerFill(Color.web(rpf));
+            if (lightMode) {
+                day.getStyleClass().removeIf(s -> (s == "darkRoundedShadowedButton"));
+                day.getStyleClass().add("lightRoundedShadowedButton");
+            } else {
+                day.getStyleClass().removeIf(s -> (s == "lightRoundedShadowedButton"));
+                day.getStyleClass().add("darkRoundedShadowedButton");
+            }
         }
         for (JFXButton time : times) {
             time.setStyle("-fx-background-color:" + bg3);
@@ -828,6 +828,14 @@ public class GUI {
         subjectContextMenu.updateColor();
     }
 
+    public void toggleColorMode() {
+        if (lightMode) {
+            setDarkColors();
+        } else {
+            setLightColors();
+        }
+    }
+
     public void setLightColors() {
         fg1 = lightfg1;
         fg2 = lightfg2;
@@ -839,6 +847,7 @@ public class GUI {
         text = lighttext;
         transparent = lighttransparent;
         semiTransparent = lightsemiTransparent;
+        lightMode = true;
     }
 
     public void setDarkColors() {
@@ -852,6 +861,7 @@ public class GUI {
         text = darktext;
         transparent = darktransparent;
         semiTransparent = darksemiTransparent;
+        lightMode = false;
     }
 
     public void cancelMenus() {

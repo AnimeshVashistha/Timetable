@@ -62,7 +62,7 @@ public class MenuBackgroundPane extends Pane implements Hideable {
     }
     
     public void updateColor(){
-        setStyle("fx-background-color:" + GUI.semiTransparent);
+        setStyle("-fx-background-color:" + GUI.semiTransparent);
     }
 
 }

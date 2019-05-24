@@ -6,10 +6,16 @@
     -fx-background-color: transparent;
 }
 
-.roundedShadowedButton{
+.lightRoundedShadowedButton{
     -fx-background-radius:7;
     -fx-cursor:hand;
-    -fx-effect: dropshadow(three-pass-box, lightgray, 2, 0, 1, 2);
+    -fx-effect: dropshadow(three-pass-box, #AAAAAA, 3, 0, 1, 1);
+}
+
+.darkRoundedShadowedButton{
+    -fx-background-radius:7;
+    -fx-cursor:hand;
+    -fx-effect: dropshadow(three-pass-box, #555555, 3, 0, 1, 1);
 }
 
 .roundedButton{
