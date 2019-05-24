@@ -212,6 +212,10 @@ public class Timetable implements Serializable {
         subjects[i2][j2] = temp;
     }
 
+    public Subject getSubject(int i, int j) {
+        return subjects[i][j];
+    }
+
     public String getSubjectText(int i, int j) {
         return subjects[i][j].getSubject();
     }
@@ -222,6 +226,10 @@ public class Timetable implements Serializable {
 
     public String getTeacherText(int i, int j) {
         return subjects[i][j].getTeacher();
+    }
+
+    public void setSubject(Subject s, int i, int j) {
+        subjects[i][j] = s;
     }
 
     public void setSubjectText(String s, int i, int j) {

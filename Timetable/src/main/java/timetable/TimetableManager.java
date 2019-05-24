@@ -31,7 +31,7 @@ public class TimetableManager {
     int tableCount = 0;
 
     public TimetableManager() {
-        dm = new DataManager("timetables.cfg");
+        dm = new DataManager("timetables.json");
 
         readDataFromFile();
 
@@ -46,45 +46,17 @@ public class TimetableManager {
     }
 
     public void writeDataToFile() {
-        dm.writeObject(TIMETABLES_STRING, timetables);
-        dm.writeObject(TIMETABLE_INDEX_STRING, timetableIndex);
         dm.writeData(timetables, timetableIndex);
     }
 
     public void readDataFromFile() {
-        Object tempTimetablePairs = dm.readObject(TIMETABLES_STRING);
-        Object tempTimetableIndex = dm.readObject(TIMETABLE_INDEX_STRING);
-
-        if (tempTimetablePairs != null && tempTimetablePairs.getClass() == ArrayList.class) {
-            ArrayList<TimetablePair> tempTimetablePairs2 = (ArrayList<TimetablePair>) tempTimetablePairs;
-
-            if (tempTimetableIndex != null && tempTimetableIndex.getClass() == Integer.class) {
-                timetableIndex = (Integer) tempTimetableIndex;
-
-                try {
-                    if (tempTimetablePairs2.get(timetableIndex).getClass() == TimetablePair.class) {
-                        timetables = tempTimetablePairs2;
-                        currentTablePair = timetables.get(timetableIndex);
-
-                    } else {
-                        System.out.println("nope1");
-                        timetables = new ArrayList<TimetablePair>();
-                        addTimetablePair();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("nope2");
-                    timetables = new ArrayList<TimetablePair>();
-                    addTimetablePair();
-                }
-            } else {
-                timetables = new ArrayList<TimetablePair>();
-                addTimetablePair();
-            }
-
-        } else {
-            System.out.println("nope3");
-            timetables = new ArrayList<TimetablePair>();
+        dm.readData();
+        timetables = dm.getTimetables();
+        timetableIndex = dm.getIndex();
+        
+        if(timetables.size() > 0){
+            currentTablePair = timetables.get(timetableIndex);
+        }else{
             addTimetablePair();
         }
     }
