@@ -121,13 +121,15 @@ public class DataManager {
             times.add(convertSimpleTimeToJSON(st));
         }
         t.put(TIMETABLE_TIMES, times);
-        JSONArray subjects = new JSONArray();
+        JSONArray subjectsParent = new JSONArray();
         for (Subject[] sa : timetable.getSubjects()) {
+            JSONArray subjectsChild = new JSONArray();
             for (Subject s : sa) {
-                subjects.add(convertSubjectToJSON(s));
+                subjectsChild.add(convertSubjectToJSON(s));
             }
+            subjectsParent.add(subjectsChild);
         }
-        t.put(TIMETABLE_SUBJECTS, subjects);
+        t.put(TIMETABLE_SUBJECTS, subjectsParent);
 
         t.put(TIMETABLE_START_TIME, convertSimpleTimeToJSON(timetable.getStartTime()));
 
@@ -151,11 +153,14 @@ public class DataManager {
         for (int i = 0; i < times.size(); i++) {
             t.setTime(convertJSONTOSimpleTime((JSONObject) times.get(i)), i);
         }
-        JSONArray subjects = (JSONArray) jsonObject.get(TIMETABLE_TIMES);
-        for (int i = 0; i < subjects.size(); i++) {
-            JSONObject subject = (JSONObject) subjects.get(i);
-            Subject s = convertJSONToSubject(subject);
-            t.setSubject(s, i / 10, i % 10);
+        JSONArray subjectsParent = (JSONArray) jsonObject.get(TIMETABLE_SUBJECTS);
+        for (int i = 0; i < subjectsParent.size(); i++) {
+            JSONArray subjectsChild = (JSONArray) subjectsParent.get(i);
+            for (int j = 0; j < subjectsChild.size(); j++) {
+                JSONObject subject = (JSONObject) subjectsChild.get(j);
+                Subject s = convertJSONToSubject(subject);
+                t.setSubject(s, i, j);
+            }
         }
 
         t.setStartTime(convertJSONTOSimpleTime((JSONObject) jsonObject.get(TIMETABLE_START_TIME)));
