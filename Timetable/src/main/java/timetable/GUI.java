@@ -738,12 +738,12 @@ public class GUI {
         //base controls
         bg.setStyle("-fx-background-color:" + bg1);
         name.updateColor();
-        tabBox.setStyle("-fx-background-color:" + bg4);
+        tabBox.setStyle("-fx-background-color:" + bg3);
         if (tm.IsA()) {
-            tabB.setStyle("-fx-background-color:" + bg4);
+            tabB.setStyle("-fx-background-color:" + bg3);
             tabA.setStyle("-fx-background-color:" + bg1);
         } else {
-            tabA.setStyle("-fx-background-color:" + bg4);
+            tabA.setStyle("-fx-background-color:" + bg3);
             tabB.setStyle("-fx-background-color:" + bg1);
         }
         tabA.setTextFill(Color.web(text));
@@ -894,7 +894,7 @@ public class GUI {
         hideAllMenus();
         tm.setIsA(true);
         tabB.getStyleClass().removeIf(s -> (s == "selectedRightTabButton"));
-        tabB.setStyle("-fx-background-color:" + bg4);
+        tabB.setStyle("-fx-background-color:" + bg3);
         tabA.getStyleClass().add("selectedLeftTabButton");
         tabA.setStyle("-fx-background-color:" + bg1);
         initNewTimetable();
@@ -907,7 +907,7 @@ public class GUI {
         hideAllMenus();
         tm.setIsA(false);
         tabA.getStyleClass().removeIf(s -> (s == "selectedLeftTabButton"));
-        tabA.setStyle("-fx-background-color:" + bg4);
+        tabA.setStyle("-fx-background-color:" + bg3);
         tabB.getStyleClass().add("selectedRightTabButton");
         tabB.setStyle("-fx-background-color:" + bg1);
         initNewTimetable();
