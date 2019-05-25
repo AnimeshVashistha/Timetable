@@ -12,6 +12,7 @@ timetable\DataManager.class
 timetable\SomePane.class
 timetable\Datatypes\Subject.class
 timetable\Datatypes\SimpleTime.class
+timetable\Menu.class
 timetable\AutocompletePane.class
 timetable\TimetableManager.class
 timetable\AdvancedOptionsPane.class

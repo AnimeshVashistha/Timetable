@@ -16,7 +16,6 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -29,6 +28,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
@@ -258,10 +258,6 @@ public class GUI {
         settings.setPrefWidth(500);
         settings.setPrefHeight(150);
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
-        settings.addEventHandler(ActionEvent.ACTION, event -> {
-            toggleColorMode();
-            updateColors();
-        });
         addTimetable = new JFXButton("add timetable");
         addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
@@ -1392,7 +1388,11 @@ public class GUI {
         }
     }
 
-    public Parent getParent() {
+    public Pane getPane() {
         return bg;
+    }
+
+    public JFXButton getSettingsButton() {
+        return settings;
     }
 }
