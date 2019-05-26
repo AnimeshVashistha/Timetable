@@ -89,11 +89,13 @@ public class GUI {
     static String text = lighttext;
     static String transparent = lighttransparent;
     static String semiTransparent = lightsemiTransparent;
-    static boolean lightMode = true;
+    static boolean darkMode = false;
     boolean customColor = false;
     int colorIndex = 0;
 
     static String[] dayNames = ENGLISH_DAY_NAMES;
+
+    Menu settingsMenu;
 
     TimetableManager tm;
 
@@ -228,7 +230,7 @@ public class GUI {
             menuBackgroundPane.show();
         };
         menuOnHide = (Event event) -> {
-            menuBackgroundPane.hide();
+            hideAllMenus();
             writeMenuData();
         };
         writeMenuData = (KeyEvent event) -> {
@@ -260,6 +262,13 @@ public class GUI {
         settings.setPrefWidth(500);
         settings.setPrefHeight(150);
         settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
+        settings.addEventHandler(ActionEvent.ACTION, event -> {
+            if (settingsMenu.isHidden()) {
+                settingsMenu();
+            }else{
+                settingsMenu.hide();
+            }
+        });
         addTimetable = new JFXButton("add timetable");
         addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
@@ -514,16 +523,23 @@ public class GUI {
             }
         });
 
-        new Timeline(
-                new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
-        ).play();
-
         Locale l = Locale.getDefault();
         if (LocalDate.now().get(WeekFields.of(l).weekOfWeekBasedYear()) % 2 == 0) {
             selectTabA();
         } else {
             selectTabB();
         }
+
+        //settings menu
+        settingsMenu = new Menu(this);
+        menus.add(settingsMenu);
+        menuBackgroundPane.getChildren().add(settingsMenu.getPane());
+
+        updateColors();
+
+        new Timeline(
+                new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
+        ).play();
     }
 
     public void initControlArrays() {
@@ -644,27 +660,27 @@ public class GUI {
     }
 
     public void resizeFonts() {
-        double scaleFactor1 = 0.09;
-        double scaleFactorHeightDependent1 = 0.3;
-        double scaleFactorHeightDependent2 = 0.25;
-
         double w = times[0].getWidth();
         double h = times[0].getHeight();
 
-        name.setFont(new Font((h + w) * scaleFactor1));
+        Font font1 = new Font((h + w) * 0.09);
+        Font font2 = new Font(h * 0.3);
+        Font font3 = new Font(h * 0.25);
 
-        tabA.setFont(new Font((h) * scaleFactorHeightDependent2));
-        tabB.setFont(new Font((h) * scaleFactorHeightDependent2));
+        name.setFont(font1);
+
+        tabA.setFont(font3);
+        tabB.setFont(font3);
 
         for (JFXButton b : days) {
-            b.setFont(new Font((h + w) * scaleFactor1));
+            b.setFont(font1);
         }
         for (JFXButton b : times) {
-            b.setFont(new Font((h) * scaleFactorHeightDependent1));
+            b.setFont(font2);
         }
         for (JFXButton[] ba : subjects) {
             for (JFXButton b : ba) {
-                b.setFont(new Font((h) * scaleFactorHeightDependent2));
+                b.setFont(font3);
             }
         }
     }
@@ -724,6 +740,8 @@ public class GUI {
 
     public void updateColors() {
 
+        settingsMenu.updateColors();
+
         //base controls
         bg.setStyle("-fx-background-color:" + bg1);
         name.updateColor();
@@ -742,12 +760,12 @@ public class GUI {
             day.setStyle("-fx-background-color:" + bg4);
             day.setTextFill(Color.web(text));
             day.setRipplerFill(Color.web(rpf));
-            if (lightMode) {
-                day.getStyleClass().removeIf(s -> (s == "darkRoundedShadowedButton"));
-                day.getStyleClass().add("lightRoundedShadowedButton");
-            } else {
+            if (darkMode) {
                 day.getStyleClass().removeIf(s -> (s == "lightRoundedShadowedButton"));
                 day.getStyleClass().add("darkRoundedShadowedButton");
+            } else {
+                day.getStyleClass().removeIf(s -> (s == "darkRoundedShadowedButton"));
+                day.getStyleClass().add("lightRoundedShadowedButton");
             }
         }
         for (JFXButton time : times) {
@@ -820,10 +838,10 @@ public class GUI {
     }
 
     public void toggleColorMode() {
-        if (lightMode) {
-            setDarkColors();
-        } else {
+        if (darkMode) {
             setLightColors();
+        } else {
+            setDarkColors();
         }
     }
 
@@ -838,7 +856,7 @@ public class GUI {
         text = lighttext;
         transparent = lighttransparent;
         semiTransparent = lightsemiTransparent;
-        lightMode = true;
+        darkMode = false;
     }
 
     public void setDarkColors() {
@@ -852,7 +870,7 @@ public class GUI {
         text = darktext;
         transparent = darktransparent;
         semiTransparent = darksemiTransparent;
-        lightMode = false;
+        darkMode = true;
     }
 
     public void cancelMenus() {
@@ -882,9 +900,6 @@ public class GUI {
         }
     }
 
-    //
-    //################################menu################################
-    //
     public void selectTabA() {
         hideAllMenus();
         tm.setIsA(true);
@@ -917,6 +932,18 @@ public class GUI {
         } else {
             selectTabA();
         }
+    }
+
+    //
+    //################################settingsMenu################################
+    //
+    public void settingsMenu() {
+        settingsMenu.show(
+                menu.getPane().getWidth(),
+                0,
+                bg.getWidth() - menu.getPane().getWidth(),
+                bg.getHeight()
+        );
     }
 
     //
@@ -1380,6 +1407,10 @@ public class GUI {
         if (i < days) {
             subjects[i + 1][j].requestFocus();
         }
+    }
+
+    public Menu getSettings() {
+        return settingsMenu;
     }
 
     public Pane getPane() {

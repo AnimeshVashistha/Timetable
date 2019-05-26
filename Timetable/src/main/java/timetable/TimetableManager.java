@@ -19,7 +19,6 @@ public class TimetableManager {
 
     ArrayList<TimetablePair> timetables;
     TimetablePair currentTablePair;
-    DataManager dm;
 
     boolean isA = true;
     int dIndexI = 0;
@@ -31,34 +30,7 @@ public class TimetableManager {
     int tableCount = 0;
 
     public TimetableManager() {
-        dm = new DataManager("timetables.json");
-
-        readDataFromFile();
-
-        Timeline t = new Timeline(
-                new KeyFrame(Duration.seconds(30), n -> {
-                    writeDataToFile();
-                })
-        );
-        t.setCycleCount(Timeline.INDEFINITE);
-
-        t.play();
-    }
-
-    public void writeDataToFile() {
-        dm.writeData(timetables, timetableIndex);
-    }
-
-    public void readDataFromFile() {
-        dm.readData();
-        timetables = dm.getTimetables();
-        timetableIndex = dm.getIndex();
         
-        if(timetables.size() > 0){
-            currentTablePair = timetables.get(timetableIndex);
-        }else{
-            addTimetablePair();
-        }
     }
 
     public void addTimetablePair() {

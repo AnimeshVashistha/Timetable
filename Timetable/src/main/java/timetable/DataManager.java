@@ -17,6 +17,7 @@ import timetable.Datatypes.TimetablePair;
 public class DataManager {
 
     String filename;
+    JSONObject jSONObject;
 
     public DataManager(String filename) {
         this.filename = filename;

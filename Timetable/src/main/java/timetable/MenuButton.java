@@ -130,12 +130,12 @@ public class MenuButton extends AnchorPane {
 
     public void updateColor() {
         background.setStyle("-fx-background-color:" + GUI.ac1);
-        if (GUI.lightMode) {
-            background.getStyleClass().removeIf(s -> (s == "darkRoundedShadowedButton"));
-            background.getStyleClass().add("lightRoundedShadowedButton");
-        } else {
+        if (GUI.darkMode) {
             background.getStyleClass().removeIf(s -> (s == "lightRoundedShadowedButton"));
             background.getStyleClass().add("darkRoundedShadowedButton");
+        } else {
+            background.getStyleClass().removeIf(s -> (s == "darkRoundedShadowedButton"));
+            background.getStyleClass().add("lightRoundedShadowedButton");
         }
         label.setTextFill(Color.web(GUI.text));
         bar1.setFill(Color.web(GUI.text));

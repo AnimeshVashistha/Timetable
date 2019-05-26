@@ -13,9 +13,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.Label;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -27,8 +27,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import static timetable.GUI.ANIMATION_DISTANCE;
@@ -38,7 +36,12 @@ import static timetable.GUI.ANIMATION_DURATION;
  *
  * @author Tobias
  */
-public class Menu {
+public class Menu implements Hideable {
+
+    static String smallPauseText = "Small Pause ";
+    static String middlePauseText = "Middle Pause ";
+    static String bigPauseText = "Big Pause ";
+    static String lessonLengthText = "Lesson Length ";
 
     GUI gui;
 
@@ -48,7 +51,7 @@ public class Menu {
 
     Label settingsLabel;
 
-    Line[] separators;
+    Label[] separators;
 
     Label colorSection;
     HBox colorBox;
@@ -90,6 +93,8 @@ public class Menu {
     EventHandler<Event> onHide;
     Button hideEvent = new Button();
 
+    boolean hidden = true;
+
     public Menu(GUI gui) {
 
         this.gui = gui;
@@ -97,6 +102,7 @@ public class Menu {
         pane = new ScrollPane();
         pane.setHbarPolicy(ScrollBarPolicy.NEVER);
         pane.setStyle("-fx-focus-color: transparent;");
+        pane.setVisible(false);
         pane.addEventFilter(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
@@ -111,11 +117,7 @@ public class Menu {
         pane.setContent(content);
 
         settings = new GridPane();
-        ColumnConstraints cc1 = new ColumnConstraints();
-        cc1.setPercentWidth(30);
-        ColumnConstraints cc2 = new ColumnConstraints();
-        cc2.setPercentWidth(30);
-        settings.getColumnConstraints().addAll(cc1, cc2);
+        settings.getStyleClass().add("customPane");
         content.getChildren().add(settings);
         content.setTopAnchor(settings, 0d);
         content.setRightAnchor(settings, 0d);
@@ -125,11 +127,12 @@ public class Menu {
         settingsLabel = new Label("Settings");
         settings.add(settingsLabel, 0, 0, 2, 1);
 
-        separators = new Line[1];
+        separators = new Label[1];
         for (int i = 0; i < separators.length; i++) {
-            separators[i] = new Line();
-            separators[i].setStrokeWidth(2);
-            separators[i].setStrokeLineCap(StrokeLineCap.ROUND);
+            separators[i] = new Label();
+            separators[i].setMinHeight(1);
+            separators[i].setPrefHeight(1);
+            separators[i].setMaxHeight(1);
         }
 
         //accent color
@@ -161,6 +164,14 @@ public class Menu {
         settings.add(colorModeLabel, 0, 4);
         colorMode = new JFXToggleButton();
         colorMode.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        colorMode.selectedProperty().addListener(event -> {
+            if (gui.darkMode) {
+                gui.setLightColors();
+            } else {
+                gui.setDarkColors();
+            }
+            gui.updateColors();
+        });
         settings.add(colorMode, 1, 4);
 
         //times
@@ -189,39 +200,47 @@ public class Menu {
         });
         settings.add(startTime, 1, 7);
 
-        smallPauseLabel = new Label("Small Pause");
+        smallPauseLabel = new Label(smallPauseText);
         settings.add(smallPauseLabel, 0, 8);
         smallPause = new JFXSlider();
         smallPause.setMax(15);
         smallPause.valueProperty().addListener(event -> {
-            gui.tm.getCurrentTablePair().setSmallPause((int) smallPause.getValue());
+            int sp = (int) Math.round(smallPause.getValue());
+            gui.tm.getCurrentTablePair().setSmallPause(sp);
+            smallPauseLabel.setText(smallPauseText + sp);
         });
         settings.add(smallPause, 1, 8);
 
-        middlePauseLabel = new Label("Middle Pause");
+        middlePauseLabel = new Label(middlePauseText);
         settings.add(middlePauseLabel, 0, 9);
         middlePause = new JFXSlider();
         middlePause.setMax(30);
         middlePause.valueProperty().addListener(event -> {
-            gui.tm.getCurrentTablePair().setMiddlePause((int) middlePause.getValue());
+            int mp = (int) Math.round(middlePause.getValue());
+            gui.tm.getCurrentTablePair().setMiddlePause(mp);
+            middlePauseLabel.setText(middlePauseText + mp);
         });
         settings.add(middlePause, 1, 9);
 
-        bigPauseLabel = new Label("Big Pause");
+        bigPauseLabel = new Label(bigPauseText);
         settings.add(bigPauseLabel, 0, 10);
         bigPause = new JFXSlider();
         bigPause.setMax(90);
         bigPause.valueProperty().addListener(event -> {
-            gui.tm.getCurrentTablePair().setBigPause((int) bigPause.getValue());
+            int bp = (int) Math.round(bigPause.getValue());
+            gui.tm.getCurrentTablePair().setBigPause(bp);
+            bigPauseLabel.setText(bigPauseText + bp);
         });
         settings.add(bigPause, 1, 10);
 
-        lessonLengthLabel = new Label("lesson Lenght");
+        lessonLengthLabel = new Label(lessonLengthText);
         settings.add(lessonLengthLabel, 0, 11);
         lessonLength = new JFXSlider();
         lessonLength.setMax(90);
         lessonLength.valueProperty().addListener(event -> {
-            gui.tm.getCurrentTablePair().setLessonlength((int) lessonLength.getValue());
+            int ll = (int) Math.round(lessonLength.getValue());
+            gui.tm.getCurrentTablePair().setLessonlength(ll);
+            lessonLengthLabel.setText(lessonLengthText + ll);
         });
         settings.add(lessonLength, 1, 11);
 
@@ -279,28 +298,119 @@ public class Menu {
         });
     }
 
-    public void show(double w, double h) {
-        colorMode.setSelected(!gui.lightMode);
-        if (!gui.customColor) {
-            highlightColorButton(gui.colorIndex);
+    public void show(double x, double y, double w, double h) {
+        if (hidden) {
+            hidden = false;
+            colorMode.setSelected(gui.darkMode);
+            if (!gui.customColor) {
+                highlightColorButton(gui.colorIndex);
+            }
+            pane.setVisible(true);
+            updateTimeComponentsText();
+            pane.setLayoutX(x);
+            pane.setLayoutY(y);
+            pane.setPrefWidth(w);
+            pane.setPrefHeight(h);
+            resize(w, h);
+            show.play();
         }
-        pane.setVisible(true);
-        updateTimeComponentsText();
-        resize(w, h);
-        show.play();
     }
 
     public void hide() {
-        hide.play();
+        if (!hidden) {
+            hidden = true;
+            hide.play();
+        }
+    }
+
+    @Override
+    public void cancel() {
+        if (!hidden) {
+            hidden = true;
+            pane.setVisible(false);
+        }
+    }
+
+    public void resize(double w, double h) {
+
+        h = h / 8;
+        if (h < 80) {
+            h = 80;
+        }
+
+        Insets padding = new Insets(h * 0.1);
+        Font font1 = new Font(h * 0.5);
+        Font font2 = new Font(h * 0.35);
+        Font font3 = new Font(h * 0.2);
+        double spacing = h * 0.2;
+
+        content.setPrefWidth(w);
+
+        ColumnConstraints cc1 = new ColumnConstraints();
+        cc1.setPrefWidth(h * 3);
+        ColumnConstraints cc2 = new ColumnConstraints();
+        cc2.setMaxWidth(h * 3);
+        ColumnConstraints cc3 = new ColumnConstraints();
+        cc3.setFillWidth(true);
+        settings.getColumnConstraints().removeIf(s -> s.getClass().equals(ColumnConstraints.class));
+        settings.getColumnConstraints().addAll(cc1, cc2, cc3);
+        settings.setPadding(new Insets(h * 0.3));
+
+        for (Label s : separators) {
+            s.setPrefWidth(w * 0.6);
+            settings.setMargin(s, padding);
+        }
+
+        settingsLabel.setFont(font1);
+        settingsLabel.setPadding(padding);
+
+        colorSection.setFont(font2);
+        colorSection.setPadding(padding);
+        for (JFXButton b : colorButtons) {
+            b.setPrefSize(h, h);
+        }
+        colorBox.setSpacing(spacing);
+        colorBox.setPadding(padding);
+        customColorLabel.setFont(font3);
+        customColorLabel.setPadding(padding);
+        customColor.setScaleX(h * 0.012);
+        customColor.setScaleY(h * 0.012);
+        colorModeLabel.setFont(font3);
+        colorModeLabel.setPadding(padding);
+        colorMode.setScaleX(h * 0.012);
+        colorMode.setScaleY(h * 0.012);
+
+        timeSection.setFont(font2);
+        timeSection.setPadding(padding);
+        startTimeLabel.setFont(font3);
+        startTimeLabel.setPadding(padding);
+        startTime.setPrefSize(h * 1.6, h * 0.8);
+        startTime.setFont(font3);
+        smallPauseLabel.setFont(font3);
+        smallPauseLabel.setPadding(padding);
+        smallPause.getStyleClass().add("customSlider");
+        middlePauseLabel.setFont(font3);
+        middlePauseLabel.setPadding(padding);
+        bigPauseLabel.setFont(font3);
+        bigPauseLabel.setPadding(padding);
+        lessonLengthLabel.setFont(font3);
+        lessonLengthLabel.setPadding(padding);
+        timeBox.setSpacing(spacing);
+        timeBox.setPadding(padding);
+        applyToA.setPrefSize(w / 3, h * 0.6);
+        applyToA.setFont(font3);
+        applyToB.setPrefSize(w / 3, h * 0.6);
+        applyToB.setFont(font3);
+        applyToBoth.setPrefSize(w / 3, h * 0.6);
+        applyToBoth.setFont(font3);
     }
 
     public void updateColors() {
-        gui.updateColors();
         settings.setStyle("-fx-background-color:" + gui.bg1);
         settingsLabel.setTextFill(Color.web(gui.text));
 
-        for (Line l : separators) {
-            l.setStroke(Color.web(gui.text));
+        for (Label s : separators) {
+            s.setStyle("-fx-background-color:" + gui.text);
         }
 
         colorSection.setTextFill(Color.web(gui.text));
@@ -341,7 +451,7 @@ public class Menu {
             if (event.getSource() == colorButtons[i]) {
                 highlightColorButton(i);
                 gui.setAccentColor(i);
-                updateColors();
+                gui.updateColors();
             }
         }
     }
@@ -362,80 +472,20 @@ public class Menu {
         );
     }
 
-    public void resize(double w, double h) {
-
-        double padding = 0.1;
-        double spacing = 0.2;
-        double font1 = 0.5;
-        double font2 = 0.35;
-        double font3 = 0.2;
-
-        h = h / 8;
-        if (h < 80) {
-            h = 80;
-        }
-        content.setPrefWidth(w);
-
-        settings.setPadding(new Insets(h * 0.3));
-
-        settingsLabel.setFont(new Font(h * font1));
-        settingsLabel.setPadding(new Insets(h * padding));
-
-        for (Line l : separators) {
-            l.setStartX(h * spacing);
-            l.setStartY(0);
-            l.setEndX(w / 2 - h * spacing);
-            l.setEndY(0);
-            settings.setMargin(l, new Insets(h * padding));
-        }
-
-        colorSection.setFont(new Font(h * font2));
-        colorSection.setPadding(new Insets(h * padding));
-        for (JFXButton b : colorButtons) {
-            b.setPrefSize(h, h);
-        }
-        colorBox.setSpacing(h * spacing);
-        colorBox.setPadding(new Insets(h * padding));
-        customColorLabel.setFont(new Font(h * font3));
-        customColorLabel.setPadding(new Insets(h * padding));
-        customColor.setScaleX(h * 0.012);
-        customColor.setScaleY(h * 0.012);
-        colorModeLabel.setFont(new Font(h * font3));
-        colorModeLabel.setPadding(new Insets(h * padding));
-        colorMode.setScaleX(h * 0.012);
-        colorMode.setScaleY(h * 0.012);
-
-        timeSection.setFont(new Font(h * font2));
-        timeSection.setPadding(new Insets(h * padding));
-        startTimeLabel.setFont(new Font(h * font3));
-        startTimeLabel.setPadding(new Insets(h * padding));
-        startTime.setPrefSize(h * 1.6, h * 0.8);
-        startTime.setFont(new Font(h * font3));
-        smallPauseLabel.setFont(new Font(h * font3));
-        smallPauseLabel.setPadding(new Insets(h * padding));
-        smallPause.getStyleClass().add("customSlider");
-        middlePauseLabel.setFont(new Font(h * font3));
-        middlePauseLabel.setPadding(new Insets(h * padding));
-        bigPauseLabel.setFont(new Font(h * font3));
-        bigPauseLabel.setPadding(new Insets(h * padding));
-        lessonLengthLabel.setFont(new Font(h * font3));
-        lessonLengthLabel.setPadding(new Insets(h * padding));
-        timeBox.setSpacing(h * spacing);
-        timeBox.setPadding(new Insets(h * padding));
-        applyToA.setPrefSize(w / 6, h * 0.6);
-        applyToA.setFont(new Font(h * font3));
-        applyToB.setPrefSize(w / 6, h * 0.6);
-        applyToB.setFont(new Font(h * font3));
-        applyToBoth.setPrefSize(w / 6, h * 0.6);
-        applyToBoth.setFont(new Font(h * font3));
-    }
-
     public void updateTimeComponentsText() {
         startTime.setText(gui.tm.getCurrentTablePair().getStartTime().format());
-        smallPause.setValue(gui.tm.getCurrentTablePair().getSmallPause());
-        middlePause.setValue(gui.tm.getCurrentTablePair().getMiddlePause());
-        bigPause.setValue(gui.tm.getCurrentTablePair().getBigPause());
-        lessonLength.setValue(gui.tm.getCurrentTablePair().getLessonlength());
+        int sp = gui.tm.getCurrentTablePair().getSmallPause();
+        smallPause.setValue(sp);
+        smallPauseLabel.setText(smallPauseText + sp);
+        int mp = gui.tm.getCurrentTablePair().getMiddlePause();
+        middlePause.setValue(mp);
+        middlePauseLabel.setText(middlePauseText + mp);
+        int bp = gui.tm.getCurrentTablePair().getBigPause();
+        bigPause.setValue(bp);
+        bigPauseLabel.setText(bigPauseText + bp);
+        int ll = gui.tm.getCurrentTablePair().getLessonlength();
+        lessonLength.setValue(ll);
+        lessonLengthLabel.setText(lessonLengthText + ll);
     }
 
     public ScrollPane getPane() {
@@ -444,6 +494,10 @@ public class Menu {
 
     public JFXToggleButton getColorMode() {
         return colorMode;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
 }

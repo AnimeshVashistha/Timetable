@@ -4,7 +4,7 @@
 
     <groupId>CoolCompany</groupId>
     <artifactId>Timetable</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Timetable</name>
@@ -68,7 +68,9 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
