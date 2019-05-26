@@ -10,15 +10,12 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.control.Separator;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -30,6 +27,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import static timetable.GUI.ANIMATION_DISTANCE;
@@ -48,8 +47,8 @@ public class Menu {
     GridPane settings;
 
     Label settingsLabel;
-    
-    Separator[] separators;
+
+    Line[] separators;
 
     Label colorSection;
     HBox colorBox;
@@ -113,14 +112,10 @@ public class Menu {
 
         settings = new GridPane();
         ColumnConstraints cc1 = new ColumnConstraints();
-        cc1.setPercentWidth(25);
+        cc1.setPercentWidth(30);
         ColumnConstraints cc2 = new ColumnConstraints();
-        cc2.setPercentWidth(25);
-        ColumnConstraints cc3 = new ColumnConstraints();
-        cc3.setPercentWidth(25);
-        ColumnConstraints cc4 = new ColumnConstraints();
-        cc4.setPercentWidth(25);
-        settings.getColumnConstraints().addAll(cc1, cc2, cc3, cc4);
+        cc2.setPercentWidth(30);
+        settings.getColumnConstraints().addAll(cc1, cc2);
         content.getChildren().add(settings);
         content.setTopAnchor(settings, 0d);
         content.setRightAnchor(settings, 0d);
@@ -130,17 +125,19 @@ public class Menu {
         settingsLabel = new Label("Settings");
         settings.add(settingsLabel, 0, 0, 2, 1);
 
-        separators = new Separator[1];
-        for(int i = 0; i < separators.length; i++){
-            separators[i] = new Separator();
+        separators = new Line[1];
+        for (int i = 0; i < separators.length; i++) {
+            separators[i] = new Line();
+            separators[i].setStrokeWidth(2);
+            separators[i].setStrokeLineCap(StrokeLineCap.ROUND);
         }
-        
+
         //accent color
         colorSection = new Label("Color");
         settings.add(colorSection, 0, 1);
 
         colorBox = new HBox();
-        settings.add(colorBox, 0, 2, 2, 1);
+        settings.add(colorBox, 0, 2, 3, 1);
 
         colorButtons = new JFXButton[GUI.ac1s.length];
         for (int i = 0; i < colorButtons.length; i++) {
@@ -168,7 +165,7 @@ public class Menu {
 
         //times
         settings.add(separators[0], 0, 5, 2, 1);
-        
+
         timeSection = new Label("Time");
         settings.add(timeSection, 0, 6);
 
@@ -301,15 +298,11 @@ public class Menu {
         gui.updateColors();
         settings.setStyle("-fx-background-color:" + gui.bg1);
         settingsLabel.setTextFill(Color.web(gui.text));
-        
-        for(Separator s : separators){
-            s.setStyle("-fx-background-color:" + gui.text);
-            s.setStyle("-fx-border-style: solid");
-            s.setStyle("-fx-border-width: 5");
-            s.setStyle("-fx-border-color:" + gui.text);
-            s.setStyle("-fx-padding: 0 -2 0 0");
+
+        for (Line l : separators) {
+            l.setStroke(Color.web(gui.text));
         }
-        
+
         colorSection.setTextFill(Color.web(gui.text));
         highlightColorButton(gui.colorIndex);
         for (JFXButton b : colorButtons) {
@@ -325,7 +318,7 @@ public class Menu {
         colorMode.setToggleLineColor(Color.web(gui.ac2));
         colorMode.setUnToggleColor(Color.web(gui.fg1));
         colorMode.setUnToggleLineColor(Color.web(gui.fg2));
-        
+
         timeSection.setTextFill(Color.web(gui.text));
         timePicker.updateColor();
         startTimeLabel.setTextFill(Color.web(gui.text));
@@ -335,9 +328,12 @@ public class Menu {
         middlePauseLabel.setTextFill(Color.web(gui.text));
         bigPauseLabel.setTextFill(Color.web(gui.text));
         lessonLengthLabel.setTextFill(Color.web(gui.text));
-        applyToA.setStyle("-fx-background-color:" + gui.ac1);
-        applyToB.setStyle("-fx-background-color:" + gui.ac1);
-        applyToBoth.setStyle("-fx-background-color:" + gui.ac1);
+        applyToA.setStyle("-fx-background-color:" + gui.bg4);
+        applyToA.setTextFill(Color.web(gui.text));
+        applyToB.setStyle("-fx-background-color:" + gui.bg4);
+        applyToB.setTextFill(Color.web(gui.text));
+        applyToBoth.setStyle("-fx-background-color:" + gui.bg4);
+        applyToBoth.setTextFill(Color.web(gui.text));
     }
 
     public void setAccentColor(ActionEvent event) {
@@ -385,6 +381,14 @@ public class Menu {
         settingsLabel.setFont(new Font(h * font1));
         settingsLabel.setPadding(new Insets(h * padding));
 
+        for (Line l : separators) {
+            l.setStartX(h * spacing);
+            l.setStartY(0);
+            l.setEndX(w / 2 - h * spacing);
+            l.setEndY(0);
+            settings.setMargin(l, new Insets(h * padding));
+        }
+
         colorSection.setFont(new Font(h * font2));
         colorSection.setPadding(new Insets(h * padding));
         for (JFXButton b : colorButtons) {
@@ -409,6 +413,7 @@ public class Menu {
         startTime.setFont(new Font(h * font3));
         smallPauseLabel.setFont(new Font(h * font3));
         smallPauseLabel.setPadding(new Insets(h * padding));
+        smallPause.getStyleClass().add("customSlider");
         middlePauseLabel.setFont(new Font(h * font3));
         middlePauseLabel.setPadding(new Insets(h * padding));
         bigPauseLabel.setFont(new Font(h * font3));
@@ -417,11 +422,11 @@ public class Menu {
         lessonLengthLabel.setPadding(new Insets(h * padding));
         timeBox.setSpacing(h * spacing);
         timeBox.setPadding(new Insets(h * padding));
-        applyToA.setPrefSize(h * 1.6, h * 0.8);
+        applyToA.setPrefSize(w / 6, h * 0.6);
         applyToA.setFont(new Font(h * font3));
-        applyToB.setPrefSize(h * 1.6, h * 0.8);
+        applyToB.setPrefSize(w / 6, h * 0.6);
         applyToB.setFont(new Font(h * font3));
-        applyToBoth.setPrefSize(h * 1.6, h * 0.8);
+        applyToBoth.setPrefSize(w / 6, h * 0.6);
         applyToBoth.setFont(new Font(h * font3));
     }
 

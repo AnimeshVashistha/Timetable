@@ -71,8 +71,8 @@ public class GUI {
     final static String darktransparent = "#00000000";
     final static String darksemiTransparent = "#BBBBBB55";
 
-    final static String[] ac1s = {"#66DD77", "#FFBB55", "#DD5566", "#5599DD"};
-    final static String[] ac2s = {"#55CC66", "#EEAA44", "#CC4455", "#4488CC"};
+    final static String[] ac1s = {"#66DD55", "#FFBB55", "#DD5566", "#5599DD"};
+    final static String[] ac2s = {"#55CC44", "#EEAA44", "#CC4455", "#4488CC"};
 
     final static String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};

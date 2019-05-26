@@ -56,6 +56,19 @@
     */
 }
 
+.customSlider:thumb{
+    -fx-background-color: #FFBB55!important;
+}
+.customSlider:track{
+        -fx-background-color: #888888!important;
+}
+.customSlider:colored-track{
+        -fx-background-color: #EEAA44!important;
+}
+.customSlider:animated-thumb{
+        -fx-background-color: #FFBB55!important;
+}
+
 .customPane{
     -fx-background-radius: 7;
     -fx-effect: dropshadow(three-pass-box, gray, 5, 0, 1, 1);
