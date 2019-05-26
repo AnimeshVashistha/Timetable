@@ -34,6 +34,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
 import timetable.Datatypes.Subject;
 import timetable.Datatypes.Timetable;
 
@@ -43,39 +44,39 @@ import timetable.Datatypes.Timetable;
  */
 public class GUI {
 
-    final static int ANIMATION_DURATION = 200;
-    final static int ANIMATION_DISTANCE = 50;
-    final static double GAP_SIZE = 2;
-    final static double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
-    final static double FONT_FACTOR = 0.22;
+    static final int ANIMATION_DURATION = 200;
+    static final int ANIMATION_DISTANCE = 50;
+    static final double GAP_SIZE = 2;
+    static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
+    static final double FONT_FACTOR = 0.22;
 
-    final static String lightfg1 = "#FFFFFF";
-    final static String lightfg2 = "#888888";
-    final static String lightbg1 = "#EEEEEE";
-    final static String lightbg2 = "#E8E8E8";
-    final static String lightbg3 = "#DDDDDD";
-    final static String lightbg4 = "#CCCCCC";
-    final static String lightrpf = "#000000";
-    final static String lighttext = "#292929";
-    final static String lighttransparent = "#00000000";
-    final static String lightsemiTransparent = "#00000055";
+    static final String lightfg1 = "#FFFFFF";
+    static final String lightfg2 = "#888888";
+    static final String lightbg1 = "#EEEEEE";
+    static final String lightbg2 = "#E8E8E8";
+    static final String lightbg3 = "#DDDDDD";
+    static final String lightbg4 = "#CCCCCC";
+    static final String lightrpf = "#000000";
+    static final String lighttext = "#292929";
+    static final String lighttransparent = "#00000000";
+    static final String lightsemiTransparent = "#00000055";
 
-    final static String darkfg1 = "#BBBBBB";
-    final static String darkfg2 = "#555555";
-    final static String darkbg1 = "#111111";
-    final static String darkbg2 = "#181818";
-    final static String darkbg3 = "#222222";
-    final static String darkbg4 = "#333333";
-    final static String darkrpf = "#FFFFFF";
-    final static String darktext = "#DDDDDD";
-    final static String darktransparent = "#00000000";
-    final static String darksemiTransparent = "#BBBBBB55";
+    static final String darkfg1 = "#BBBBBB";
+    static final String darkfg2 = "#555555";
+    static final String darkbg1 = "#111111";
+    static final String darkbg2 = "#181818";
+    static final String darkbg3 = "#222222";
+    static final String darkbg4 = "#333333";
+    static final String darkrpf = "#FFFFFF";
+    static final String darktext = "#DDDDDD";
+    static final String darktransparent = "#00000000";
+    static final String darksemiTransparent = "#BBBBBB55";
 
-    final static String[] ac1s = {"#66DD55", "#FFBB55", "#DD5566", "#5599DD"};
-    final static String[] ac2s = {"#55CC44", "#EEAA44", "#CC4455", "#4488CC"};
+    static final String[] ac1s = {"#66DD55", "#FFBB55", "#DD5566", "#5599DD"};
+    static final String[] ac2s = {"#55CC44", "#EEAA44", "#CC4455", "#4488CC"};
 
-    final static String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-    final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
+    static final String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    static final String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
     static String ac1 = ac1s[0];
     static String ac2 = ac2s[0];
@@ -125,7 +126,6 @@ public class GUI {
     JFXButton selectedTime;
     JFXButton selectedSubject;
 
-    EventHandler<KeyEvent> hideAllMenusK;
     List<Hideable> menus;
 
     //menu
@@ -194,7 +194,14 @@ public class GUI {
     JFXButton addAbove;
     JFXButton addBelow;
 
-    public GUI() {
+    public GUI(JSONObject data) {
+
+        openData(data);
+        if (darkMode) {
+            setDarkColors();
+        } else {
+            setLightColors();
+        }
 
         bg = new AnchorPane();
         bg.setPrefSize(900, 600);
@@ -207,15 +214,9 @@ public class GUI {
         bg.setBottomAnchor(subjectGrid, GAP_SIZE);
         bg.setLeftAnchor(subjectGrid, GAP_SIZE);
 
-        hideAllMenusK = (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
-                hideAllMenus();
-            }
-        };
-
         initControlArrays();
 
-        tm = new TimetableManager();
+        tm = new TimetableManager(data);
 
         initNewTimetable();
 
@@ -255,17 +256,15 @@ public class GUI {
         menuName.setPrefWidth(500);
         menuName.setPromptText("name");
         menuName.getStyleClass().add("customTextfield");
-        menuName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
         settings = new JFXButton("settings");
         settings.getStyleClass().add("notRoundedButton");
         settings.setPrefWidth(500);
         settings.setPrefHeight(150);
-        settings.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         settings.addEventHandler(ActionEvent.ACTION, event -> {
             if (settingsMenu.isHidden()) {
                 settingsMenu();
-            }else{
+            } else {
                 settingsMenu.hide();
             }
         });
@@ -273,7 +272,6 @@ public class GUI {
         addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(150);
-        addTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             addTimetable();
         });
@@ -281,7 +279,6 @@ public class GUI {
         deleteTimetable.getStyleClass().add("notRoundedButton");
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(150);
-        deleteTimetable.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             deleteTimetable();
         });
@@ -370,7 +367,6 @@ public class GUI {
             dayToggles[i].getStyleClass().add("customToggleButton");
             dayToggles[i].setAlignment(Pos.CENTER);
             dayToggles[i].addEventHandler(EventType.ROOT, dayToggled);
-            dayToggles[i].addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
             dayLabels[i] = new Label(dayNames[i]);
 
             ColumnConstraints cc = new ColumnConstraints();
@@ -387,12 +383,10 @@ public class GUI {
         dayContextMenu = new OptionsPane(bg);
         menus.add(dayContextMenu);
         clearColumn = new JFXButton("clear column");
-        clearColumn.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         clearColumn.addEventHandler(ActionEvent.ACTION, event -> {
             clearColumn();
         });
         deleteColumn = new JFXButton("delete column");
-        deleteColumn.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         deleteColumn.addEventHandler(ActionEvent.ACTION, event -> {
             deleteColumn();
         });
@@ -412,22 +406,18 @@ public class GUI {
         timeContextMenu = new OptionsPane(bg);
         menus.add(timeContextMenu);
         clearRow = new JFXButton("clear row");
-        clearRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         clearRow.addEventHandler(ActionEvent.ACTION, event -> {
             clearRow();
         });
         deleteRow = new JFXButton("delete row");
-        deleteRow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         deleteRow.addEventHandler(ActionEvent.ACTION, event -> {
             deleteRow();
         });
         addRowAbove = new JFXButton("add row above");
-        addRowAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addRowAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addRowAbove();
         });
         addRowBelow = new JFXButton("add row below");
-        addRowBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addRowBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addRowBelow();
         });
@@ -455,20 +445,17 @@ public class GUI {
         subjectMenu.setOnShow(subjectMenuOnShow);
         subjectMenu.setOnHide(subjectMenuOnHide);
         subjectName = new JFXTextField();
-        subjectName.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         subjectName.setPrefWidth(500);
         subjectName.setPrefHeight(100);
         subjectName.setPromptText("name");
         subjectName.getStyleClass().add("customTextfield");
         subjectRoom = new JFXTextField();
-        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectRoom.setPrefWidth(500);
         subjectRoom.setPrefHeight(100);
         subjectRoom.getStyleClass().add("customTextfield");
         subjectRoom.setPromptText("room");
         subjectTeacher = new JFXTextField();
-        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectTeacher.setPrefWidth(500);
         subjectTeacher.setPrefHeight(100);
@@ -494,22 +481,18 @@ public class GUI {
         subjectContextMenu = new OptionsPane(bg);
         menus.add(subjectContextMenu);
         clear = new JFXButton("clear");
-        clear.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         clear.addEventHandler(ActionEvent.ACTION, event -> {
             clear();
         });
         delete = new JFXButton("delete");
-        delete.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         delete.addEventHandler(ActionEvent.ACTION, event -> {
             delete();
         });
         addAbove = new JFXButton("add above");
-        addAbove.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addAbove();
         });
         addBelow = new JFXButton("add below");
-        addBelow.addEventHandler(KeyEvent.KEY_RELEASED, hideAllMenusK);
         addBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addBelow();
         });
@@ -540,6 +523,37 @@ public class GUI {
         new Timeline(
                 new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
         ).play();
+    }
+
+    static final String COLOR_INDEX = "colorIndex";
+    static final String CUSTOM_COLOR = "customColor";
+    static final String AC_1 = "ac1";
+    static final String AC_2 = "ac2";
+    static final String DARK_MODE = "darkMode";
+
+    public JSONObject getDataToSave() {
+        JSONObject data = new JSONObject();
+
+        data.put(COLOR_INDEX, colorIndex);
+        data.put(CUSTOM_COLOR, customColor);
+        data.put(AC_1, ac1);
+        data.put(AC_2, ac2);
+        data.put(DARK_MODE, darkMode);
+
+        return data;
+    }
+
+    public void openData(JSONObject data) {
+        try {
+            JSONObject jo = (JSONObject) data.get(Main.GUI);
+            colorIndex = (int) (long) jo.get(COLOR_INDEX);
+            customColor = (boolean) jo.get(CUSTOM_COLOR);
+            ac1 = (String) jo.get(AC_1);
+            ac2 = (String) jo.get(AC_2);
+            darkMode = (boolean) jo.get(DARK_MODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void initControlArrays() {

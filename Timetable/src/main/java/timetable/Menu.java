@@ -4,7 +4,9 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXToggleButton;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
+import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -165,10 +167,10 @@ public class Menu implements Hideable {
         colorMode = new JFXToggleButton();
         colorMode.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         colorMode.selectedProperty().addListener(event -> {
-            if (gui.darkMode) {
-                gui.setLightColors();
-            } else {
+            if (colorMode.isSelected()) {
                 gui.setDarkColors();
+            } else {
+                gui.setLightColors();
             }
             gui.updateColors();
         });
@@ -312,6 +314,12 @@ public class Menu implements Hideable {
             pane.setPrefWidth(w);
             pane.setPrefHeight(h);
             resize(w, h);
+            new Timeline(
+                    new KeyFrame(
+                            Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
+                            n -> colorButtons[0].requestFocus()
+                    )
+            ).play();
             show.play();
         }
     }

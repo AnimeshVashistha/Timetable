@@ -9,12 +9,16 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
 
 /**
  *
  * @author Tobias
  */
 public class Main extends Application {
+
+    static final String TIMETABLE_MANAGER = "timetableManager";
+    static final String GUI = "gui";
 
     GUI gui;
     Scene scene;
@@ -27,7 +31,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        gui = new GUI();
+        JSONObject data = dm.readData();
+
+        gui = new GUI(data);
 
         scene = new Scene(gui.getPane());
         scene.getStylesheets().add("/styles/Styles.css");
@@ -39,10 +45,18 @@ public class Main extends Application {
                     gui.addTimetable();
                 }
             } else {
-                if (event.getCode() == KeyCode.M) {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    gui.hideAllMenus();
+                } else if (event.getCode() == KeyCode.M) {
                     gui.menu();
                 } else if (event.getCode() == KeyCode.S) {
-                    //settings
+                    gui.menu();
+                    new Timeline(
+                            new KeyFrame(
+                                    Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
+                                    n -> gui.settingsMenu()
+                            )
+                    ).play();
                 }
             }
         });
@@ -81,13 +95,12 @@ public class Main extends Application {
                 new KeyFrame(Duration.millis(1), n -> gui.resizeFonts())
         ).play();
     }
-    
-    public void saveData(){
-        
-    }
-    
-    public void readData(){
-        
+
+    public void saveData() {
+        JSONObject data = new JSONObject();
+        data.put(TIMETABLE_MANAGER, gui.tm.getDataToSave());
+        data.put(GUI, gui.getDataToSave());
+        dm.writeData(data);
     }
 
 }

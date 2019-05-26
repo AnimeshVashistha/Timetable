@@ -23,21 +23,7 @@ public class DataManager {
         this.filename = filename;
     }
 
-    final static String TIMETABLES = "timetables";
-    final static String TIMETABLE_INDEX = "timetableIndex";
-
-    public void writeData(ArrayList<TimetablePair> timetables, int index) {
-
-        JSONObject jSONObject = new JSONObject();
-        JSONArray jsonTimetables = new JSONArray();
-
-        for (TimetablePair tp : timetables) {
-            jsonTimetables.add(convertTimetablePairToJSON(tp));
-        }
-
-        jSONObject.put(TIMETABLES, jsonTimetables);
-        jSONObject.put(TIMETABLE_INDEX, index);
-
+    public void writeData(JSONObject jSONObject) {
         try (FileWriter file = new FileWriter(filename)) {
             file.write(jSONObject.toJSONString());
         } catch (IOException e) {
@@ -45,43 +31,25 @@ public class DataManager {
         }
     }
 
-    ArrayList<TimetablePair> timetables;
-    int index;
-
-    public void readData() {
+    public JSONObject readData() {
         JSONParser parser = new JSONParser();
-
         try {
             Reader reader = new FileReader(filename);
-
-            timetables = new ArrayList();
-
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
-            JSONArray jsonTimtables = (JSONArray) jsonObject.get(TIMETABLES);
-
-            Iterator<JSONObject> it = jsonTimtables.iterator();
-            while (it.hasNext()) {
-                TimetablePair tp = convertJSONTOTimetablePair(it.next());
-                timetables.add(tp);
-            }
-
-            index = (int) (long) jsonObject.get(TIMETABLE_INDEX);
-
+            return jsonObject;
         } catch (Exception ex) {
-            timetables = new ArrayList();
-            index = 0;
-            ex.printStackTrace();
+            return null;
         }
     }
 
-    final static String TIMETABLE_PAIR_NAME = "name";
-    final static String TIMETABLE_PAIR_START_TIME = "startTime";
-    final static String TIMETABLE_PAIR_SMALL_PAUSE = "smallPause";
-    final static String TIMETABLE_PAIR_MIDDLE_PAUSE = "middlePause";
-    final static String TIMETABLE_PAIR_BIG_PAUSE = "bigPause";
-    final static String TIMETABLE_PAIR_LESSON_LENGTH = "lessonLength";
-    final static String TIMETABLE_PAIR_A = "a";
-    final static String TIMETABLE_PAIR_B = "b";
+    static final String TIMETABLE_PAIR_NAME = "name";
+    static final String TIMETABLE_PAIR_START_TIME = "startTime";
+    static final String TIMETABLE_PAIR_SMALL_PAUSE = "smallPause";
+    static final String TIMETABLE_PAIR_MIDDLE_PAUSE = "middlePause";
+    static final String TIMETABLE_PAIR_BIG_PAUSE = "bigPause";
+    static final String TIMETABLE_PAIR_LESSON_LENGTH = "lessonLength";
+    static final String TIMETABLE_PAIR_A = "a";
+    static final String TIMETABLE_PAIR_B = "b";
 
     public JSONObject convertTimetablePairToJSON(TimetablePair timetablePair) {
         JSONObject tp = new JSONObject();
@@ -115,10 +83,10 @@ public class DataManager {
         return tp;
     }
 
-    final static String TIMETABLE_DAYS = "days";
-    final static String TIMETABLE_TIMES = "times";
-    final static String TIMETABLE_SUBJECTS = "subjects";
-    final static String TIMETABLE_LESSONS = "lessons";
+    static final String TIMETABLE_DAYS = "days";
+    static final String TIMETABLE_TIMES = "times";
+    static final String TIMETABLE_SUBJECTS = "subjects";
+    static final String TIMETABLE_LESSONS = "lessons";
 
     public JSONObject convertTimetableToJSON(Timetable timetable) {
         JSONObject t = new JSONObject();
@@ -172,8 +140,8 @@ public class DataManager {
         return t;
     }
 
-    final static String SIMPLE_TIME_HOURS = "hours";
-    final static String SIMPLE_TIME_MINUTES = "minutes";
+    static final String SIMPLE_TIME_HOURS = "hours";
+    static final String SIMPLE_TIME_MINUTES = "minutes";
 
     public JSONObject convertSimpleTimeToJSON(SimpleTime simpleTime) {
         JSONObject st = new JSONObject();
@@ -191,9 +159,9 @@ public class DataManager {
         return st;
     }
 
-    final static String SUBJECT_NAME = "name";
-    final static String SUBJECT_ROOM = "room";
-    final static String SUBJECT_TEACHER = "teacher";
+    static final String SUBJECT_NAME = "name";
+    static final String SUBJECT_ROOM = "room";
+    static final String SUBJECT_TEACHER = "teacher";
 
     public JSONObject convertSubjectToJSON(Subject subject) {
         JSONObject s = new JSONObject();
@@ -211,14 +179,6 @@ public class DataManager {
         s.setTeacher((String) jsonObject.get(SUBJECT_TEACHER));
 
         return s;
-    }
-
-    public ArrayList<TimetablePair> getTimetables() {
-        return timetables;
-    }
-
-    public int getIndex() {
-        return index;
     }
 
 }

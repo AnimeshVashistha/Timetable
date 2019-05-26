@@ -1,10 +1,11 @@
 package timetable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import timetable.Datatypes.Timetable;
 import timetable.Datatypes.TimetablePair;
 
@@ -14,8 +15,8 @@ import timetable.Datatypes.TimetablePair;
  */
 public class TimetableManager {
 
-    final static String TIMETABLES_STRING = "timetables";
-    final static String TIMETABLE_INDEX_STRING = "timetableIndex";
+    static final String TIMETABLES_STRING = "timetables";
+    static final String TIMETABLE_INDEX_STRING = "timetableIndex";
 
     ArrayList<TimetablePair> timetables;
     TimetablePair currentTablePair;
@@ -29,8 +30,51 @@ public class TimetableManager {
     int timetableIndex = 0;
     int tableCount = 0;
 
-    public TimetableManager() {
-        
+    public TimetableManager(JSONObject data) {
+        openData(data);
+    }
+
+    public JSONObject getDataToSave() {
+        DataManager dm = new DataManager("");
+        JSONObject data = new JSONObject();
+        JSONArray jsonTimetables = new JSONArray();
+
+        for (TimetablePair tp : timetables) {
+            jsonTimetables.add(dm.convertTimetablePairToJSON(tp));
+        }
+
+        data.put(TIMETABLES_STRING, jsonTimetables);
+        data.put(TIMETABLE_INDEX_STRING, timetableIndex);
+
+        return data;
+    }
+
+    public void openData(JSONObject data) {
+        DataManager dm = new DataManager("");
+        timetables = new ArrayList();
+        try {
+            JSONObject jo = (JSONObject) data.get(Main.TIMETABLE_MANAGER);
+
+            JSONArray jsonTimtables = (JSONArray) jo.get(TIMETABLES_STRING);
+            Iterator<JSONObject> it = jsonTimtables.iterator();
+            while (it.hasNext()) {
+                TimetablePair tp = dm.convertJSONTOTimetablePair(it.next());
+                timetables.add(tp);
+            }
+            try {
+                timetableIndex = (int) (long) jo.get(TIMETABLE_INDEX_STRING);
+            } catch (Exception e) {
+                e.printStackTrace();
+                timetableIndex = 0;
+            }
+            if (timetables.size() > 0) {
+                currentTablePair = timetables.get(timetableIndex);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            addTimetablePair();
+        }
+
     }
 
     public void addTimetablePair() {

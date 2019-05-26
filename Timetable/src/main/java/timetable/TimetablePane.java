@@ -16,7 +16,7 @@ import timetable.Datatypes.TimetablePair;
  */
 public class TimetablePane {
 
-    final static double heightFactor = 0.4;
+    static final double heightFactor = 0.4;
     int index;
 
     GridPane pane;
