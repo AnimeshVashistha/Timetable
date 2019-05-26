@@ -10,3 +10,6 @@ JavaFX 11 and JDK 11 based Timetable
 - Autocompletion
 - Darkmode
 - Configurable Accent Color
+
+### Visions
+- Google Drive Support
