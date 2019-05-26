@@ -13,9 +13,14 @@ public class TimetablePair implements Serializable {
     ArrayList<Subject> references = new ArrayList<Subject>();
     ArrayList<Subject> options;
     String name = "new Timetable";
+    SimpleTime startTime = new SimpleTime(7, 30);
+    int smallPause = 0;
+    int middlePause = 15;
+    int bigPause = 30;
+    int lessonlength = 45;
 
-    Timetable a = new Timetable();
-    Timetable b = new Timetable();
+    Timetable a = new Timetable(this);
+    Timetable b = new Timetable(this);
 
     public TimetablePair() {
 
@@ -87,6 +92,7 @@ public class TimetablePair implements Serializable {
 
     public void setA(Timetable a) {
         this.a = a;
+        a.setParent(this);
     }
 
     public Timetable getB() {
@@ -95,6 +101,7 @@ public class TimetablePair implements Serializable {
 
     public void setB(Timetable b) {
         this.b = b;
+        b.setParent(this);
     }
 
     public String getName() {
@@ -119,6 +126,46 @@ public class TimetablePair implements Serializable {
 
     public void duplicateB() {
         a = b.duplicate();
+    }
+
+    public SimpleTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(SimpleTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getSmallPause() {
+        return smallPause;
+    }
+
+    public void setSmallPause(int smallPause) {
+        this.smallPause = smallPause;
+    }
+
+    public int getMiddlePause() {
+        return middlePause;
+    }
+
+    public void setMiddlePause(int middlePause) {
+        this.middlePause = middlePause;
+    }
+
+    public int getBigPause() {
+        return bigPause;
+    }
+
+    public void setBigPause(int bigPause) {
+        this.bigPause = bigPause;
+    }
+
+    public int getLessonlength() {
+        return lessonlength;
+    }
+
+    public void setLessonlength(int lessonlength) {
+        this.lessonlength = lessonlength;
     }
 
 }

@@ -67,12 +67,12 @@ public class GUI {
     final static String darkbg3 = "#222222";
     final static String darkbg4 = "#333333";
     final static String darkrpf = "#FFFFFF";
-    final static String darktext = "#CCCCCC";
+    final static String darktext = "#DDDDDD";
     final static String darktransparent = "#00000000";
     final static String darksemiTransparent = "#BBBBBB55";
 
-    final static String[] ac1s = {"#DD6677", "#66DD77"};
-    final static String[] ac2s = {"#CC4455", "#44CC55"};
+    final static String[] ac1s = {"#66DD77", "#FFBB55", "#DD5566", "#5599DD"};
+    final static String[] ac2s = {"#55CC66", "#EEAA44", "#CC4455", "#4488CC"};
 
     final static String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     final static String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
@@ -90,6 +90,8 @@ public class GUI {
     static String transparent = lighttransparent;
     static String semiTransparent = lightsemiTransparent;
     static boolean lightMode = true;
+    boolean customColor = false;
+    int colorIndex = 0;
 
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
@@ -304,9 +306,9 @@ public class GUI {
         clearTimetable = new JFXButton("clear timetable");
         clearTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             if (tm.IsA()) {
-                tm.getCurrentTablePair().setA(new Timetable());
+                tm.getCurrentTablePair().setA(new Timetable(tm.getCurrentTablePair()));
             } else {
-                tm.getCurrentTablePair().setB(new Timetable());
+                tm.getCurrentTablePair().setB(new Timetable(tm.getCurrentTablePair()));
             }
             initNewTimetable();
             new Timeline(
@@ -506,21 +508,6 @@ public class GUI {
         subjectContextMenu.addButton(delete);
         subjectContextMenu.addButton(addAbove);
         subjectContextMenu.addButton(addBelow);
-
-        updateColors();
-
-        bg.widthProperty().addListener(event -> {
-            cancelMenus();
-            new Timeline(
-                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
-            ).play();
-        });
-        bg.heightProperty().addListener(event -> {
-            cancelMenus();
-            new Timeline(
-                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
-            ).play();
-        });
         subjectName.focusedProperty().addListener(event -> {
             if (!subjectName.isFocused()) {
                 autoCompletePane.hide();
@@ -555,7 +542,7 @@ public class GUI {
         name = new MenuButton();
         name.getStyleClass().add("menuButton");
         name.setMinSize(100, 40);
-        name.setPrefSize(500, 150);
+        name.setPrefSize(500, 500);
         name.getButton().addEventHandler(ActionEvent.ANY, nameAction);
         name.getButton().addEventHandler(MouseEvent.MOUSE_PRESSED, namePressed);
         name.getButton().addEventHandler(KeyEvent.KEY_RELEASED, nameKeyReleased);
@@ -602,7 +589,7 @@ public class GUI {
             JFXButton day = new JFXButton(ENGLISH_DAY_NAMES[i]);
             day.getStyleClass().add("lightRoundedShadowedButton");
             day.setMinSize(100, 40);
-            day.setPrefSize(500, 150);
+            day.setPrefSize(500, 500);
             day.addEventHandler(ActionEvent.ANY, dayAction);
             day.addEventHandler(MouseEvent.MOUSE_PRESSED, dayPressed);
             day.addEventHandler(KeyEvent.KEY_RELEASED, dayKeyReleased);
@@ -624,7 +611,7 @@ public class GUI {
             JFXButton time = new JFXButton();
             time.getStyleClass().add("roundedButton");
             time.setMinSize(100, 40);
-            time.setPrefSize(500, 150);
+            time.setPrefSize(500, 500);
             time.addEventHandler(ActionEvent.ANY, timeAction);
             time.addEventHandler(MouseEvent.MOUSE_PRESSED, timePressed);
             time.addEventHandler(KeyEvent.KEY_RELEASED, timeKeyReleased);
@@ -647,7 +634,7 @@ public class GUI {
                 JFXButton subject = new JFXButton();
                 subject.getStyleClass().add("roundedButton");
                 subject.setMinSize(100, 40);
-                subject.setPrefSize(500, 150);
+                subject.setPrefSize(500, 500);
                 subject.addEventHandler(ActionEvent.ANY, subjectAction);
                 subject.addEventHandler(MouseEvent.MOUSE_PRESSED, subjectPressed);
                 subject.addEventHandler(KeyEvent.KEY_RELEASED, subjectKeyReleased);
@@ -716,11 +703,13 @@ public class GUI {
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
                 if (j < tm.getCurrentTable().getLessons() && tm.getCurrentTable().isDayDisplayed(i)) {
+                    int height = 1;
                     subjectGrid.add(subjects[i][j], pos + 1, j + 2, 1, 1);
                     subjects[i][j].setText(
                             tm.getCurrentTable().getSubjectText(i, j)
                             + "\n" + tm.getCurrentTable().getRoomText(i, j)
                     );
+                    j += height - 1;
                 }
             }
             if (tm.getCurrentTable().isDayDisplayed(i)) {
@@ -822,6 +811,12 @@ public class GUI {
         autoCompletePane.updateColor();
         //subject context menu
         subjectContextMenu.updateColor();
+    }
+
+    public void setAccentColor(int index) {
+        colorIndex = index;
+        ac1 = ac1s[index];
+        ac2 = ac2s[index];
     }
 
     public void toggleColorMode() {
@@ -1018,7 +1013,6 @@ public class GUI {
             dayToggles[i].setSelected(tm.getCurrentTable().isDayDisplayed(i));
             dayToggles[i].setScaleX(h * 0.012);
             dayToggles[i].setScaleY(h * 0.012);
-            dayToggles[i].autosize();
             dayToggles[i].setPadding(new Insets(0, h * 0.2, 0, 0));
             dayToggles[i].setMinHeight(h * dayMenu.getHeightFactor());
             dayToggles[i].setPrefHeight(h * dayMenu.getHeightFactor());

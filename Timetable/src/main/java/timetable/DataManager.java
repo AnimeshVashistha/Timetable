@@ -74,12 +74,22 @@ public class DataManager {
     }
 
     final static String TIMETABLE_PAIR_NAME = "name";
+    final static String TIMETABLE_PAIR_START_TIME = "startTime";
+    final static String TIMETABLE_PAIR_SMALL_PAUSE = "smallPause";
+    final static String TIMETABLE_PAIR_MIDDLE_PAUSE = "middlePause";
+    final static String TIMETABLE_PAIR_BIG_PAUSE = "bigPause";
+    final static String TIMETABLE_PAIR_LESSON_LENGTH = "lessonLength";
     final static String TIMETABLE_PAIR_A = "a";
     final static String TIMETABLE_PAIR_B = "b";
 
     public JSONObject convertTimetablePairToJSON(TimetablePair timetablePair) {
         JSONObject tp = new JSONObject();
         tp.put(TIMETABLE_PAIR_NAME, timetablePair.getName());
+        tp.put(TIMETABLE_PAIR_START_TIME, convertSimpleTimeToJSON(timetablePair.getStartTime()));
+        tp.put(TIMETABLE_PAIR_SMALL_PAUSE, timetablePair.getSmallPause());
+        tp.put(TIMETABLE_PAIR_MIDDLE_PAUSE, timetablePair.getMiddlePause());
+        tp.put(TIMETABLE_PAIR_BIG_PAUSE, timetablePair.getBigPause());
+        tp.put(TIMETABLE_PAIR_LESSON_LENGTH, timetablePair.getLessonlength());
         tp.put(TIMETABLE_PAIR_A, convertTimetableToJSON(timetablePair.getA()));
         tp.put(TIMETABLE_PAIR_B, convertTimetableToJSON(timetablePair.getB()));
 
@@ -89,9 +99,15 @@ public class DataManager {
     public TimetablePair convertJSONTOTimetablePair(JSONObject jsonObject) {
         TimetablePair tp = new TimetablePair();
         String name = (String) jsonObject.get(TIMETABLE_PAIR_NAME);
+
         Timetable a = convertJSONObjectTOTimetable((JSONObject) jsonObject.get(TIMETABLE_PAIR_A));
         Timetable b = convertJSONObjectTOTimetable((JSONObject) jsonObject.get(TIMETABLE_PAIR_B));
         tp.setName(name);
+        tp.setStartTime(convertJSONTOSimpleTime((JSONObject) jsonObject.get(TIMETABLE_PAIR_START_TIME)));
+        tp.setSmallPause((int) (long) jsonObject.get(TIMETABLE_PAIR_SMALL_PAUSE));
+        tp.setMiddlePause((int) (long) jsonObject.get(TIMETABLE_PAIR_MIDDLE_PAUSE));
+        tp.setBigPause((int) (long) jsonObject.get(TIMETABLE_PAIR_BIG_PAUSE));
+        tp.setLessonlength((int) (long) jsonObject.get(TIMETABLE_PAIR_LESSON_LENGTH));
         tp.setA(a);
         tp.setB(b);
 
@@ -101,12 +117,7 @@ public class DataManager {
     final static String TIMETABLE_DAYS = "days";
     final static String TIMETABLE_TIMES = "times";
     final static String TIMETABLE_SUBJECTS = "subjects";
-    final static String TIMETABLE_START_TIME = "startTime";
     final static String TIMETABLE_LESSONS = "lessons";
-    final static String TIMETABLE_SMALL_PAUSE = "smallPause";
-    final static String TIMETABLE_MIDDLE_PAUSE = "middlePause";
-    final static String TIMETABLE_BIG_PAUSE = "bigPause";
-    final static String TIMETABLE_LESSON_LENGTH = "lessonLength";
 
     public JSONObject convertTimetableToJSON(Timetable timetable) {
         JSONObject t = new JSONObject();
@@ -130,20 +141,13 @@ public class DataManager {
             subjectsParent.add(subjectsChild);
         }
         t.put(TIMETABLE_SUBJECTS, subjectsParent);
-
-        t.put(TIMETABLE_START_TIME, convertSimpleTimeToJSON(timetable.getStartTime()));
-
         t.put(TIMETABLE_LESSONS, timetable.getLessons());
-        t.put(TIMETABLE_SMALL_PAUSE, timetable.getSmallPause());
-        t.put(TIMETABLE_MIDDLE_PAUSE, timetable.getMiddlePause());
-        t.put(TIMETABLE_BIG_PAUSE, timetable.getBigPause());
-        t.put(TIMETABLE_LESSON_LENGTH, timetable.getLessonlength());
 
         return t;
     }
 
     public Timetable convertJSONObjectTOTimetable(JSONObject jsonObject) {
-        Timetable t = new Timetable();
+        Timetable t = new TimetablePair().getA();
 
         JSONArray days = (JSONArray) jsonObject.get(TIMETABLE_DAYS);
         for (int i = 0; i < days.size(); i++) {
@@ -162,14 +166,7 @@ public class DataManager {
                 t.setSubject(s, i, j);
             }
         }
-
-        t.setStartTime(convertJSONTOSimpleTime((JSONObject) jsonObject.get(TIMETABLE_START_TIME)));
-
         t.setLessons((int) (long) jsonObject.get(TIMETABLE_LESSONS));
-        t.setSmallPause((int) (long) jsonObject.get(TIMETABLE_SMALL_PAUSE));
-        t.setMiddlePause((int) (long) jsonObject.get(TIMETABLE_MIDDLE_PAUSE));
-        t.setBigPause((int) (long) jsonObject.get(TIMETABLE_BIG_PAUSE));
-        t.setLessonlength((int) (long) jsonObject.get(TIMETABLE_LESSON_LENGTH));
 
         return t;
     }

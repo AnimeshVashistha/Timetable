@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package timetable.Datatypes;
 
 import java.io.Serializable;
@@ -13,18 +8,14 @@ import java.io.Serializable;
  */
 public class Timetable implements Serializable {
 
+    TimetablePair parent;
     Subject[][] subjects = new Subject[7][10];
     SimpleTime[] times = new SimpleTime[10];
     boolean[] days = new boolean[7];
     int lessons = 8;
 
-    SimpleTime startTime = new SimpleTime(7, 30);
-    int smallPause = 0;
-    int middlePause = 15;
-    int bigPause = 30;
-    int lessonlength = 45;
-
-    public Timetable() {
+    public Timetable(TimetablePair parent) {
+        this.parent = parent;
         init();
     }
 
@@ -40,25 +31,25 @@ public class Timetable implements Serializable {
         days = new boolean[]{true, true, true, true, true, false, false};
     }
 
-    private void initTimes() {
+    public void initTimes() {
         int toAdd = 0;
         for (int i = 0; i < times.length; i++) {
-            times[i] = startTime.plusMinutes(toAdd);
-            toAdd += lessonlength;
+            times[i] = parent.getStartTime().plusMinutes(toAdd);
+            toAdd += parent.getLessonlength();
             if (i % 2 == 0) {
-                toAdd += smallPause;
+                toAdd += parent.getSmallPause();
             }
             if (i % 2 == 1 && i != 5) {
-                toAdd += middlePause;
+                toAdd += parent.getMiddlePause();
             }
             if (i == 5) {
-                toAdd += bigPause;
+                toAdd += parent.getBigPause();
             }
         }
     }
 
     public Timetable duplicate() {
-        Timetable duplicate = new Timetable();
+        Timetable duplicate = new Timetable(parent);
 
         duplicate.days = days.clone();
 
@@ -77,11 +68,6 @@ public class Timetable implements Serializable {
         duplicate.subjects = duplicateSubjects;
 
         duplicate.setLessons(lessons);
-        duplicate.setStartTime(new SimpleTime(startTime.getHours(), startTime.getMinutes()));
-        duplicate.setSmallPause(smallPause);
-        duplicate.setMiddlePause(middlePause);
-        duplicate.setBigPause(bigPause);
-        duplicate.setLessonlength(lessonlength);
 
         return duplicate;
     }
@@ -212,6 +198,14 @@ public class Timetable implements Serializable {
         subjects[i2][j2] = temp;
     }
 
+    public TimetablePair getParent() {
+        return parent;
+    }
+
+    public void setParent(TimetablePair parent) {
+        this.parent = parent;
+    }
+
     public Subject getSubject(int i, int j) {
         return subjects[i][j];
     }
@@ -270,46 +264,6 @@ public class Timetable implements Serializable {
 
     public void setLessons(int lessons) {
         this.lessons = lessons;
-    }
-
-    public SimpleTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(SimpleTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public int getSmallPause() {
-        return smallPause;
-    }
-
-    public void setSmallPause(int smallPause) {
-        this.smallPause = smallPause;
-    }
-
-    public int getMiddlePause() {
-        return middlePause;
-    }
-
-    public void setMiddlePause(int middlePause) {
-        this.middlePause = middlePause;
-    }
-
-    public int getBigPause() {
-        return bigPause;
-    }
-
-    public void setBigPause(int bigPause) {
-        this.bigPause = bigPause;
-    }
-
-    public int getLessonlength() {
-        return lessonlength;
-    }
-
-    public void setLessonlength(int lessonlength) {
-        this.lessonlength = lessonlength;
     }
 
     public boolean[] getDays() {
