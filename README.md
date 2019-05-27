@@ -8,6 +8,7 @@ JavaFX 11 and JDK 11 based Timetable
 ### Features
 - Alternating Week Support
 - Autocompletion
+- Intuitive Interface
 - Theming
 
 ### Visions
