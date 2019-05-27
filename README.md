@@ -8,8 +8,8 @@ JavaFX 11 and JDK 11 based Timetable
 ### Features
 - Alternating Week Support
 - Autocompletion
-- Darkmode
-- Configurable Accent Color
+- Theming
 
 ### Visions
 - Google Drive Support
+- Drag and Drop Subjects
