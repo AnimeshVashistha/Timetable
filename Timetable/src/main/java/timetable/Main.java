@@ -1,5 +1,6 @@
 package timetable;
 
+import java.io.File;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -20,9 +21,9 @@ public class Main extends Application {
     static final String TIMETABLE_MANAGER = "timetableManager";
     static final String GUI = "gui";
 
+    DataManager dm;
     GUI gui;
     Scene scene;
-    DataManager dm = new DataManager("timetables.json");
     Timeline saveData;
 
     public static void main(String[] args) {
@@ -31,6 +32,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        dm = new DataManager(getAppData() + "timetables.json");
+
         JSONObject data = dm.readData();
 
         gui = new GUI(data);
@@ -50,13 +53,15 @@ public class Main extends Application {
                         gui.menu();
                         new Timeline(
                                 new KeyFrame(
-                                        Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
+                                        Duration.millis(gui.ANIMATION_DURATION),
                                         n -> gui.settingsMenu()
                                 )
                         ).play();
                     } else {
                         gui.settingsMenu();
                     }
+                } else if (event.getCode() == KeyCode.H) {
+                    gui.hideAllMenus();
                 }
             } else {
                 if (event.getCode() == KeyCode.ESCAPE) {
@@ -105,6 +110,24 @@ public class Main extends Application {
         data.put(TIMETABLE_MANAGER, gui.tm.getDataToSave());
         data.put(GUI, gui.getDataToSave());
         dm.writeData(data);
+    }
+
+    public static String getAppData() {
+        String path = "";
+        String OS = System.getProperty("os.name").toUpperCase();
+        if (OS.contains("WIN")) {
+            path = System.getenv("APPDATA");
+        } else if (OS.contains("MAC")) {
+            path = System.getProperty("user.home") + "/Library/";
+        } else if (OS.contains("NUX")) {
+            path = System.getProperty("user.home");
+        } else {
+            path = System.getProperty("user.dir");
+        }
+
+        path = path + File.separator;
+
+        return path;
     }
 
 }
