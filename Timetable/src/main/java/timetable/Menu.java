@@ -28,6 +28,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -56,10 +57,12 @@ public class Menu implements Hideable {
     Label[] separators;
 
     Label colorSection;
-    HBox colorBox;
-    JFXButton[] colorButtons;
+    Label defaultColorLabel;
+    HBox defaultColorBox;
+    JFXButton[] defaultColorButtons;
     Label customColorLabel;
-    JFXToggleButton customColor;
+    HBox customColorBox;
+    JFXButton[] customColorButtons;
     Label colorModeLabel;
     JFXToggleButton colorMode;
 
@@ -141,29 +144,43 @@ public class Menu implements Hideable {
         colorSection = new Label("Color");
         settings.add(colorSection, 0, 1);
 
-        colorBox = new HBox();
-        settings.add(colorBox, 0, 2, 3, 1);
+        defaultColorLabel = new Label("Default Colors");
+        settings.add(defaultColorLabel, 0, 2);
 
-        colorButtons = new JFXButton[GUI.ac1s.length];
-        for (int i = 0; i < colorButtons.length; i++) {
-            colorButtons[i] = new JFXButton();
-            colorButtons[i].getStyleClass().add("roundedButton");
-            colorButtons[i].setStyle("-fx-background-color:" + GUI.ac1s[i]);
-            colorButtons[i].setOnAction(event -> {
+        defaultColorBox = new HBox();
+        settings.add(defaultColorBox, 0, 3, 3, 1);
+
+        defaultColorButtons = new JFXButton[GUI.ac1s.length];
+        for (int i = 0; i < defaultColorButtons.length; i++) {
+            defaultColorButtons[i] = new JFXButton();
+            defaultColorButtons[i].getStyleClass().add("roundedButton");
+            defaultColorButtons[i].setStyle("-fx-background-color:" + GUI.ac1s[i]);
+            defaultColorButtons[i].setOnAction(event -> {
                 setAccentColor(event);
             });
-            colorBox.getChildren().add(colorButtons[i]);
+            defaultColorBox.getChildren().add(defaultColorButtons[i]);
         }
-        //custom accent color
-        customColorLabel = new Label("Custom Color");
-        settings.add(customColorLabel, 0, 3);
-        customColor = new JFXToggleButton();
-        customColor.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        settings.add(customColor, 1, 3);
+        //custom colors
+        customColorLabel = new Label("Custom Colors");
+        settings.add(customColorLabel, 0, 4);
+
+        customColorBox = new HBox();
+        settings.add(customColorBox, 0, 5, 3, 1);
+
+        customColorButtons = new JFXButton[GUI.ac1s.length];
+        for (int i = 0; i < defaultColorButtons.length; i++) {
+            customColorButtons[i] = new JFXButton();
+            customColorButtons[i].getStyleClass().add("roundedButton");
+            customColorButtons[i].setStyle("-fx-background-color:" + GUI.customAcs[i]);
+            customColorButtons[i].setOnAction(event -> {
+                setCustomAccentColor(event);
+            });
+            customColorBox.getChildren().add(customColorButtons[i]);
+        }
 
         //color mode
         colorModeLabel = new Label("Darkmode");
-        settings.add(colorModeLabel, 0, 4);
+        settings.add(colorModeLabel, 0, 6);
         colorMode = new JFXToggleButton();
         colorMode.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         colorMode.selectedProperty().addListener(event -> {
@@ -174,13 +191,13 @@ public class Menu implements Hideable {
             }
             gui.updateColors();
         });
-        settings.add(colorMode, 1, 4);
+        settings.add(colorMode, 1, 6);
 
         //times
-        settings.add(separators[0], 0, 5, 2, 1);
+        settings.add(separators[0], 0, 7, 2, 1);
 
         timeSection = new Label("Time");
-        settings.add(timeSection, 0, 6);
+        settings.add(timeSection, 0, 8);
 
         timePicker = new TimePickerPane(content);
         timePicker.setOnHide(event -> {
@@ -189,7 +206,7 @@ public class Menu implements Hideable {
         });
 
         startTimeLabel = new Label("Start Time");
-        settings.add(startTimeLabel, 0, 7);
+        settings.add(startTimeLabel, 0, 9);
         startTime = new JFXButton();
         startTime.getStyleClass().add("roundedButton");
         startTime.setOnAction(event -> {
@@ -200,10 +217,10 @@ public class Menu implements Hideable {
                     gui.tm.getCurrentTablePair().getStartTime()
             );
         });
-        settings.add(startTime, 1, 7);
+        settings.add(startTime, 1, 9);
 
         smallPauseLabel = new Label(smallPauseText);
-        settings.add(smallPauseLabel, 0, 8);
+        settings.add(smallPauseLabel, 0, 10);
         smallPause = new JFXSlider();
         smallPause.setMax(15);
         smallPause.valueProperty().addListener(event -> {
@@ -211,10 +228,10 @@ public class Menu implements Hideable {
             gui.tm.getCurrentTablePair().setSmallPause(sp);
             smallPauseLabel.setText(smallPauseText + sp);
         });
-        settings.add(smallPause, 1, 8);
+        settings.add(smallPause, 1, 10);
 
         middlePauseLabel = new Label(middlePauseText);
-        settings.add(middlePauseLabel, 0, 9);
+        settings.add(middlePauseLabel, 0, 11);
         middlePause = new JFXSlider();
         middlePause.setMax(30);
         middlePause.valueProperty().addListener(event -> {
@@ -222,10 +239,10 @@ public class Menu implements Hideable {
             gui.tm.getCurrentTablePair().setMiddlePause(mp);
             middlePauseLabel.setText(middlePauseText + mp);
         });
-        settings.add(middlePause, 1, 9);
+        settings.add(middlePause, 1, 11);
 
         bigPauseLabel = new Label(bigPauseText);
-        settings.add(bigPauseLabel, 0, 10);
+        settings.add(bigPauseLabel, 0, 12);
         bigPause = new JFXSlider();
         bigPause.setMax(90);
         bigPause.valueProperty().addListener(event -> {
@@ -233,10 +250,10 @@ public class Menu implements Hideable {
             gui.tm.getCurrentTablePair().setBigPause(bp);
             bigPauseLabel.setText(bigPauseText + bp);
         });
-        settings.add(bigPause, 1, 10);
+        settings.add(bigPause, 1, 12);
 
         lessonLengthLabel = new Label(lessonLengthText);
-        settings.add(lessonLengthLabel, 0, 11);
+        settings.add(lessonLengthLabel, 0, 13);
         lessonLength = new JFXSlider();
         lessonLength.setMax(90);
         lessonLength.valueProperty().addListener(event -> {
@@ -244,10 +261,10 @@ public class Menu implements Hideable {
             gui.tm.getCurrentTablePair().setLessonlength(ll);
             lessonLengthLabel.setText(lessonLengthText + ll);
         });
-        settings.add(lessonLength, 1, 11);
+        settings.add(lessonLength, 1, 13);
 
         timeBox = new HBox();
-        settings.add(timeBox, 0, 12, 2, 1);
+        settings.add(timeBox, 0, 14, 2, 1);
 
         applyToA = new JFXButton("Apply to A");
         applyToA.getStyleClass().add("roundedButton");
@@ -305,7 +322,7 @@ public class Menu implements Hideable {
             hidden = false;
             colorMode.setSelected(gui.darkMode);
             if (!gui.customColor) {
-                highlightColorButton(gui.colorIndex);
+                highlightColorButton(gui.colorIndex, gui.customColor);
             }
             pane.setVisible(true);
             updateTimeComponentsText();
@@ -314,10 +331,11 @@ public class Menu implements Hideable {
             pane.setPrefWidth(w);
             pane.setPrefHeight(h);
             resize(w, h);
+            updateColors();
             new Timeline(
                     new KeyFrame(
                             Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
-                            n -> colorButtons[0].requestFocus()
+                            n -> defaultColorButtons[0].requestFocus()
                     )
             ).play();
             show.play();
@@ -374,15 +392,20 @@ public class Menu implements Hideable {
 
         colorSection.setFont(font2);
         colorSection.setPadding(padding);
-        for (JFXButton b : colorButtons) {
+        defaultColorLabel.setFont(font3);
+        defaultColorLabel.setPadding(padding);
+        defaultColorBox.setSpacing(spacing);
+        defaultColorBox.setPadding(padding);
+        for (JFXButton b : defaultColorButtons) {
             b.setPrefSize(h, h);
         }
-        colorBox.setSpacing(spacing);
-        colorBox.setPadding(padding);
         customColorLabel.setFont(font3);
         customColorLabel.setPadding(padding);
-        customColor.setScaleX(h * 0.012);
-        customColor.setScaleY(h * 0.012);
+        customColorBox.setSpacing(spacing);
+        customColorBox.setPadding(padding);
+        for (JFXButton b : customColorButtons) {
+            b.setPrefSize(h, h);
+        }
         colorModeLabel.setFont(font3);
         colorModeLabel.setPadding(padding);
         colorMode.setScaleX(h * 0.012);
@@ -396,13 +419,20 @@ public class Menu implements Hideable {
         startTime.setFont(font3);
         smallPauseLabel.setFont(font3);
         smallPauseLabel.setPadding(padding);
-        smallPause.getStyleClass().add("customSlider");
+        smallPause.setScaleX(h * 0.012);
+        smallPause.setScaleY(h * 0.012);
         middlePauseLabel.setFont(font3);
         middlePauseLabel.setPadding(padding);
+        middlePause.setScaleX(h * 0.012);
+        middlePause.setScaleY(h * 0.012);
         bigPauseLabel.setFont(font3);
         bigPauseLabel.setPadding(padding);
+        bigPause.setScaleX(h * 0.012);
+        bigPause.setScaleY(h * 0.012);
         lessonLengthLabel.setFont(font3);
         lessonLengthLabel.setPadding(padding);
+        lessonLength.setScaleX(h * 0.012);
+        lessonLength.setScaleY(h * 0.012);
         timeBox.setSpacing(spacing);
         timeBox.setPadding(padding);
         applyToA.setPrefSize(w / 3, h * 0.6);
@@ -422,15 +452,15 @@ public class Menu implements Hideable {
         }
 
         colorSection.setTextFill(Color.web(gui.text));
-        highlightColorButton(gui.colorIndex);
-        for (JFXButton b : colorButtons) {
+        defaultColorLabel.setTextFill(Color.web(gui.text));
+        highlightColorButton(gui.colorIndex, gui.customColor);
+        for (JFXButton b : defaultColorButtons) {
             b.setRipplerFill(Color.web(gui.text));
         }
         customColorLabel.setTextFill(Color.web(gui.text));
-        customColor.setToggleColor(Color.web(gui.ac1));
-        customColor.setToggleLineColor(Color.web(gui.ac2));
-        customColor.setUnToggleColor(Color.web(gui.fg1));
-        customColor.setUnToggleLineColor(Color.web(gui.fg2));
+        for (JFXButton b : customColorButtons) {
+            b.setRipplerFill(Color.web(gui.text));
+        }
         colorModeLabel.setTextFill(Color.web(gui.text));
         colorMode.setToggleColor(Color.web(gui.ac1));
         colorMode.setToggleLineColor(Color.web(gui.ac2));
@@ -443,9 +473,13 @@ public class Menu implements Hideable {
         startTime.setStyle("-fx-background-color:" + GUI.ac1);
         startTime.setTextFill(Color.web(gui.text));
         smallPauseLabel.setTextFill(Color.web(gui.text));
+        applyColorsToSlider(smallPause);
         middlePauseLabel.setTextFill(Color.web(gui.text));
+        applyColorsToSlider(middlePause);
         bigPauseLabel.setTextFill(Color.web(gui.text));
+        applyColorsToSlider(bigPause);
         lessonLengthLabel.setTextFill(Color.web(gui.text));
+        applyColorsToSlider(lessonLength);
         applyToA.setStyle("-fx-background-color:" + gui.bg4);
         applyToA.setTextFill(Color.web(gui.text));
         applyToB.setStyle("-fx-background-color:" + gui.bg4);
@@ -454,30 +488,78 @@ public class Menu implements Hideable {
         applyToBoth.setTextFill(Color.web(gui.text));
     }
 
+    public void applyColorsToSlider(JFXSlider slider) {
+        StackPane sliderTrack = (StackPane) slider.lookup(".track");
+        if (sliderTrack != null) {
+            sliderTrack.setStyle("-fx-background-color:" + gui.bg4);
+        }
+        StackPane sliderColorTrack = (StackPane) slider.lookup(".colored-track");
+        if (sliderColorTrack != null) {
+            sliderColorTrack.setStyle("-fx-background-color:" + gui.ac2);
+        }
+        StackPane sliderThumb = (StackPane) slider.lookup(".thumb");
+        if (sliderThumb != null) {
+            sliderThumb.setStyle("-fx-background-color:" + gui.ac1);
+        }
+        StackPane sliderAnimatedThumb = (StackPane) slider.lookup(".animated-thumb");
+        if (sliderAnimatedThumb != null) {
+            sliderAnimatedThumb.setStyle("-fx-background-color:" + gui.ac2);
+        }
+    }
+
     public void setAccentColor(ActionEvent event) {
-        for (int i = 0; i < colorButtons.length; i++) {
-            if (event.getSource() == colorButtons[i]) {
-                highlightColorButton(i);
+        for (int i = 0; i < defaultColorButtons.length; i++) {
+            if (event.getSource() == defaultColorButtons[i]) {
+                highlightColorButton(i, false);
                 gui.setAccentColor(i);
                 gui.updateColors();
             }
         }
     }
 
-    public void highlightColorButton(int index) {
-        colorButtons[gui.colorIndex].getStyleClass().removeIf(s -> (s == "customPane"));
-        colorButtons[gui.colorIndex].setBorder(Border.EMPTY);
-        colorButtons[index].getStyleClass().add("customPane");
-        colorButtons[index].setBorder(
-                new Border(
-                        new BorderStroke(
-                                Color.web(gui.text),
-                                BorderStrokeStyle.SOLID,
-                                new CornerRadii(3),
-                                new BorderWidths(4)
-                        )
-                )
-        );
+    public void setCustomAccentColor(ActionEvent event) {
+        for (int i = 0; i < customColorButtons.length; i++) {
+            if (event.getSource() == customColorButtons[i]) {
+                highlightColorButton(i, true);
+                gui.setCustomAccentColor(i);
+                gui.updateColors();
+            }
+        }
+    }
+
+    public void highlightColorButton(int index, boolean custom) {
+        if (gui.customColor) {
+            customColorButtons[gui.colorIndex].getStyleClass().removeIf(s -> (s == "customPane"));
+            customColorButtons[gui.colorIndex].setBorder(Border.EMPTY);
+        } else {
+            defaultColorButtons[gui.colorIndex].getStyleClass().removeIf(s -> (s == "customPane"));
+            defaultColorButtons[gui.colorIndex].setBorder(Border.EMPTY);
+        }
+        if (custom) {
+            customColorButtons[index].getStyleClass().add("customPane");
+            customColorButtons[index].setBorder(
+                    new Border(
+                            new BorderStroke(
+                                    Color.web(gui.text),
+                                    BorderStrokeStyle.SOLID,
+                                    new CornerRadii(3),
+                                    new BorderWidths(4)
+                            )
+                    )
+            );
+        } else {
+            defaultColorButtons[index].getStyleClass().add("customPane");
+            defaultColorButtons[index].setBorder(
+                    new Border(
+                            new BorderStroke(
+                                    Color.web(gui.text),
+                                    BorderStrokeStyle.SOLID,
+                                    new CornerRadii(3),
+                                    new BorderWidths(4)
+                            )
+                    )
+            );
+        }
     }
 
     public void updateTimeComponentsText() {

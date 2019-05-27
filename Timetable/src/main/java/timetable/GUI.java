@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXToggleButton;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import javafx.animation.KeyFrame;
@@ -34,9 +35,13 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import timetable.Datatypes.Subject;
 import timetable.Datatypes.Timetable;
+import timetable.Datatypes.TimetablePair;
+import static timetable.TimetableManager.TIMETABLES_STRING;
 
 /**
  *
@@ -72,14 +77,15 @@ public class GUI {
     static final String darktransparent = "#00000000";
     static final String darksemiTransparent = "#BBBBBB55";
 
-    static final String[] ac1s = {"#66CC55", "#EEBB55", "#DD3344", "#5599DD"};
-    static final String[] ac2s = {"#55BB44", "#DDAA44", "#C42233", "#4488CC"};
+    static final String[] ac1s = {"#66CC55", "#EE9933", "#DD3344", "#5599DD"};
+    static final String[] ac2s = {"#55BB44", "#EE8822", "#C42233", "#4488CC"};
 
     static final String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     static final String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
     static String ac1 = ac1s[0];
     static String ac2 = ac2s[0];
+    static String[] customAcs = {"#888888", "#888888", "#888888", "#888888"};
     static String fg1 = lightfg1;
     static String fg2 = lightfg2;
     static String bg1 = lightbg1;
@@ -91,8 +97,8 @@ public class GUI {
     static String transparent = lighttransparent;
     static String semiTransparent = lightsemiTransparent;
     static boolean darkMode = false;
-    boolean customColor = false;
-    int colorIndex = 0;
+    static boolean customColor = false;
+    static int colorIndex = 0;
 
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
@@ -317,25 +323,17 @@ public class GUI {
                 tm.getCurrentTablePair().setB(new Timetable(tm.getCurrentTablePair()));
             }
             initNewTimetable();
-            new Timeline(
-                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
-            ).play();
         });
         duplicateA = new JFXButton("duplicate a");
         duplicateA.addEventHandler(ActionEvent.ACTION, event -> {
             tm.getCurrentTablePair().duplicateA();
             initNewTimetable();
-            new Timeline(
-                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
-            ).play();
         });
         duplicateB = new JFXButton("duplicate b");
         duplicateB.addEventHandler(ActionEvent.ACTION, event -> {
             tm.getCurrentTablePair().duplicateB();
             initNewTimetable();
-            new Timeline(
-                    new KeyFrame(Duration.millis(1), n -> resizeFonts())
-            ).play();
+            resize();
         });
         contextMenu.addButton(clearTimetable);
         contextMenu.addButton(duplicateA);
@@ -520,13 +518,12 @@ public class GUI {
 
         updateColors();
 
-        new Timeline(
-                new KeyFrame(Duration.millis(1), event -> bg.requestFocus())
-        ).play();
+        resize();
     }
 
     static final String COLOR_INDEX = "colorIndex";
     static final String CUSTOM_COLOR = "customColor";
+    static final String CUSTOM_COLORS = "customColors";
     static final String AC_1 = "ac1";
     static final String AC_2 = "ac2";
     static final String DARK_MODE = "darkMode";
@@ -536,6 +533,11 @@ public class GUI {
 
         data.put(COLOR_INDEX, colorIndex);
         data.put(CUSTOM_COLOR, customColor);
+        JSONArray colors = new JSONArray();
+        for (String s : customAcs) {
+            colors.add(s);
+        }
+        data.put(CUSTOM_COLORS, colors);
         data.put(AC_1, ac1);
         data.put(AC_2, ac2);
         data.put(DARK_MODE, darkMode);
@@ -544,15 +546,48 @@ public class GUI {
     }
 
     public void openData(JSONObject data) {
-        try {
-            JSONObject jo = (JSONObject) data.get(Main.GUI);
-            colorIndex = (int) (long) jo.get(COLOR_INDEX);
-            customColor = (boolean) jo.get(CUSTOM_COLOR);
-            ac1 = (String) jo.get(AC_1);
-            ac2 = (String) jo.get(AC_2);
-            darkMode = (boolean) jo.get(DARK_MODE);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (data != null) {
+            try {
+                JSONObject jo = (JSONObject) data.get(Main.GUI);
+                try {
+                    colorIndex = (int) (long) jo.get(COLOR_INDEX);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    customColor = (boolean) jo.get(CUSTOM_COLOR);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    JSONArray colors = (JSONArray) jo.get(CUSTOM_COLORS);
+                    Iterator<Object> it = colors.iterator();
+                    int index = 0;
+                    while (it.hasNext()) {
+                        customAcs[index] = (String) it.next();
+                        index++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    ac1 = (String) jo.get(AC_1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    ac2 = (String) jo.get(AC_2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    darkMode = (boolean) jo.get(DARK_MODE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -673,6 +708,12 @@ public class GUI {
         }
     }
 
+    public void resize() {
+        new Timeline(
+                new KeyFrame(Duration.millis(1), event -> resizeFonts())
+        ).play();
+    }
+
     public void resizeFonts() {
         double w = times[0].getWidth();
         double h = times[0].getHeight();
@@ -747,9 +788,7 @@ public class GUI {
             }
         }
 
-        new Timeline(
-                new KeyFrame(Duration.millis(1), event -> resizeFonts())
-        ).play();;
+        resize();
     }
 
     public void updateColors() {
@@ -807,6 +846,7 @@ public class GUI {
         addTimetable.setTextFill(Color.web(text));
         deleteTimetable.setRipplerFill(Color.web(ac1));
         deleteTimetable.setTextFill(Color.web(text));
+
         timetablePane.updateColor();
         //context menu
         contextMenu.updateColor();
@@ -849,8 +889,27 @@ public class GUI {
 
     public void setAccentColor(int index) {
         colorIndex = index;
+        customColor = false;
         ac1 = ac1s[index];
         ac2 = ac2s[index];
+    }
+
+    public void setCustomAccentColor(int index) {
+        colorIndex = index;
+        customColor = true;
+        ac1 = customAcs[index];
+        Color ac = Color.web(ac1);
+        ac.darker();
+        ac.darker();
+        ac2 = toRGBCode(ac);
+    }
+
+    public static String toRGBCode(Color color) {
+        return String.format("#%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255)
+        );
     }
 
     public void toggleColorMode() {
@@ -924,9 +983,6 @@ public class GUI {
         tabA.getStyleClass().add("selectedLeftTabButton");
         tabA.setStyle("-fx-background-color:" + bg1);
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(2), n -> resizeFonts())
-        ).play();
     }
 
     public void selectTabB() {
@@ -937,9 +993,6 @@ public class GUI {
         tabB.getStyleClass().add("selectedRightTabButton");
         tabB.setStyle("-fx-background-color:" + bg1);
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(2), n -> resizeFonts())
-        ).play();
     }
 
     public void switchTab() {
@@ -1079,9 +1132,6 @@ public class GUI {
             tm.getCurrentTable().setDayDisplayed(dayToggles[i].isSelected(), i);
         }
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        ).play();
     }
 
     public void dayToggled() {
@@ -1124,17 +1174,11 @@ public class GUI {
     public void clearColumn() {
         tm.clearColumn();
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        ).play();
     }
 
     public void deleteColumn() {
         tm.deleteColumn();
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        ).play();
     }
 
     private void getSelectedDay(Event event) {
@@ -1179,33 +1223,21 @@ public class GUI {
     public void clearRow() {
         tm.clearRow();
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        ).play();
     }
 
     public void deleteRow() {
         tm.deleteRow();
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        ).play();
     }
 
     public void addRowAbove() {
         tm.addRowAbove();
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        ).play();
     }
 
     public void addRowBelow() {
         tm.addRowBelow();
         initNewTimetable();
-        new Timeline(
-                new KeyFrame(Duration.millis(1), n -> resizeFonts())
-        ).play();
     }
 
     private void getSelectedTime(Event event) {

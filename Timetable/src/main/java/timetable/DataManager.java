@@ -1,11 +1,10 @@
 package timetable;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Iterator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,6 +23,10 @@ public class DataManager {
     }
 
     public void writeData(JSONObject jSONObject) {
+        File f = new File(filename);
+        if (!f.exists()) {
+            f.getParentFile().mkdirs();
+        }
         try (FileWriter file = new FileWriter(filename)) {
             file.write(jSONObject.toJSONString());
         } catch (IOException e) {

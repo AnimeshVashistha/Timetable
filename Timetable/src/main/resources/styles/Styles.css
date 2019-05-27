@@ -50,23 +50,19 @@
 .customToggleButton{
     -fx-align-content: right;
     -fx-cursor:hand;
-    /*
-    -jfx-toggle-color: #dd6677;
-    -jfx-toggle-line-color: #cc4455;
-    */
 }
 
 .customSlider:thumb{
     -fx-background-color: #FFBB55!important;
 }
 .customSlider:track{
-        -fx-background-color: #888888!important;
+    -fx-background-color: #888888!important;
 }
 .customSlider:colored-track{
-        -fx-background-color: #EEAA44!important;
+    -fx-background-color: #EEAA44!important;
 }
 .customSlider:animated-thumb{
-        -fx-background-color: #FFBB55!important;
+    -fx-background-color: #FFBB55!important;
 }
 
 .customPane{
@@ -85,17 +81,17 @@
 }
 
 .selectedLeftTimeButton{
-    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, 2, 1)
+    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, 2, 1);
 }
 
 .selectedRightTimeButton{
-    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, -1, 1)
+    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, -1, 1);
 }
 
 .selectedRightTabButton{
-    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, -1, 0)
+    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, -1, -1);
 }
 
 .selectedLeftTabButton{
-    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, 1, 0)
+    -fx-effect: dropshadow(three-pass-box, gray, 2, 0, 1, -1);
 }
