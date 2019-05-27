@@ -72,8 +72,8 @@ public class GUI {
     static final String darktransparent = "#00000000";
     static final String darksemiTransparent = "#BBBBBB55";
 
-    static final String[] ac1s = {"#66DD55", "#FFBB55", "#DD5566", "#5599DD"};
-    static final String[] ac2s = {"#55CC44", "#EEAA44", "#CC4455", "#4488CC"};
+    static final String[] ac1s = {"#66CC55", "#EEBB55", "#DD5566", "#5599DD"};
+    static final String[] ac2s = {"#55BB44", "#DDAA44", "#CC4455", "#4488CC"};
 
     static final String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     static final String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
@@ -808,6 +808,8 @@ public class GUI {
         deleteTimetable.setRipplerFill(Color.web(ac1));
         deleteTimetable.setTextFill(Color.web(text));
         timetablePane.updateColor();
+        //context menu
+        contextMenu.updateColor();
         //day menu
         dayMenu.updateBaseColor();
         for (Label l : dayLabels) {

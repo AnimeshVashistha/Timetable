@@ -153,8 +153,9 @@ public class AutocompletePane implements Hideable {
         for (int i = 0; i < options.size(); i++) {
             Label subject = new Label(options.get(i).getSubject());
             subject.setPrefSize(500, 150);
-            subject.setPadding(new Insets(0, 0, 0, source.getHeight() * paddingFactor));
             subject.setFont(new Font(source.getHeight() * FONT_FACTOR));
+            subject.setTextFill(Color.web(GUI.text));
+            subject.setPadding(new Insets(0, 0, 0, source.getHeight() * paddingFactor));
             if (onClick != null) {
                 subject.addEventHandler(MouseEvent.MOUSE_CLICKED, onClick);
             }
@@ -167,13 +168,13 @@ public class AutocompletePane implements Hideable {
             room.setAlignment(Pos.TOP_RIGHT);
             room.setPrefSize(500, 150);
             room.setFont(new Font(source.getHeight() * FONT_FACTOR * 0.8));
-            room.setTextFill(Color.GRAY);
+            room.setTextFill(Color.web(GUI.fg2));
             room.setPadding(new Insets(source.getHeight() * 0.02, source.getHeight() * 0.1, source.getHeight() * 0.02, source.getHeight() * 0.1));
             Label teacher = new Label(options.get(i).getTeacher());
             teacher.setAlignment(Pos.BOTTOM_RIGHT);
             teacher.setPrefSize(500, 150);
             teacher.setFont(new Font(source.getHeight() * FONT_FACTOR * 0.8));
-            teacher.setTextFill(Color.GRAY);
+            teacher.setTextFill(Color.web(GUI.fg2));
             teacher.setPadding(new Insets(source.getHeight() * 0.02, source.getHeight() * 0.1, source.getHeight() * 0.02, source.getHeight() * 0.1));
             pane.add(room, 0, i, 1, 1);
             pane.add(teacher, 0, i, 1, 1);

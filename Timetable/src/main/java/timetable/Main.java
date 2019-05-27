@@ -43,20 +43,24 @@ public class Main extends Application {
                     gui.switchTab();
                 } else if (event.getCode() == KeyCode.N) {
                     gui.addTimetable();
+                } else if (event.getCode() == KeyCode.M) {
+                    gui.menu();
+                } else if (event.getCode() == KeyCode.S) {
+                    if (gui.menu.isHidden()) {
+                        gui.menu();
+                        new Timeline(
+                                new KeyFrame(
+                                        Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
+                                        n -> gui.settingsMenu()
+                                )
+                        ).play();
+                    } else {
+                        gui.settingsMenu();
+                    }
                 }
             } else {
                 if (event.getCode() == KeyCode.ESCAPE) {
                     gui.hideAllMenus();
-                } else if (event.getCode() == KeyCode.M) {
-                    gui.menu();
-                } else if (event.getCode() == KeyCode.S) {
-                    gui.menu();
-                    new Timeline(
-                            new KeyFrame(
-                                    Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
-                                    n -> gui.settingsMenu()
-                            )
-                    ).play();
                 }
             }
         });
