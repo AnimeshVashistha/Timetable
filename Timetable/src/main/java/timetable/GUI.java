@@ -72,8 +72,8 @@ public class GUI {
     static final String darktransparent = "#00000000";
     static final String darksemiTransparent = "#BBBBBB55";
 
-    static final String[] ac1s = {"#66CC55", "#EEBB55", "#DD5566", "#5599DD"};
-    static final String[] ac2s = {"#55BB44", "#DDAA44", "#CC4455", "#4488CC"};
+    static final String[] ac1s = {"#66CC55", "#EEBB55", "#DD3344", "#5599DD"};
+    static final String[] ac2s = {"#55BB44", "#DDAA44", "#C42233", "#4488CC"};
 
     static final String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     static final String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
@@ -573,7 +573,7 @@ public class GUI {
         name.getStyleClass().add("menuButton");
         name.setMinSize(100, 40);
         name.setPrefSize(500, 500);
-        name.getButton().addEventHandler(ActionEvent.ANY, nameAction);
+        name.getButton().addEventHandler(ActionEvent.ACTION, nameAction);
         name.getButton().addEventHandler(MouseEvent.MOUSE_PRESSED, namePressed);
         name.getButton().addEventHandler(KeyEvent.KEY_RELEASED, nameKeyReleased);
         subjectGrid.add(name, 0, 0, 1, 2);

@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.scene.CacheHint;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -17,27 +18,29 @@ import org.json.simple.JSONObject;
  * @author Tobias
  */
 public class Main extends Application {
-
+    
     static final String TIMETABLE_MANAGER = "timetableManager";
     static final String GUI = "gui";
-
+    
     DataManager dm;
     GUI gui;
     Scene scene;
     Timeline saveData;
-
+    
     public static void main(String[] args) {
         launch(args);
     }
-
+    
     @Override
     public void start(Stage stage) throws Exception {
         dm = new DataManager(getAppData() + "timetables.json");
-
+        
         JSONObject data = dm.readData();
-
+        
         gui = new GUI(data);
-
+        gui.getPane().setCache(true);
+        gui.getPane().setCacheHint(CacheHint.SPEED);
+        
         scene = new Scene(gui.getPane());
         scene.getStylesheets().add("/styles/Styles.css");
         scene.setOnKeyPressed(event -> {
@@ -53,7 +56,7 @@ public class Main extends Application {
                         gui.menu();
                         new Timeline(
                                 new KeyFrame(
-                                        Duration.millis(gui.ANIMATION_DURATION),
+                                        Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
                                         n -> gui.settingsMenu()
                                 )
                         ).play();
@@ -75,16 +78,16 @@ public class Main extends Application {
         scene.heightProperty().addListener(event -> {
             resize();
         });
-
+        
         saveData = new Timeline(
                 new KeyFrame(Duration.seconds(30), n -> {
                     saveData();
                 })
         );
         saveData.setCycleCount(Timeline.INDEFINITE);
-
+        
         saveData.play();
-
+        
         stage.setTitle("TTable");
         stage.getIcons().add(new Image("/images/Timetable.png"));
         stage.setScene(scene);
@@ -92,26 +95,26 @@ public class Main extends Application {
         stage.setMinHeight(400);
         stage.show();
     }
-
+    
     @Override
     public void stop() {
         saveData();
     }
-
+    
     public void resize() {
         gui.cancelMenus();
         new Timeline(
                 new KeyFrame(Duration.millis(1), n -> gui.resizeFonts())
         ).play();
     }
-
+    
     public void saveData() {
         JSONObject data = new JSONObject();
         data.put(TIMETABLE_MANAGER, gui.tm.getDataToSave());
         data.put(GUI, gui.getDataToSave());
         dm.writeData(data);
     }
-
+    
     public static String getAppData() {
         String path = "";
         String OS = System.getProperty("os.name").toUpperCase();
@@ -124,10 +127,10 @@ public class Main extends Application {
         } else {
             path = System.getProperty("user.dir");
         }
-
+        
         path = path + File.separator;
-
+        
         return path;
     }
-
+    
 }
