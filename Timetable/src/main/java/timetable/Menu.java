@@ -50,7 +50,8 @@ public class Menu implements Hideable {
 
     GUI gui;
 
-    ScrollPane pane;
+    AnchorPane pane;
+    ScrollPane scrollPane;
     AnchorPane content;
     GridPane settings;
 
@@ -107,11 +108,14 @@ public class Menu implements Hideable {
 
         this.gui = gui;
 
-        pane = new ScrollPane();
-        pane.setHbarPolicy(ScrollBarPolicy.NEVER);
-        pane.setStyle("-fx-focus-color: transparent;");
+        pane = new AnchorPane();
+        pane.getStyleClass().add("customPane");
         pane.setVisible(false);
-        pane.addEventFilter(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
+
+        scrollPane = new ScrollPane();
+        scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+        scrollPane.setStyle("-fx-focus-color: transparent;");
+        scrollPane.addEventFilter(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
                 if (event.getDeltaX() != 0) {
@@ -119,13 +123,17 @@ public class Menu implements Hideable {
                 }
             }
         });
+        pane.getChildren().add(scrollPane);
+        pane.setTopAnchor(scrollPane, 0d);
+        pane.setRightAnchor(scrollPane, 0d);
+        pane.setBottomAnchor(scrollPane, 0d);
+        pane.setLeftAnchor(scrollPane, 0d);
 
         content = new AnchorPane();
         content.setStyle("-fx-background-color:" + gui.transparent);
-        pane.setContent(content);
+        scrollPane.setContent(content);
 
         settings = new GridPane();
-        settings.getStyleClass().add("customPane");
         content.getChildren().add(settings);
         content.setTopAnchor(settings, 0d);
         content.setRightAnchor(settings, 0d);
@@ -313,11 +321,11 @@ public class Menu implements Hideable {
         FadeOut = new FadeTransition(Duration.millis(ANIMATION_DURATION));
         FadeOut.setToValue(0);
 
-        show = new ParallelTransition(settings);
+        show = new ParallelTransition(pane);
         show.getChildren().add(SlideIn);
         show.getChildren().add(FadeIn);
 
-        hide = new ParallelTransition(settings);
+        hide = new ParallelTransition(pane);
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
         hide.setOnFinished(event -> pane.setVisible(false));
@@ -334,7 +342,9 @@ public class Menu implements Hideable {
             pane.setLayoutX(x);
             pane.setLayoutY(y);
             pane.setPrefWidth(w);
+            pane.setMinHeight(h);
             pane.setPrefHeight(h);
+            pane.setMaxHeight(h);
             resize(w, h);
             updateColors();
             pane.setVisible(true);
@@ -444,7 +454,8 @@ public class Menu implements Hideable {
     }
 
     public void updateColors() {
-        settings.setStyle("-fx-background-color:" + gui.bg1);
+
+        pane.setStyle("-fx-background-color:" + gui.bg1);
         settingsLabel.setTextFill(Color.web(gui.text));
 
         for (Label s : separators) {
@@ -601,7 +612,7 @@ public class Menu implements Hideable {
         sliderValues[3].setText(String.format("%02d", ll));
     }
 
-    public ScrollPane getPane() {
+    public AnchorPane getPane() {
         return pane;
     }
 

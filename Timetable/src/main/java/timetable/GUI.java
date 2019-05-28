@@ -203,8 +203,9 @@ public class GUI {
     JFXButton addAbove;
     JFXButton addBelow;
 
-    //subject preview 
+    //subject preview
     JFXButton subjectPreview;
+    boolean firstDrag = true;
     double subjectStartX;
     double subjectStartY;
     double subjectInnerX;
@@ -1038,9 +1039,9 @@ public class GUI {
     //
     public void settingsMenu() {
         settingsMenu.show(
-                menu.getPane().getWidth(),
+                menu.getPane().getWidth() + 2,
                 0,
-                bg.getWidth() - menu.getPane().getWidth(),
+                bg.getWidth() - menu.getPane().getWidth() - 2,
                 bg.getHeight()
         );
     }
@@ -1423,8 +1424,6 @@ public class GUI {
             subjectInnerY = event.getY();
         }
     }
-
-    boolean firstDrag = true;
 
     public void subjectDragged(MouseEvent event) {
         if (firstDrag) {
