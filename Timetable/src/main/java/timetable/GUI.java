@@ -1497,7 +1497,7 @@ public class GUI {
                 moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
             } else if (event.getCode() == KeyCode.RIGHT) {
                 moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
-            } else if (event.getCode() == KeyCode.D) {
+            } else if (event.getCode() == KeyCode.E) {
                 tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
                 initNewTimetable();
             }
