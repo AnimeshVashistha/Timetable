@@ -1,7 +1,8 @@
 # Timetable
-JavaFX 11 and JDK 11 based Timetable
 
 ### Dependencies
+- JDK 11
+- JavaFX 11
 - [JFoenix](https://github.com/jfoenixadmin/JFoenix) Design Library
 - [json-simple](https://github.com/fangyidong/json-simple) JSON API
 
