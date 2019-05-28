@@ -15,3 +15,6 @@
 
 ### Visions
 - Google Drive Support
+
+### Notes
+- There are still some bugs when changing colors but these are caused by the JFoenix Components and will be resolved in their next release. In the meantime a restart of the application will fix most of them.
