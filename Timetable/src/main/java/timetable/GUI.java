@@ -313,6 +313,13 @@ public class GUI {
         });
         timetablePane = new TimetablePane();
         timetablePane.update(tm.getTimetablePairs(), timetableButtonPressed, tm.getTimeTableIndex());
+        timetablePane.getPane().setOnScroll(event -> {
+            double deltaY = event.getDeltaY() * 1;
+            double width = menuScrollPane.getContent().getBoundsInLocal().getWidth();
+            double vvalue = menuScrollPane.getVvalue();
+            System.out.println(deltaY);
+            menuScrollPane.setVvalue(vvalue + -deltaY / width);
+        });
         menuScrollPane.setContent(timetablePane.getPane());
         RowConstraints rc = new RowConstraints();
         rc.setPercentHeight(60);

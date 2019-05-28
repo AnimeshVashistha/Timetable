@@ -130,6 +130,12 @@ public class Menu implements Hideable {
         pane.setLeftAnchor(scrollPane, 0d);
 
         content = new AnchorPane();
+        content.setOnScroll(event -> {
+            double deltaY = event.getDeltaY() * 6;
+            double width = scrollPane.getContent().getBoundsInLocal().getWidth();
+            double vvalue = scrollPane.getVvalue();
+            scrollPane.setVvalue(vvalue + -deltaY / width);
+        });
         content.setStyle("-fx-background-color:" + gui.transparent);
         scrollPane.setContent(content);
 
