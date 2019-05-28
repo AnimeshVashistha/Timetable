@@ -28,3 +28,4 @@
 | CTRL + D                    | Toggles the darkmode |
 | CTRL + H / ESC              | Hides all menus |
 | CTRL + Space / CTRL + Enter | Opens a contextmenu if available |
+| CTRL + ARROWKEY             | Moves a subject in the arrow direction |
