@@ -9,8 +9,8 @@ JavaFX 11 and JDK 11 based Timetable
 - Alternating Week Support
 - Autocompletion
 - Intuitive Interface
+- Drag and Drop Subjects
 - Theming
 
 ### Visions
 - Google Drive Support
-- Drag and Drop Subjects
