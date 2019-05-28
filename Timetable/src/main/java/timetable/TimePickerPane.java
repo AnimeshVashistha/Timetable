@@ -92,6 +92,7 @@ public class TimePickerPane extends SomePane {
         hide = new ParallelTransition(getPane());
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
+        hide.setOnFinished(event -> getPane().setVisible(false));
 
         backgroundPane = new AnchorPane();
         backgroundPane.setPrefSize(500, 500);
@@ -368,10 +369,6 @@ public class TimePickerPane extends SomePane {
             }
 
             getSource().requestFocus();
-
-            new Timeline(
-                    new KeyFrame(Duration.millis(ANIMATION_DURATION), n -> getPane().setVisible(false))
-            ).play();
 
             hide.play();
         }

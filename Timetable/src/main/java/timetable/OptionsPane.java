@@ -56,6 +56,7 @@ public class OptionsPane extends SomePane {
         hide = new ParallelTransition(getPane());
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
+        hide.setOnFinished(event -> getPane().setVisible(false));
     }
 
     public void showOnCoordinates(double x, double y, JFXButton source) {
@@ -119,10 +120,6 @@ public class OptionsPane extends SomePane {
             setHidden(true);
 
             getSource().requestFocus();
-
-            new Timeline(
-                    new KeyFrame(Duration.millis(ANIMATION_DURATION), n -> getPane().setVisible(false))
-            ).play();
 
             hide.play();
         }

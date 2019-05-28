@@ -53,6 +53,7 @@ public class SidebarPane extends SomePane {
 
         hide = new ParallelTransition(getPane());
         hide.getChildren().add(SlideOut);
+        hide.setOnFinished(event -> getPane().setVisible(false));
     }
 
     public void show(JFXButton source) {
@@ -107,10 +108,6 @@ public class SidebarPane extends SomePane {
 
             getSource().requestFocus();
             SlideOut.setToX(-getPane().getWidth());
-
-            new Timeline(
-                    new KeyFrame(Duration.millis(ANIMATION_DURATION), n -> getPane().setVisible(false))
-            ).play();
 
             hide.play();
         }

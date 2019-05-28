@@ -20,10 +20,11 @@ public class MenuBackgroundPane extends Pane implements Hideable {
     boolean hidden = true;
 
     public MenuBackgroundPane(AnchorPane parent) {
-        fadeIn = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION), this);
+        fadeIn = new FadeTransition(Duration.millis(ANIMATION_DURATION), this);
         fadeIn.setToValue(1);
-        fadeOut = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION), this);
+        fadeOut = new FadeTransition(Duration.millis(ANIMATION_DURATION), this);
         fadeOut.setToValue(0);
+        fadeOut.setOnFinished(event -> setVisible(false));
 
         this.getStyleClass().add("menuBackgroundPane");
         updateColor();
@@ -47,9 +48,6 @@ public class MenuBackgroundPane extends Pane implements Hideable {
         if (!hidden) {
             hidden = true;
             fadeOut.play();
-            new Timeline(
-                    new KeyFrame(Duration.millis(ANIMATION_DURATION), n -> this.setVisible(false))
-            ).play();
         }
     }
 
@@ -60,8 +58,8 @@ public class MenuBackgroundPane extends Pane implements Hideable {
             setVisible(false);
         }
     }
-    
-    public void updateColor(){
+
+    public void updateColor() {
         setStyle("-fx-background-color:" + GUI.semiTransparent);
     }
 

@@ -12,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
+import static timetable.GUI.ANIMATION_DURATION;
 
 /**
  *
@@ -58,7 +59,7 @@ public class Main extends Application {
                         gui.menu();
                         new Timeline(
                                 new KeyFrame(
-                                        Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
+                                        Duration.millis(ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
                                         n -> gui.settingsMenu()
                                 )
                         ).play();

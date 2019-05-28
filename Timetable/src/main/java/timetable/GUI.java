@@ -37,11 +37,8 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import timetable.Datatypes.Subject;
 import timetable.Datatypes.Timetable;
-import timetable.Datatypes.TimetablePair;
-import static timetable.TimetableManager.TIMETABLES_STRING;
 
 /**
  *

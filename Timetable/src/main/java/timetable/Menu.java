@@ -57,6 +57,8 @@ public class Menu implements Hideable {
     Label[] separators;
 
     Label colorSection;
+    ColorPickerPane colorPicker;
+
     Label defaultColorLabel;
     HBox defaultColorBox;
     JFXButton[] defaultColorButtons;
@@ -68,6 +70,7 @@ public class Menu implements Hideable {
 
     Label timeSection;
     TimePickerPane timePicker;
+
     Label startTimeLabel;
     JFXButton startTime;
     Label smallPauseLabel;
@@ -223,6 +226,7 @@ public class Menu implements Hideable {
         settings.add(smallPauseLabel, 0, 10);
         smallPause = new JFXSlider();
         smallPause.setMax(15);
+        smallPause.setSnapToTicks(true);
         smallPause.valueProperty().addListener(event -> {
             int sp = (int) Math.round(smallPause.getValue());
             gui.tm.getCurrentTablePair().setSmallPause(sp);
@@ -312,9 +316,7 @@ public class Menu implements Hideable {
         hide = new ParallelTransition(settings);
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
-        hide.setOnFinished(event -> {
-            pane.setVisible(false);
-        });
+        hide.setOnFinished(event -> pane.setVisible(false));
     }
 
     public void show(double x, double y, double w, double h) {
@@ -334,7 +336,7 @@ public class Menu implements Hideable {
             updateColors();
             new Timeline(
                     new KeyFrame(
-                            Duration.millis(gui.ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
+                            Duration.millis(ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
                             n -> defaultColorButtons[0].requestFocus()
                     )
             ).play();
@@ -419,18 +421,26 @@ public class Menu implements Hideable {
         startTime.setFont(font3);
         smallPauseLabel.setFont(font3);
         smallPauseLabel.setPadding(padding);
+        smallPause.setMaxWidth((3) / (0.012));
+        smallPause.setTranslateX((h * 0.012 - 1) * h);
         smallPause.setScaleX(h * 0.012);
         smallPause.setScaleY(h * 0.012);
         middlePauseLabel.setFont(font3);
         middlePauseLabel.setPadding(padding);
+        middlePause.setMaxWidth((3) / (0.012));
+        middlePause.setTranslateX((h * 0.012 - 1) * h);
         middlePause.setScaleX(h * 0.012);
         middlePause.setScaleY(h * 0.012);
         bigPauseLabel.setFont(font3);
         bigPauseLabel.setPadding(padding);
+        bigPause.setMaxWidth((3) / (0.012));
+        bigPause.setTranslateX((h * 0.012 - 1) * h);
         bigPause.setScaleX(h * 0.012);
         bigPause.setScaleY(h * 0.012);
         lessonLengthLabel.setFont(font3);
         lessonLengthLabel.setPadding(padding);
+        lessonLength.setMaxWidth((3) / (0.012));
+        lessonLength.setTranslateX((h * 0.012 - 1) * h);
         lessonLength.setScaleX(h * 0.012);
         lessonLength.setScaleY(h * 0.012);
         timeBox.setSpacing(spacing);
