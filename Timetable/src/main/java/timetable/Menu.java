@@ -41,10 +41,12 @@ import static timetable.GUI.ANIMATION_DURATION;
  */
 public class Menu implements Hideable {
 
-    static String smallPauseText = "Small Pause ";
-    static String middlePauseText = "Middle Pause ";
-    static String bigPauseText = "Big Pause ";
-    static String lessonLengthText = "Lesson Length ";
+    static String[] sliderText = {"Small Pause", "Middle Pause", "Big Pause", "Lesson Length"};
+
+    static String smallPauseText = "Small Pause";
+    static String middlePauseText = "Middle Pause";
+    static String bigPauseText = "Big Pause";
+    static String lessonLengthText = "Lesson Length";
 
     GUI gui;
 
@@ -73,22 +75,12 @@ public class Menu implements Hideable {
 
     Label startTimeLabel;
     JFXButton startTime;
-    AnchorPane smallPausePane;
-    Label smallPauseLabel;
-    Label smallPauseValue;
-    JFXSlider smallPause;
-    AnchorPane middlePausePane;
-    Label middlePauseLabel;
-    Label middlePauseValue;
-    JFXSlider middlePause;
-    AnchorPane bigPausePane;
-    Label bigPauseLabel;
-    Label bigPauseValue;
-    JFXSlider bigPause;
-    AnchorPane LessonLengthPane;
-    Label lessonLengthLabel;
-    Label lessonLengthValue;
-    JFXSlider lessonLength;
+
+    AnchorPane[] sliderPanes;
+    Label[] sliderLabels;
+    Label[] sliderValues;
+    JFXSlider[] sliders;
+
     HBox timeBox;
     JFXButton applyToA;
     JFXButton applyToB;
@@ -238,96 +230,46 @@ public class Menu implements Hideable {
         });
         settings.add(startTime, 1, 9);
 
-        smallPausePane = new AnchorPane();
-        settings.add(smallPausePane, 0, 10);
-        smallPauseLabel = new Label(smallPauseText);
-        smallPauseValue = new Label();
-        smallPauseValue.getStyleClass().add("roundedButton");
-        smallPausePane.getChildren().addAll(smallPauseLabel, smallPauseValue);
-        smallPausePane.setRightAnchor(smallPauseValue, 0d);
-        smallPause = new JFXSlider();
-        smallPause.setMax(15);
-        smallPause.setSnapToTicks(true);
-        smallPause.valueProperty().addListener(event -> {
-            int sp = (int) Math.round(smallPause.getValue());
-            gui.tm.getCurrentTablePair().setSmallPause(sp);
-            smallPauseValue.setText(String.format("%02d", sp));
-        });
-        smallPause.focusedProperty().addListener(event -> {
-            if (smallPause.isFocused()) {
-                smallPauseValue.setStyle("-fx-background-color:" + GUI.ac1);
-            } else {
-                smallPauseValue.setStyle("-fx-background-color:" + GUI.transparent);
-            }
-        });
-        settings.add(smallPause, 1, 10);
-
-        middlePausePane = new AnchorPane();
-        settings.add(middlePausePane, 0, 11);
-        middlePauseLabel = new Label(middlePauseText);
-        middlePauseValue = new Label();
-        middlePauseValue.getStyleClass().add("roundedButton");
-        middlePausePane.getChildren().addAll(middlePauseLabel, middlePauseValue);
-        middlePausePane.setRightAnchor(middlePauseValue, 0d);
-        middlePause = new JFXSlider();
-        middlePause.setMax(30);
-        middlePause.valueProperty().addListener(event -> {
-            int mp = (int) Math.round(middlePause.getValue());
-            gui.tm.getCurrentTablePair().setMiddlePause(mp);
-            middlePauseValue.setText(String.format("%02d", mp));
-        });
-        middlePause.focusedProperty().addListener(event -> {
-            if (middlePause.isFocused()) {
-                middlePauseValue.setStyle("-fx-background-color:" + GUI.ac1);
-            } else {
-                middlePauseValue.setStyle("-fx-background-color:" + GUI.transparent);
-            }
-        });
-        settings.add(middlePause, 1, 11);
-        bigPausePane = new AnchorPane();
-        settings.add(bigPausePane, 0, 12);
-        bigPauseLabel = new Label(bigPauseText);
-        bigPauseValue = new Label();
-        bigPauseValue.getStyleClass().add("roundedButton");
-        bigPausePane.getChildren().addAll(bigPauseLabel, bigPauseValue);
-        bigPausePane.setRightAnchor(bigPauseValue, 0d);
-        bigPause = new JFXSlider();
-        bigPause.setMax(90);
-        bigPause.valueProperty().addListener(event -> {
-            int bp = (int) Math.round(bigPause.getValue());
-            gui.tm.getCurrentTablePair().setBigPause(bp);
-            bigPauseValue.setText(String.format("%02d", bp));
-        });
-        bigPause.focusedProperty().addListener(event -> {
-            if (bigPause.isFocused()) {
-                bigPauseValue.setStyle("-fx-background-color:" + GUI.ac1);
-            } else {
-                bigPauseValue.setStyle("-fx-background-color:" + GUI.transparent);
-            }
-        });
-        settings.add(bigPause, 1, 12);
-        LessonLengthPane = new AnchorPane();
-        settings.add(LessonLengthPane, 0, 13);
-        lessonLengthLabel = new Label(lessonLengthText);
-        lessonLengthValue = new Label();
-        lessonLengthValue.getStyleClass().add("roundedButton");
-        LessonLengthPane.getChildren().addAll(lessonLengthLabel, lessonLengthValue);
-        LessonLengthPane.setRightAnchor(lessonLengthValue, 0d);
-        lessonLength = new JFXSlider();
-        lessonLength.setMax(90);
-        lessonLength.valueProperty().addListener(event -> {
-            int ll = (int) Math.round(lessonLength.getValue());
-            gui.tm.getCurrentTablePair().setLessonlength(ll);
-            lessonLengthValue.setText(String.format("%02d", ll));
-        });
-        lessonLength.focusedProperty().addListener(event -> {
-            if (lessonLength.isFocused()) {
-                lessonLengthValue.setStyle("-fx-background-color:" + GUI.ac1);
-            } else {
-                lessonLengthValue.setStyle("-fx-background-color:" + GUI.transparent);
-            }
-        });
-        settings.add(lessonLength, 1, 13);
+        sliderPanes = new AnchorPane[4];
+        sliderLabels = new Label[sliderPanes.length];
+        sliderValues = new Label[sliderPanes.length];
+        sliders = new JFXSlider[sliderPanes.length];
+        for (int i = 0; i < sliderPanes.length; i++) {
+            AnchorPane sp = new AnchorPane();
+            sliderPanes[i] = sp;
+            settings.add(sp, 0, 10 + i);
+            Label sl = new Label(sliderText[i]);
+            sliderLabels[i] = sl;
+            Label sv = new Label();
+            sliderValues[i] = sv;
+            sv.getStyleClass().add("roundedButton");
+            sp.getChildren().addAll(sl, sv);
+            sp.setRightAnchor(sv, 0d);
+            JFXSlider s = new JFXSlider();
+            s.valueProperty().addListener(event -> {
+                int val = (int) Math.round(s.getValue());
+                if (s.equals(sliders[0])) {
+                    gui.tm.getCurrentTablePair().setSmallPause(val);
+                } else if (s.equals(sliders[0])) {
+                    gui.tm.getCurrentTablePair().setMiddlePause(val);
+                } else if (s.equals(sliders[0])) {
+                    gui.tm.getCurrentTablePair().setBigPause(val);
+                } else if (s.equals(sliders[0])) {
+                    gui.tm.getCurrentTablePair().setLessonlength(val);
+                }
+                gui.tm.getCurrentTablePair().setSmallPause(val);
+                sv.setText(String.format("%02d", val));
+            });
+            s.focusedProperty().addListener(event -> {
+                focusSlider(s, sv);
+            });
+            sliders[i] = s;
+            settings.add(s, 1, 10 + i);
+        }
+        sliders[0].setMax(15);
+        sliders[1].setMax(30);
+        sliders[2].setMax(90);
+        sliders[3].setMax(90);
 
         timeBox = new HBox();
         settings.add(timeBox, 0, 14, 2, 1);
@@ -388,7 +330,6 @@ public class Menu implements Hideable {
             if (!gui.customColor) {
                 highlightColorButton(gui.colorIndex, gui.customColor);
             }
-            pane.setVisible(true);
             updateTimeComponentsText();
             pane.setLayoutX(x);
             pane.setLayoutY(y);
@@ -396,6 +337,7 @@ public class Menu implements Hideable {
             pane.setPrefHeight(h);
             resize(w, h);
             updateColors();
+            pane.setVisible(true);
             new Timeline(
                     new KeyFrame(
                             Duration.millis(ANIMATION_DURATION * gui.FOCUS_ANIMATION_OFFSET_FACTOR),
@@ -481,38 +423,16 @@ public class Menu implements Hideable {
         startTimeLabel.setPadding(padding);
         startTime.setPrefSize(h * 1.6, h * 0.8);
         startTime.setFont(font3);
-        smallPauseLabel.setFont(font3);
-        smallPauseLabel.setPadding(padding);
-        smallPauseValue.setFont(font3);
-        smallPauseValue.setPadding(padding);
-        smallPause.setMaxWidth((3) / (0.012));
-        smallPause.setTranslateX((h * 0.012 - 1) * h);
-        smallPause.setScaleX(h * 0.012);
-        smallPause.setScaleY(h * 0.012);
-        middlePauseLabel.setFont(font3);
-        middlePauseLabel.setPadding(padding);
-        middlePauseValue.setFont(font3);
-        middlePauseValue.setPadding(padding);
-        middlePause.setMaxWidth((3) / (0.012));
-        middlePause.setTranslateX((h * 0.012 - 1) * h);
-        middlePause.setScaleX(h * 0.012);
-        middlePause.setScaleY(h * 0.012);
-        bigPauseLabel.setFont(font3);
-        bigPauseLabel.setPadding(padding);
-        bigPauseValue.setFont(font3);
-        bigPauseValue.setPadding(padding);
-        bigPause.setMaxWidth((3) / (0.012));
-        bigPause.setTranslateX((h * 0.012 - 1) * h);
-        bigPause.setScaleX(h * 0.012);
-        bigPause.setScaleY(h * 0.012);
-        lessonLengthLabel.setFont(font3);
-        lessonLengthLabel.setPadding(padding);
-        lessonLengthValue.setFont(font3);
-        lessonLengthValue.setPadding(padding);
-        lessonLength.setMaxWidth((3) / (0.012));
-        lessonLength.setTranslateX((h * 0.012 - 1) * h);
-        lessonLength.setScaleX(h * 0.012);
-        lessonLength.setScaleY(h * 0.012);
+        for (int i = 0; i < sliderPanes.length; i++) {
+            sliderLabels[i].setFont(font3);
+            sliderLabels[i].setPadding(padding);
+            sliderValues[i].setFont(font3);
+            sliderValues[i].setPadding(padding);
+            sliders[i].setMaxWidth((3) / (0.012));
+            sliders[i].setTranslateX((h * 0.012 - 1) * h);
+            sliders[i].setScaleX(h * 0.012);
+            sliders[i].setScaleY(h * 0.012);
+        }
         timeBox.setSpacing(spacing);
         timeBox.setPadding(padding);
         applyToA.setPrefSize(w / 3, h * 0.6);
@@ -552,18 +472,11 @@ public class Menu implements Hideable {
         startTimeLabel.setTextFill(Color.web(gui.text));
         startTime.setStyle("-fx-background-color:" + GUI.ac1);
         startTime.setTextFill(Color.web(gui.text));
-        smallPauseLabel.setTextFill(Color.web(gui.text));
-        smallPauseValue.setTextFill(Color.web(gui.text));
-        applyColorsToSlider(smallPause);
-        middlePauseLabel.setTextFill(Color.web(gui.text));
-        middlePauseValue.setTextFill(Color.web(gui.text));
-        applyColorsToSlider(middlePause);
-        bigPauseLabel.setTextFill(Color.web(gui.text));
-        bigPauseValue.setTextFill(Color.web(gui.text));
-        applyColorsToSlider(bigPause);
-        lessonLengthLabel.setTextFill(Color.web(gui.text));
-        lessonLengthValue.setTextFill(Color.web(gui.text));
-        applyColorsToSlider(lessonLength);
+        for (int i = 0; i < sliderPanes.length; i++) {
+            sliderLabels[i].setTextFill(Color.web(gui.text));
+            sliderValues[i].setTextFill(Color.web(gui.text));
+            applyColorsToSlider(sliders[i]);
+        }
         applyToA.setStyle("-fx-background-color:" + gui.bg4);
         applyToA.setTextFill(Color.web(gui.text));
         applyToB.setStyle("-fx-background-color:" + gui.bg4);
@@ -624,7 +537,7 @@ public class Menu implements Hideable {
             customColorButtons[index].setBorder(
                     new Border(
                             new BorderStroke(
-                                    Color.web(gui.fg2),
+                                    Color.web(gui.bg4),
                                     BorderStrokeStyle.SOLID,
                                     new CornerRadii(3),
                                     new BorderWidths(4)
@@ -636,7 +549,7 @@ public class Menu implements Hideable {
             defaultColorButtons[index].setBorder(
                     new Border(
                             new BorderStroke(
-                                    Color.web(gui.fg1),
+                                    Color.web(gui.bg4),
                                     BorderStrokeStyle.SOLID,
                                     new CornerRadii(3),
                                     new BorderWidths(4)
@@ -664,20 +577,28 @@ public class Menu implements Hideable {
         }
     }
 
+    public void focusSlider(JFXSlider s, Label l) {
+        if (s.isFocused()) {
+            l.setStyle("-fx-background-color:" + GUI.ac2);
+        } else {
+            l.setStyle("-fx-background-color:" + GUI.transparent);
+        }
+    }
+
     public void updateTimeComponentsText() {
         startTime.setText(gui.tm.getCurrentTablePair().getStartTime().format());
         int sp = gui.tm.getCurrentTablePair().getSmallPause();
-        smallPause.setValue(sp);
-        smallPauseValue.setText(String.format("%02d", sp));
+        sliders[0].setValue(sp);
+        sliderValues[0].setText(String.format("%02d", sp));
         int mp = gui.tm.getCurrentTablePair().getMiddlePause();
-        middlePause.setValue(mp);
-        middlePauseValue.setText(String.format("%02d", mp));
+        sliders[1].setValue(mp);
+        sliderValues[1].setText(String.format("%02d", mp));
         int bp = gui.tm.getCurrentTablePair().getBigPause();
-        bigPause.setValue(bp);
-        bigPauseValue.setText(String.format("%02d", bp));
+        sliders[2].setValue(bp);
+        sliderValues[2].setText(String.format("%02d", bp));
         int ll = gui.tm.getCurrentTablePair().getLessonlength();
-        lessonLength.setValue(ll);
-        lessonLengthValue.setText(String.format("%02d", ll));
+        sliders[3].setValue(ll);
+        sliderValues[3].setText(String.format("%02d", ll));
     }
 
     public ScrollPane getPane() {

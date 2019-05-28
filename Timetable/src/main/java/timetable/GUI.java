@@ -109,15 +109,21 @@ public class GUI {
     EventHandler<ActionEvent> nameAction;
     EventHandler<MouseEvent> namePressed;
     EventHandler<KeyEvent> nameKeyReleased;
+
     EventHandler<ActionEvent> dayAction;
     EventHandler<MouseEvent> dayPressed;
     EventHandler<KeyEvent> dayKeyReleased;
+
     EventHandler<ActionEvent> timeAction;
     EventHandler<MouseEvent> timePressed;
     EventHandler<KeyEvent> timeKeyReleased;
+
     EventHandler<ActionEvent> subjectAction;
     EventHandler<MouseEvent> subjectPressed;
+    EventHandler<MouseEvent> subjectDragged;
+    EventHandler<MouseEvent> subjectReleased;
     EventHandler<KeyEvent> subjectKeyReleased;
+
     MenuButton name;
     HBox tabBox;
     Label tabA;
@@ -196,6 +202,13 @@ public class GUI {
     JFXButton delete;
     JFXButton addAbove;
     JFXButton addBelow;
+
+    //subject preview 
+    JFXButton subjectPreview;
+    double subjectStartX;
+    double subjectStartY;
+    double subjectInnerX;
+    double subjectInnerY;
 
     public GUI(JSONObject data) {
 
@@ -501,6 +514,13 @@ public class GUI {
             }
         });
 
+        //subject preview
+        subjectPreview = new JFXButton();
+        subjectPreview.prefWidthProperty().bind(subjects[0][0].widthProperty());
+        subjectPreview.prefHeightProperty().bind(subjects[0][0].heightProperty());
+        subjectPreview.setVisible(false);
+        bg.getChildren().add(subjectPreview);
+
         Locale l = Locale.getDefault();
         if (LocalDate.now().get(WeekFields.of(l).weekOfWeekBasedYear()) % 2 == 0) {
             selectTabA();
@@ -687,6 +707,12 @@ public class GUI {
         subjectPressed = (MouseEvent event) -> {
             subjectPressed(event);
         };
+        subjectDragged = (MouseEvent event) -> {
+            subjectDragged(event);
+        };
+        subjectReleased = (MouseEvent event) -> {
+            subjectReleased(event);
+        };
         subjectKeyReleased = (KeyEvent event) -> {
             subjectKeyReleased(event);
         };
@@ -699,6 +725,8 @@ public class GUI {
                 subject.setPrefSize(500, 500);
                 subject.addEventHandler(ActionEvent.ANY, subjectAction);
                 subject.addEventHandler(MouseEvent.MOUSE_PRESSED, subjectPressed);
+                subject.addEventHandler(MouseEvent.MOUSE_DRAGGED, subjectDragged);
+                subject.addEventHandler(MouseEvent.MOUSE_RELEASED, subjectReleased);
                 subject.addEventHandler(KeyEvent.KEY_RELEASED, subjectKeyReleased);
                 subjects[i][j] = subject;
             }
@@ -735,6 +763,8 @@ public class GUI {
                 b.setFont(font3);
             }
         }
+
+        subjectPreview.setFont(font3);
     }
 
     public void initNewTimetable() {
@@ -882,6 +912,9 @@ public class GUI {
         autoCompletePane.updateColor();
         //subject context menu
         subjectContextMenu.updateColor();
+        //subject preview
+        subjectPreview.setStyle("-fx-background-color:" + bg1 + 44);
+        subjectPreview.setTextFill(Color.web(text));
     }
 
     public void setAccentColor(int index) {
@@ -1152,6 +1185,19 @@ public class GUI {
     //
     //################################dayContextMenu################################
     //
+    public void clearColumn() {
+        tm.clearColumn();
+        initNewTimetable();
+    }
+
+    public void deleteColumn() {
+        tm.deleteColumn();
+        initNewTimetable();
+    }
+
+    //
+    //################################days################################
+    //
     public void dayPressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedDay(event);
@@ -1166,16 +1212,6 @@ public class GUI {
             dayContextMenu.show(selectedDay);
             hideOtherMenus(dayContextMenu);
         }
-    }
-
-    public void clearColumn() {
-        tm.clearColumn();
-        initNewTimetable();
-    }
-
-    public void deleteColumn() {
-        tm.deleteColumn();
-        initNewTimetable();
     }
 
     private void getSelectedDay(Event event) {
@@ -1200,23 +1236,6 @@ public class GUI {
     //
     //################################timeContextMenu################################
     //
-    public void timePressed(MouseEvent event) {
-        if (event.isSecondaryButtonDown()) {
-            getSelectedTime(event);
-            timeContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedTime);
-            hideOtherMenus(timeContextMenu);
-        }
-    }
-
-    public void timeKeyReleased(KeyEvent event) {
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
-            getSelectedTime(event);
-            timeContextMenu.show(selectedTime);
-            hideOtherMenus(timeContextMenu);
-
-        }
-    }
-
     public void clearRow() {
         tm.clearRow();
         initNewTimetable();
@@ -1235,6 +1254,26 @@ public class GUI {
     public void addRowBelow() {
         tm.addRowBelow();
         initNewTimetable();
+    }
+
+    //
+    //################################times################################
+    //
+    public void timePressed(MouseEvent event) {
+        if (event.isSecondaryButtonDown()) {
+            getSelectedTime(event);
+            timeContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedTime);
+            hideOtherMenus(timeContextMenu);
+        }
+    }
+
+    public void timeKeyReleased(KeyEvent event) {
+        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+            getSelectedTime(event);
+            timeContextMenu.show(selectedTime);
+            hideOtherMenus(timeContextMenu);
+
+        }
     }
 
     private void getSelectedTime(Event event) {
@@ -1349,14 +1388,6 @@ public class GUI {
     //
     //################################subjectContextMenu################################
     //
-    public void subjectPressed(MouseEvent event) {
-        if (event.isSecondaryButtonDown()) {
-            getSelectedSubject(event);
-            subjectContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedSubject);
-            hideOtherMenus(subjectContextMenu);
-        }
-    }
-
     public void clear() {
         tm.clearSubject();
         initNewTimetable();
@@ -1377,22 +1408,83 @@ public class GUI {
         initNewTimetable();
     }
 
-    private void getSelectedSubject(Event event) {
+    //
+    //################################subjects################################
+    //
+    public void subjectPressed(MouseEvent event) {
+        if (event.isSecondaryButtonDown()) {
+            getSelectedSubject(event);
+            subjectContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedSubject);
+            hideOtherMenus(subjectContextMenu);
+        } else {
+            subjectStartX = event.getSceneX();
+            subjectStartY = event.getSceneY();
+            subjectInnerX = event.getX();
+            subjectInnerY = event.getY();
+        }
+    }
+
+    boolean firstDrag = true;
+
+    public void subjectDragged(MouseEvent event) {
+        if (firstDrag) {
+            for (int i = 0; i < subjects.length; i++) {
+                for (int j = 0; j < subjects[0].length; j++) {
+                    if (subjects[i][j] == event.getSource()) {
+                        subjectPreview.setText(
+                                tm.getCurrentTable().getSubjectText(i, j)
+                                + "\n" + tm.getCurrentTable().getRoomText(i, j)
+                        );
+                        break;
+                    }
+                }
+            }
+            firstDrag = false;
+        }
+        subjectPreview.setVisible(true);
+        subjectPreview.setLayoutX(event.getSceneX() - subjectInnerX);
+        subjectPreview.setLayoutY(event.getSceneY() - subjectInnerY);
+    }
+
+    public void subjectReleased(MouseEvent event) {
+        boolean onSubject = false;
+        int is1 = 0;
+        int js1 = 0;
+        int is2 = 0;
+        int js2 = 0;
+
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
-                if (event.getSource() == subjects[i][j]) {
-                    selectedSubject = subjects[i][j];
-                    tm.setsIndexI(i);
-                    tm.setsIndexJ(j);
+                if (subjects[i][j] == event.getSource()) {
+                    is1 = i;
+                    js1 = j;
                     break;
                 }
             }
         }
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                if (subjects[i][j].getLayoutX() < event.getSceneX()
+                        && subjects[i][j].getLayoutX() + subjects[i][j].getWidth() > event.getSceneX()
+                        && subjects[i][j].getLayoutY() < event.getSceneY()
+                        && subjects[i][j].getLayoutY() + subjects[i][j].getHeight() > event.getSceneY()
+                        && subjects[i][j] != event.getSource()) {
+                    subjects[i][j].setText("hi there!");
+                    is2 = i;
+                    js2 = j;
+                    onSubject = true;
+                    break;
+                }
+            }
+        }
+        if (onSubject) {
+            tm.getCurrentTable().switchSubjects(is1, js1, is2, js2);
+            initNewTimetable();
+        }
+        subjectPreview.setVisible(false);
+        firstDrag = true;
     }
 
-    //
-    //################################subjects################################
-    //
     public void subjectKeyReleased(KeyEvent event) {
         getSelectedSubject(event);
         if (event.isControlDown()) {
@@ -1413,6 +1505,19 @@ public class GUI {
         } else if (event.getCode() == KeyCode.DELETE) {
             tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
             initNewTimetable();
+        }
+    }
+
+    private void getSelectedSubject(Event event) {
+        for (int i = 0; i < subjects.length; i++) {
+            for (int j = 0; j < subjects[0].length; j++) {
+                if (event.getSource() == subjects[i][j]) {
+                    selectedSubject = subjects[i][j];
+                    tm.setsIndexI(i);
+                    tm.setsIndexJ(j);
+                    break;
+                }
+            }
         }
     }
 
@@ -1454,6 +1559,9 @@ public class GUI {
         }
     }
 
+    //
+    //################################getters################################
+    //
     public Menu getSettings() {
         return settingsMenu;
     }
