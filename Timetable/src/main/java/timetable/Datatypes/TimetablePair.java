@@ -64,11 +64,39 @@ public class TimetablePair implements Serializable {
         }
     }
 
-    public ArrayList<Subject> getAutocompleteOptions(String subject) {
+    public ArrayList<Subject> getSubjectAutocompleteOptions(String subject) {
         ArrayList<Subject> options = new ArrayList<Subject>();
 
         for (Subject s : references) {
             if (s.getSubject().toLowerCase().startsWith(subject.toLowerCase())) {
+                options.add(s);
+            }
+        }
+
+        this.options = options;
+
+        return options;
+    }
+
+    public ArrayList<Subject> getRoomAutocompleteOptions(String room) {
+        ArrayList<Subject> options = new ArrayList<Subject>();
+
+        for (Subject s : references) {
+            if (s.getRoom().toLowerCase().startsWith(room.toLowerCase())) {
+                options.add(s);
+            }
+        }
+
+        this.options = options;
+
+        return options;
+    }
+
+    public ArrayList<Subject> getTeacherAutocompleteOptions(String teacher) {
+        ArrayList<Subject> options = new ArrayList<Subject>();
+
+        for (Subject s : references) {
+            if (s.getTeacher().toLowerCase().startsWith(teacher.toLowerCase())) {
                 options.add(s);
             }
         }

@@ -1375,7 +1375,7 @@ public class GUI {
     private void handleInput() {
         if (subjectName.getText().length() > 0) {
             tm.getCurrentTablePair().updateReferences();
-            List<Subject> options = tm.getCurrentTablePair().getAutocompleteOptions(subjectName.getText());
+            List<Subject> options = tm.getCurrentTablePair().getSubjectAutocompleteOptions(subjectName.getText());
             if (options.size() > 0) {
                 autoCompletePane.setFields(subjectName, options);
                 autoCompletePane.show(subjectName);
