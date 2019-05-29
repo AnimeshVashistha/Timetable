@@ -32,7 +32,7 @@ public abstract class SomePane implements Hideable {
 
         parent.getChildren().add(getPane());
 
-        getDone().setText("done");
+        getDone().setText("Done");
         getDone().getStyleClass().add(bottomButtonStyle);
         getDone().setPrefWidth(500);
         getDone().setPrefHeight(150);

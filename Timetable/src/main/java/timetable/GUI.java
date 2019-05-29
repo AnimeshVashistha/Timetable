@@ -204,7 +204,7 @@ public class GUI {
     JFXButton addBelow;
 
     //subject preview
-    JFXButton subjectPreview;
+    Label subjectPreview;
     boolean firstDrag = true;
     double subjectStartX;
     double subjectStartY;
@@ -271,10 +271,10 @@ public class GUI {
         menuName = new JFXTextField();
         menuName.setPrefHeight(100);
         menuName.setPrefWidth(500);
-        menuName.setPromptText("name");
+        menuName.setPromptText("Name");
         menuName.getStyleClass().add("customTextfield");
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
-        settings = new JFXButton("settings");
+        settings = new JFXButton("Settings");
         settings.getStyleClass().add("notRoundedButton");
         settings.setPrefWidth(500);
         settings.setPrefHeight(150);
@@ -285,14 +285,14 @@ public class GUI {
                 settingsMenu.hide();
             }
         });
-        addTimetable = new JFXButton("add timetable");
+        addTimetable = new JFXButton("Add Timetable");
         addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(150);
         addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             addTimetable();
         });
-        deleteTimetable = new JFXButton("delete timetable");
+        deleteTimetable = new JFXButton("Delete Timetable");
         deleteTimetable.getStyleClass().add("notRoundedButton");
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(150);
@@ -333,7 +333,7 @@ public class GUI {
         //context menu
         contextMenu = new OptionsPane(bg);
         menus.add(contextMenu);
-        clearTimetable = new JFXButton("clear timetable");
+        clearTimetable = new JFXButton("Clear Timetable");
         clearTimetable.addEventHandler(ActionEvent.ACTION, event -> {
             if (tm.IsA()) {
                 tm.getCurrentTablePair().setA(new Timetable(tm.getCurrentTablePair()));
@@ -342,12 +342,12 @@ public class GUI {
             }
             initNewTimetable();
         });
-        duplicateA = new JFXButton("duplicate a");
+        duplicateA = new JFXButton("Duplicate A");
         duplicateA.addEventHandler(ActionEvent.ACTION, event -> {
             tm.getCurrentTablePair().duplicateA();
             initNewTimetable();
         });
-        duplicateB = new JFXButton("duplicate b");
+        duplicateB = new JFXButton("Duplicate B");
         duplicateB.addEventHandler(ActionEvent.ACTION, event -> {
             tm.getCurrentTablePair().duplicateB();
             initNewTimetable();
@@ -398,11 +398,11 @@ public class GUI {
         //day context menu 
         dayContextMenu = new OptionsPane(bg);
         menus.add(dayContextMenu);
-        clearColumn = new JFXButton("clear column");
+        clearColumn = new JFXButton("Clear Column");
         clearColumn.addEventHandler(ActionEvent.ACTION, event -> {
             clearColumn();
         });
-        deleteColumn = new JFXButton("delete column");
+        deleteColumn = new JFXButton("Delete Column");
         deleteColumn.addEventHandler(ActionEvent.ACTION, event -> {
             deleteColumn();
         });
@@ -421,19 +421,19 @@ public class GUI {
         //time context menu
         timeContextMenu = new OptionsPane(bg);
         menus.add(timeContextMenu);
-        clearRow = new JFXButton("clear row");
+        clearRow = new JFXButton("Clear Row");
         clearRow.addEventHandler(ActionEvent.ACTION, event -> {
             clearRow();
         });
-        deleteRow = new JFXButton("delete row");
+        deleteRow = new JFXButton("Delete Row");
         deleteRow.addEventHandler(ActionEvent.ACTION, event -> {
             deleteRow();
         });
-        addRowAbove = new JFXButton("add row above");
+        addRowAbove = new JFXButton("Add Row Above");
         addRowAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addRowAbove();
         });
-        addRowBelow = new JFXButton("add row below");
+        addRowBelow = new JFXButton("Add Row Below");
         addRowBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addRowBelow();
         });
@@ -463,20 +463,20 @@ public class GUI {
         subjectName = new JFXTextField();
         subjectName.setPrefWidth(500);
         subjectName.setPrefHeight(100);
-        subjectName.setPromptText("name");
+        subjectName.setPromptText("Name");
         subjectName.getStyleClass().add("customTextfield");
         subjectRoom = new JFXTextField();
         subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectRoom.setPrefWidth(500);
         subjectRoom.setPrefHeight(100);
         subjectRoom.getStyleClass().add("customTextfield");
-        subjectRoom.setPromptText("room");
+        subjectRoom.setPromptText("Room");
         subjectTeacher = new JFXTextField();
         subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectTeacher.setPrefWidth(500);
         subjectTeacher.setPrefHeight(100);
         subjectTeacher.getStyleClass().add("customTextfield");
-        subjectTeacher.setPromptText("teacher");
+        subjectTeacher.setPromptText("Teacher");
         subjectMenu.add(subjectName);
         subjectMenu.add(subjectRoom);
         subjectMenu.add(subjectTeacher);
@@ -496,19 +496,19 @@ public class GUI {
         //subject context menu
         subjectContextMenu = new OptionsPane(bg);
         menus.add(subjectContextMenu);
-        clear = new JFXButton("clear");
+        clear = new JFXButton("Clear");
         clear.addEventHandler(ActionEvent.ACTION, event -> {
             clear();
         });
-        delete = new JFXButton("delete");
+        delete = new JFXButton("Delete");
         delete.addEventHandler(ActionEvent.ACTION, event -> {
             delete();
         });
-        addAbove = new JFXButton("add above");
+        addAbove = new JFXButton("Add Above");
         addAbove.addEventHandler(ActionEvent.ACTION, event -> {
             addAbove();
         });
-        addBelow = new JFXButton("add below");
+        addBelow = new JFXButton("Add Below");
         addBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addBelow();
         });
@@ -523,7 +523,9 @@ public class GUI {
         });
 
         //subject preview
-        subjectPreview = new JFXButton();
+        subjectPreview = new Label();
+        subjectPreview.getStyleClass().add("roundedButton");
+        subjectPreview.setAlignment(Pos.CENTER);
         subjectPreview.prefWidthProperty().bind(subjects[0][0].widthProperty());
         subjectPreview.prefHeightProperty().bind(subjects[0][0].heightProperty());
         subjectPreview.setVisible(false);
