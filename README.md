@@ -1,5 +1,8 @@
 # Timetable
 
+![Homescreen dark](https://github.com/Saecki/Timetable/blob/master/Timetable-home-dark.png)
+![Homescreen light](https://github.com/Saecki/Timetable/blob/master/Timetable-home-light.png)
+
 ### Dependencies
 - JDK 11
 - JavaFX 11
