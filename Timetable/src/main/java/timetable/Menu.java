@@ -301,7 +301,7 @@ public class Menu implements Hideable {
         });
         timeBox.getChildren().add(applyToB);
 
-        applyToBoth = new JFXButton("apply to Both");
+        applyToBoth = new JFXButton("Apply to Both");
         applyToBoth.getStyleClass().add("roundedButton");
         applyToBoth.setOnAction(event -> {
             gui.tm.getCurrentTablePair().getA().initTimes();

@@ -206,6 +206,7 @@ public class GUI {
     //subject preview
     Label subjectPreview;
     boolean firstDrag = true;
+    boolean primaryButton;
     double subjectStartX;
     double subjectStartY;
     double subjectInnerX;
@@ -1422,10 +1423,12 @@ public class GUI {
     //
     public void subjectPressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
+            primaryButton = false;
             getSelectedSubject(event);
             subjectContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedSubject);
             hideOtherMenus(subjectContextMenu);
         } else {
+            primaryButton = true;
             subjectStartX = event.getSceneX();
             subjectStartY = event.getSceneY();
             subjectInnerX = event.getX();
@@ -1434,64 +1437,70 @@ public class GUI {
     }
 
     public void subjectDragged(MouseEvent event) {
-        if (firstDrag) {
+        if (primaryButton) {
+            if (firstDrag) {
+                for (int i = 0; i < subjects.length; i++) {
+                    for (int j = 0; j < subjects[0].length; j++) {
+                        if (subjects[i][j] == event.getSource()) {
+                            subjectPreview.setText(
+                                    tm.getCurrentTable().getSubjectText(i, j)
+                                    + "\n" + tm.getCurrentTable().getRoomText(i, j)
+                            );
+                            break;
+                        }
+                    }
+                }
+                firstDrag = false;
+            }
+            subjectPreview.setVisible(true);
+            subjectPreview.setLayoutX(event.getSceneX() - subjectInnerX);
+            subjectPreview.setLayoutY(event.getSceneY() - subjectInnerY);
+        }
+    }
+
+    public void subjectReleased(MouseEvent event) {
+        if (primaryButton) {
+            boolean onSubject = false;
+            int is1 = 0;
+            int js1 = 0;
+            int is2 = 0;
+            int js2 = 0;
+
             for (int i = 0; i < subjects.length; i++) {
                 for (int j = 0; j < subjects[0].length; j++) {
                     if (subjects[i][j] == event.getSource()) {
-                        subjectPreview.setText(
-                                tm.getCurrentTable().getSubjectText(i, j)
-                                + "\n" + tm.getCurrentTable().getRoomText(i, j)
-                        );
+                        is1 = i;
+                        js1 = j;
                         break;
                     }
                 }
             }
-            firstDrag = false;
-        }
-        subjectPreview.setVisible(true);
-        subjectPreview.setLayoutX(event.getSceneX() - subjectInnerX);
-        subjectPreview.setLayoutY(event.getSceneY() - subjectInnerY);
-    }
-
-    public void subjectReleased(MouseEvent event) {
-        boolean onSubject = false;
-        int is1 = 0;
-        int js1 = 0;
-        int is2 = 0;
-        int js2 = 0;
-
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                if (subjects[i][j] == event.getSource()) {
-                    is1 = i;
-                    js1 = j;
-                    break;
+            for (int i = 0; i < subjects.length; i++) {
+                for (int j = 0; j < subjects[0].length; j++) {
+                    if (subjects[i][j].getLayoutX() < event.getSceneX()
+                            && subjects[i][j].getLayoutX() + subjects[i][j].getWidth() > event.getSceneX()
+                            && subjects[i][j].getLayoutY() < event.getSceneY()
+                            && subjects[i][j].getLayoutY() + subjects[i][j].getHeight() > event.getSceneY()) {
+                        if (subjects[i][j] == event.getSource()) {
+                            getSelectedSubject(event);
+                            subjectMenu.show(selectedSubject);
+                        } else {
+                            subjects[i][j].setText("hi there!");
+                            is2 = i;
+                            js2 = j;
+                            onSubject = true;
+                            break;
+                        }
+                    }
                 }
             }
-        }
-        for (int i = 0; i < subjects.length; i++) {
-            for (int j = 0; j < subjects[0].length; j++) {
-                if (subjects[i][j] == event.getSource()) {
-                    getSelectedSubject(event);
-                    subjectMenu.show(selectedSubject);
-                } else if (subjects[i][j].getLayoutX() < event.getSceneX()
-                        && subjects[i][j].getLayoutX() + subjects[i][j].getWidth() > event.getSceneX()
-                        && subjects[i][j].getLayoutY() < event.getSceneY()
-                        && subjects[i][j].getLayoutY() + subjects[i][j].getHeight() > event.getSceneY()) {
-                    subjects[i][j].setText("hi there!");
-                    is2 = i;
-                    js2 = j;
-                    onSubject = true;
-                    break;
-                }
+            if (onSubject) {
+                tm.getCurrentTable().switchSubjects(is1, js1, is2, js2);
+                initNewTimetable();
             }
+            subjectPreview.setVisible(false);
+            firstDrag = true;
         }
-        if (onSubject) {
-            tm.getCurrentTable().switchSubjects(is1, js1, is2, js2);
-            initNewTimetable();
-        }
-        subjectPreview.setVisible(false);
-        firstDrag = true;
     }
 
     public void subjectKeyReleased(KeyEvent event) {
