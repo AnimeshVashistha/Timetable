@@ -33,4 +33,5 @@
 | CTRL + H \| ESC              | Hides all menus |
 | CTRL + Space \| CTRL + Enter | Opens a contextmenu if available |
 | CTRL + E                     | Clears the currently focused subject |
+| CTRL + R                     | Deletes the currently focused subject |
 | CTRL + ARROWKEY              | Moves a subject in the arrow direction |

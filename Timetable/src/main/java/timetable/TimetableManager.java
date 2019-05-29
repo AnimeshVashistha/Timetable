@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import timetable.Datatypes.Timetable;
 import timetable.Datatypes.TimetablePair;
 
@@ -69,12 +68,13 @@ public class TimetableManager {
             }
             if (timetables.size() > 0) {
                 currentTablePair = timetables.get(timetableIndex);
+            } else {
+                addTimetablePair();
             }
         } catch (Exception e) {
             e.printStackTrace();
             addTimetablePair();
         }
-
     }
 
     public void addTimetablePair() {

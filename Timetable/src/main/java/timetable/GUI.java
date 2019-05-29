@@ -317,7 +317,6 @@ public class GUI {
             double deltaY = event.getDeltaY() * 1;
             double width = menuScrollPane.getContent().getBoundsInLocal().getWidth();
             double vvalue = menuScrollPane.getVvalue();
-            System.out.println(deltaY);
             menuScrollPane.setVvalue(vvalue + -deltaY / width);
         });
         menuScrollPane.setContent(timetablePane.getPane());
@@ -409,7 +408,7 @@ public class GUI {
         dayContextMenu.addButton(clearColumn);
         dayContextMenu.addButton(deleteColumn);
 
-        //tim menu
+        //time menu
         timeMenuOnHide = (Event event) -> {
             tm.getCurrentTable().setTime(timeMenu.getTime(), tm.gettIndexI());
             initNewTimetable();
@@ -446,6 +445,7 @@ public class GUI {
         subjectMenuOnShow = (Event event) -> {
             scaleSubjectMenu();
             updateSubjectMenuData();
+            hideOtherMenus(subjectMenu);
         };
         subjectMenuOnHide = (Event event) -> {
             writeSubjectData();
@@ -1302,7 +1302,6 @@ public class GUI {
     public void subjectMenu(ActionEvent event) {
         getSelectedSubject(event);
         subjectMenu.show(selectedSubject);
-        hideOtherMenus(subjectMenu);
     }
 
     public void scaleSubjectMenu() {
@@ -1472,11 +1471,13 @@ public class GUI {
         }
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
-                if (subjects[i][j].getLayoutX() < event.getSceneX()
+                if (subjects[i][j] == event.getSource()) {
+                    getSelectedSubject(event);
+                    subjectMenu.show(selectedSubject);
+                } else if (subjects[i][j].getLayoutX() < event.getSceneX()
                         && subjects[i][j].getLayoutX() + subjects[i][j].getWidth() > event.getSceneX()
                         && subjects[i][j].getLayoutY() < event.getSceneY()
-                        && subjects[i][j].getLayoutY() + subjects[i][j].getHeight() > event.getSceneY()
-                        && subjects[i][j] != event.getSource()) {
+                        && subjects[i][j].getLayoutY() + subjects[i][j].getHeight() > event.getSceneY()) {
                     subjects[i][j].setText("hi there!");
                     is2 = i;
                     js2 = j;
@@ -1508,6 +1509,9 @@ public class GUI {
                 moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
             } else if (event.getCode() == KeyCode.E) {
                 tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
+                initNewTimetable();
+            } else if (event.getCode() == KeyCode.R) {
+                tm.getCurrentTable().deleteSubject(tm.getsIndexI(), tm.getsIndexJ());
                 initNewTimetable();
             }
         } else if (event.getCode() == KeyCode.DELETE) {

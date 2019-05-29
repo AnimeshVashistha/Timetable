@@ -13,6 +13,10 @@ import timetable.Datatypes.Subject;
 import timetable.Datatypes.Timetable;
 import timetable.Datatypes.TimetablePair;
 
+/**
+ *
+ * @author Tobias
+ */
 public class DataManager {
 
     String filename;
@@ -61,7 +65,7 @@ public class DataManager {
         tp.put(TIMETABLE_PAIR_SMALL_PAUSE, timetablePair.getSmallPause());
         tp.put(TIMETABLE_PAIR_MIDDLE_PAUSE, timetablePair.getMiddlePause());
         tp.put(TIMETABLE_PAIR_BIG_PAUSE, timetablePair.getBigPause());
-        tp.put(TIMETABLE_PAIR_LESSON_LENGTH, timetablePair.getLessonlength());
+        tp.put(TIMETABLE_PAIR_LESSON_LENGTH, timetablePair.getLessonLength());
         tp.put(TIMETABLE_PAIR_A, convertTimetableToJSON(timetablePair.getA()));
         tp.put(TIMETABLE_PAIR_B, convertTimetableToJSON(timetablePair.getB()));
 
@@ -79,7 +83,7 @@ public class DataManager {
         tp.setSmallPause((int) (long) jsonObject.get(TIMETABLE_PAIR_SMALL_PAUSE));
         tp.setMiddlePause((int) (long) jsonObject.get(TIMETABLE_PAIR_MIDDLE_PAUSE));
         tp.setBigPause((int) (long) jsonObject.get(TIMETABLE_PAIR_BIG_PAUSE));
-        tp.setLessonlength((int) (long) jsonObject.get(TIMETABLE_PAIR_LESSON_LENGTH));
+        tp.setLessonLength((int) (long) jsonObject.get(TIMETABLE_PAIR_LESSON_LENGTH));
         tp.setA(a);
         tp.setB(b);
 

@@ -35,7 +35,7 @@ public class Timetable implements Serializable {
         int toAdd = 0;
         for (int i = 0; i < times.length; i++) {
             times[i] = parent.getStartTime().plusMinutes(toAdd);
-            toAdd += parent.getLessonlength();
+            toAdd += parent.getLessonLength();
             if (i % 2 == 0) {
                 toAdd += parent.getSmallPause();
             }
@@ -239,7 +239,7 @@ public class Timetable implements Serializable {
     }
 
     public String getTimeText(int i) {
-        return times[i].format() + "\n" + times[i].plusMinutes(45).format();
+        return times[i].format() + "\n" + times[i].plusMinutes(parent.getLessonLength()).format();
     }
 
     public SimpleTime getTime(int i) {

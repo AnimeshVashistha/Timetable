@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author user
+ * @author Tobias
  */
 public class TimetablePair implements Serializable {
 
@@ -17,13 +17,13 @@ public class TimetablePair implements Serializable {
     int smallPause = 0;
     int middlePause = 15;
     int bigPause = 30;
-    int lessonlength = 45;
+    int lessonLength = 45;
 
     Timetable a = new Timetable(this);
     Timetable b = new Timetable(this);
 
     public TimetablePair() {
-
+        
     }
 
     public TimetablePair(String name) {
@@ -188,12 +188,12 @@ public class TimetablePair implements Serializable {
         this.bigPause = bigPause;
     }
 
-    public int getLessonlength() {
-        return lessonlength;
+    public int getLessonLength() {
+        return lessonLength;
     }
 
-    public void setLessonlength(int lessonlength) {
-        this.lessonlength = lessonlength;
+    public void setLessonLength(int lessonLength) {
+        this.lessonLength = lessonLength;
     }
 
 }

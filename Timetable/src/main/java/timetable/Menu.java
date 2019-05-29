@@ -41,6 +41,7 @@ import static timetable.GUI.ANIMATION_DURATION;
  */
 public class Menu implements Hideable {
 
+    static final int[] sliderMax = {15, 30, 90, 90};
     static String[] sliderText = {"Small Pause", "Middle Pause", "Big Pause", "Lesson Length"};
 
     static String smallPauseText = "Small Pause";
@@ -260,18 +261,18 @@ public class Menu implements Hideable {
             sp.getChildren().addAll(sl, sv);
             sp.setRightAnchor(sv, 0d);
             JFXSlider s = new JFXSlider();
+            s.setMax(sliderMax[i]);
             s.valueProperty().addListener(event -> {
                 int val = (int) Math.round(s.getValue());
                 if (s.equals(sliders[0])) {
                     gui.tm.getCurrentTablePair().setSmallPause(val);
-                } else if (s.equals(sliders[0])) {
+                } else if (s == sliders[1]) {
                     gui.tm.getCurrentTablePair().setMiddlePause(val);
-                } else if (s.equals(sliders[0])) {
+                } else if (s == sliders[2]) {
                     gui.tm.getCurrentTablePair().setBigPause(val);
-                } else if (s.equals(sliders[0])) {
-                    gui.tm.getCurrentTablePair().setLessonlength(val);
+                } else if (s == sliders[3]) {
+                    gui.tm.getCurrentTablePair().setLessonLength(val);
                 }
-                gui.tm.getCurrentTablePair().setSmallPause(val);
                 sv.setText(String.format("%02d", val));
             });
             s.focusedProperty().addListener(event -> {
@@ -280,10 +281,6 @@ public class Menu implements Hideable {
             sliders[i] = s;
             settings.add(s, 1, 10 + i);
         }
-        sliders[0].setMax(15);
-        sliders[1].setMax(30);
-        sliders[2].setMax(90);
-        sliders[3].setMax(90);
 
         timeBox = new HBox();
         settings.add(timeBox, 0, 14, 2, 1);
@@ -613,7 +610,7 @@ public class Menu implements Hideable {
         int bp = gui.tm.getCurrentTablePair().getBigPause();
         sliders[2].setValue(bp);
         sliderValues[2].setText(String.format("%02d", bp));
-        int ll = gui.tm.getCurrentTablePair().getLessonlength();
+        int ll = gui.tm.getCurrentTablePair().getLessonLength();
         sliders[3].setValue(ll);
         sliderValues[3].setText(String.format("%02d", ll));
     }
