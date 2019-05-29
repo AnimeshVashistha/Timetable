@@ -23,6 +23,7 @@
 | Shortcut                     | Function                    |
 |------------------------------|-----------------------------|
 | CTRL + Tab                   | Switches between the A and B week |
+| CTRL + N                     | Adds a new timetable |
 | CTRL + M                     | Opens the sidebar menu |
 | CTRL + S                     | Opens the settings |
 | CTRL + D                     | Toggles the darkmode |
