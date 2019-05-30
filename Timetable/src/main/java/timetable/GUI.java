@@ -198,6 +198,9 @@ public class GUI {
 
     //subject context menu
     OptionsPane subjectContextMenu;
+    JFXButton copy;
+    JFXButton cut;
+    JFXButton paste;
     JFXButton clear;
     JFXButton delete;
     JFXButton addAbove;
@@ -371,6 +374,7 @@ public class GUI {
         dayMenu = new AdvancedOptionsPane(bg);
         menus.add(dayMenu);
         dayMenu.setWidthFactor(3);
+        dayMenu.setHeightFactor(0.6);
         dayMenu.setOnShow(dayMenuOnShow);
         dayMenu.setOnHide(dayMenuOnHide);
         dayPanes = new GridPane[7];
@@ -497,6 +501,18 @@ public class GUI {
         //subject context menu
         subjectContextMenu = new OptionsPane(bg);
         menus.add(subjectContextMenu);
+        copy = new JFXButton("Copy");
+        copy.addEventHandler(ActionEvent.ACTION, event -> {
+            copy(event);
+        });
+        cut = new JFXButton("Cut");
+        cut.addEventHandler(ActionEvent.ACTION, event -> {
+            cut(event);
+        });
+        paste = new JFXButton("Paste");
+        paste.addEventHandler(ActionEvent.ACTION, event -> {
+            paste(event);
+        });
         clear = new JFXButton("Clear");
         clear.addEventHandler(ActionEvent.ACTION, event -> {
             clear();
@@ -513,6 +529,9 @@ public class GUI {
         addBelow.addEventHandler(ActionEvent.ACTION, event -> {
             addBelow();
         });
+        subjectContextMenu.addButton(copy);
+        subjectContextMenu.addButton(cut);
+        subjectContextMenu.addButton(paste);
         subjectContextMenu.addButton(clear);
         subjectContextMenu.addButton(delete);
         subjectContextMenu.addButton(addAbove);
@@ -1484,7 +1503,7 @@ public class GUI {
                         if (subjects[i][j] == event.getSource()) {
                             getSelectedSubject(event);
                             subjectMenu.show(selectedSubject);
-                        } else {
+                        } else if (tm.getCurrentTable().isDayDisplayed(i)) {
                             subjects[i][j].setText("hi there!");
                             is2 = i;
                             js2 = j;
@@ -1516,7 +1535,13 @@ public class GUI {
                 moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
             } else if (event.getCode() == KeyCode.RIGHT) {
                 moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
-            } else if (event.getCode() == KeyCode.E) {
+            } else if (event.getCode() == KeyCode.C) {
+                copy(event);
+            }else if (event.getCode() == KeyCode.X) {
+                cut(event);
+            }else if (event.getCode() == KeyCode.V) {
+                paste(event);
+            }else if (event.getCode() == KeyCode.E) {
                 tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
                 initNewTimetable();
             } else if (event.getCode() == KeyCode.R) {
@@ -1527,6 +1552,25 @@ public class GUI {
             tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
             initNewTimetable();
         }
+    }
+
+    public void copy(Event event) {
+        getSelectedSubject(event);
+        tm.copyCurrentClipboard();
+        initNewTimetable();
+    }
+
+    public void cut(Event event) {
+        getSelectedSubject(event);
+        tm.copyCurrentClipboard();
+        tm.clearSubject();
+        initNewTimetable();
+    }
+
+    public void paste(Event event) {
+        getSelectedSubject(event);
+        tm.pasteCurrentClipboard();
+        initNewTimetable();
     }
 
     private void getSelectedSubject(Event event) {

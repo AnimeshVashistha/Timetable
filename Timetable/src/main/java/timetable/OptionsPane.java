@@ -34,7 +34,7 @@ public class OptionsPane extends SomePane {
 
     public OptionsPane(Pane parent) {
         super(parent);
-
+        
         SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
         SlideIn.setFromY(ANIMATION_DISTANCE);
         SlideIn.setToY(0);

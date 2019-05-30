@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import timetable.Datatypes.Subject;
 import timetable.Datatypes.Timetable;
 import timetable.Datatypes.TimetablePair;
 
@@ -19,6 +20,7 @@ public class TimetableManager {
 
     ArrayList<TimetablePair> timetables;
     TimetablePair currentTablePair;
+    Subject clipBoard;
 
     boolean isA = true;
     int dIndexI = 0;
@@ -27,7 +29,6 @@ public class TimetableManager {
     int sIndexJ = 0;
     int autocompleteIndex = 0;
     int timetableIndex = 0;
-    int tableCount = 0;
 
     public TimetableManager(JSONObject data) {
         openData(data);
@@ -78,17 +79,15 @@ public class TimetableManager {
     }
 
     public void addTimetablePair() {
-        currentTablePair = new TimetablePair("Timetable " + tableCount);
+        currentTablePair = new TimetablePair();
         timetables.add(currentTablePair);
         timetableIndex = timetables.size() - 1;
-        tableCount++;
     }
 
     public void addTimetablePair(int index) {
-        currentTablePair = new TimetablePair("Timetable " + tableCount);
+        currentTablePair = new TimetablePair();
         timetables.add(currentTablePair);
         timetableIndex = index;
-        tableCount++;
     }
 
     public void deleteCurrentTimetablePair() {
@@ -220,6 +219,22 @@ public class TimetableManager {
 
     public void addSubjectBelow() {
         currentTablePair.get(isA).addSubjectBelow(sIndexI, sIndexJ);
+    }
+
+    public Subject getClipBoard() {
+        return clipBoard;
+    }
+
+    public void setClipBoard(Subject clipBoard) {
+        this.clipBoard = clipBoard;
+    }
+    
+    public void copyCurrentClipboard(){
+        clipBoard = getCurrentTable().getSubject(sIndexI, sIndexJ);
+    }
+    
+    public void pasteCurrentClipboard(){
+        getCurrentTable().setSubject(clipBoard, sIndexI, sIndexJ);
     }
 
 }

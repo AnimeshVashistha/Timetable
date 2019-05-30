@@ -17,7 +17,7 @@ public abstract class SomePane implements Hideable {
     private JFXButton source;
 
     private double widthFactor = 1.8;
-    private double heightFactor = 0.6;
+    private double heightFactor = 0.5;
     private double fontFactor = 0.2;
     private boolean hidden = true;
     private String bottomButtonStyle = "roundedBottomButton";

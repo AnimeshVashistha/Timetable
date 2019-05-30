@@ -28,6 +28,10 @@
     -fx-background-radius: 7;
 }
 
+.handCursor{
+    -fx-cursor:hand;
+}
+
 .lightRoundedShadowedButton{
     -fx-background-radius:7;
     -fx-cursor:hand;
@@ -43,6 +47,10 @@
 .roundedButton{
     -fx-background-radius: 7;
     -fx-cursor:hand;
+}
+
+.roundedLabel{
+    -fx-background-radius: 7;
 }
 
 .roundedTopButton{

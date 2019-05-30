@@ -257,10 +257,11 @@ public class Menu implements Hideable {
             sliderLabels[i] = sl;
             Label sv = new Label();
             sliderValues[i] = sv;
-            sv.getStyleClass().add("roundedButton");
+            sv.getStyleClass().add("roundedLabel");
             sp.getChildren().addAll(sl, sv);
             sp.setRightAnchor(sv, 0d);
             JFXSlider s = new JFXSlider();
+            s.getStyleClass().add("handCursor");
             s.setMax(sliderMax[i]);
             s.valueProperty().addListener(event -> {
                 int val = (int) Math.round(s.getValue());
