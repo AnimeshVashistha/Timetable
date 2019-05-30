@@ -228,13 +228,15 @@ public class TimetableManager {
     public void setClipBoard(Subject clipBoard) {
         this.clipBoard = clipBoard;
     }
-    
-    public void copyCurrentClipboard(){
+
+    public void copyCurrentClipboard() {
         clipBoard = getCurrentTable().getSubject(sIndexI, sIndexJ);
     }
-    
-    public void pasteCurrentClipboard(){
-        getCurrentTable().setSubject(clipBoard, sIndexI, sIndexJ);
+
+    public void pasteCurrentClipboard() {
+        if (clipBoard != null) {
+            getCurrentTable().setSubject(clipBoard, sIndexI, sIndexJ);
+        }
     }
 
 }

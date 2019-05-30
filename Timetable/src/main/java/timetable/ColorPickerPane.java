@@ -1,6 +1,7 @@
 package timetable;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSlider;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
@@ -21,6 +22,8 @@ import static timetable.GUI.ANIMATION_DURATION;
  * @author Tobias
  */
 public class ColorPickerPane extends SomePane {
+
+    JFXSlider[] sliders;
 
     TranslateTransition SlideIn;
     FadeTransition FadeIn;
@@ -60,6 +63,16 @@ public class ColorPickerPane extends SomePane {
         hide.getChildren().add(SlideOut);
         hide.getChildren().add(FadeOut);
         hide.setOnFinished(event -> getPane().setVisible(false));
+
+        sliders = new JFXSlider[3];
+        for (int i = 0; i < sliders.length; i++) {
+            JFXSlider s = new JFXSlider();
+            s.setMax(255);
+            s.valueProperty().addListener(event -> {
+                displayColor();
+            });
+        }
+
     }
 
     public void showOnCoordinates(double x, double y, JFXButton source) {
@@ -152,6 +165,10 @@ public class ColorPickerPane extends SomePane {
         }
         this.onHide = onHide;
         hideEvent.addEventHandler(EventType.ROOT, onHide);
+    }
+    
+    public void displayColor(){
+        
     }
 
 }
