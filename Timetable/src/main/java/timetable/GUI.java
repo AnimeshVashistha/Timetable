@@ -1458,6 +1458,7 @@ public class GUI {
     public void subjectDragged(MouseEvent event) {
         if (primaryButton) {
             if (firstDrag) {
+                hideAllMenus();
                 for (int i = 0; i < subjects.length; i++) {
                     for (int j = 0; j < subjects[0].length; j++) {
                         if (subjects[i][j] == event.getSource()) {
@@ -1502,6 +1503,7 @@ public class GUI {
                             && subjects[i][j].getLayoutY() + subjects[i][j].getHeight() > event.getSceneY()) {
                         if (subjects[i][j] == event.getSource()) {
                             getSelectedSubject(event);
+                            subjectMenu.hide.stop();
                             subjectMenu.show(selectedSubject);
                         } else if (tm.getCurrentTable().isDayDisplayed(i)) {
                             subjects[i][j].setText("hi there!");
@@ -1537,11 +1539,11 @@ public class GUI {
                 moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
             } else if (event.getCode() == KeyCode.C) {
                 copy(event);
-            }else if (event.getCode() == KeyCode.X) {
+            } else if (event.getCode() == KeyCode.X) {
                 cut(event);
-            }else if (event.getCode() == KeyCode.V) {
+            } else if (event.getCode() == KeyCode.V) {
                 paste(event);
-            }else if (event.getCode() == KeyCode.E) {
+            } else if (event.getCode() == KeyCode.E) {
                 tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
                 initNewTimetable();
             } else if (event.getCode() == KeyCode.R) {

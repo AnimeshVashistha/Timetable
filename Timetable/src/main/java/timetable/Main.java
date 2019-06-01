@@ -41,6 +41,7 @@ public class Main extends Application {
         gui = new GUI(data);
         gui.getPane().setCache(true);
         gui.getPane().setCacheHint(CacheHint.SPEED);
+        gui.getSettings().setHostServices(getHostServices());
 
         scene = new Scene(gui.getPane());
         scene.getStylesheets().add("/styles/Styles.css");

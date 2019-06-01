@@ -8,13 +8,18 @@ import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Label;
@@ -31,6 +36,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import static timetable.GUI.ANIMATION_DISTANCE;
 import static timetable.GUI.ANIMATION_DURATION;
@@ -49,6 +56,7 @@ public class Menu implements Hideable {
     static String bigPauseText = "Big Pause";
     static String lessonLengthText = "Lesson Length";
 
+    HostServices hostServices;
     GUI gui;
 
     AnchorPane pane;
@@ -87,6 +95,8 @@ public class Menu implements Hideable {
     JFXButton applyToA;
     JFXButton applyToB;
     JFXButton applyToBoth;
+
+    JFXButton info;
 
     Node specificFocus;
 
@@ -196,6 +206,9 @@ public class Menu implements Hideable {
             b.setStyle("-fx-background-color:" + GUI.customAcs[i]);
             b.setOnAction(event -> {
                 setCustomAccentColor(event);
+            });
+            b.setOnMousePressed(event -> {
+
             });
             b.focusedProperty().addListener(event -> {
                 focusColorButton(b);
@@ -310,6 +323,30 @@ public class Menu implements Hideable {
             gui.initNewTimetable();
         });
         timeBox.getChildren().add(applyToBoth);
+
+        //info
+        info = new JFXButton("Info");
+        info.getStyleClass().add("roundedButton");
+        info.setOnAction(event -> {
+            Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+            infoAlert.setTitle("About Timetable");
+            infoAlert.setHeaderText("Information");
+            GridPane g = new GridPane();
+            Label l1 = new Label("By Tobias Schmitz");
+            g.add(l1, 0, 0, 3, 1);
+            Label l2 = new Label("Visit");
+            g.add(l2, 0, 1);
+            Hyperlink link = new Hyperlink("Timetable");
+            link.setOnAction(n -> {
+                hostServices.showDocument("https://github.com/Saecki/Timetable.git");
+            });
+            g.add(link, 1, 1);
+            Label l3 = new Label("on GitHub for more information");
+            g.add(l3, 2, 1);
+            infoAlert.getDialogPane().setContent(g);
+            infoAlert.showAndWait();
+        });
+        settings.add(info, 0, 15);
 
         SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
         SlideIn.setFromY(-ANIMATION_DISTANCE);
@@ -455,6 +492,11 @@ public class Menu implements Hideable {
         applyToB.setFont(font3);
         applyToBoth.setPrefSize(w / 3, h * 0.6);
         applyToBoth.setFont(font3);
+
+        info.setPadding(padding);
+        info.autosize();
+        info.setFont(font3);
+        settings.setMargin(info, padding);
     }
 
     public void updateColors() {
@@ -498,6 +540,9 @@ public class Menu implements Hideable {
         applyToB.setTextFill(Color.web(gui.text));
         applyToBoth.setStyle("-fx-background-color:" + gui.bg4);
         applyToBoth.setTextFill(Color.web(gui.text));
+
+        info.setStyle("-fx-background-color:" + gui.bg4);
+        info.setTextFill(Color.web(gui.text));
     }
 
     public void applyColorsToSlider(JFXSlider slider) {
@@ -626,6 +671,14 @@ public class Menu implements Hideable {
 
     public boolean isHidden() {
         return hidden;
+    }
+
+    public HostServices getHostServices() {
+        return hostServices;
+    }
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
     }
 
 }
