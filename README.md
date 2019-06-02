@@ -35,8 +35,8 @@
 | CTRL + M                     | Opens the sidebar menu |
 | CTRL + S                     | Opens the settings |
 | CTRL + D                     | Toggles the darkmode |
-| CTRL + H \| ESC              | Hides all menus |
-| CTRL + Space \| CTRL + Enter | Opens a contextmenu if available |
+| CTRL + H & ESC               | Hides all menus |
+| CTRL + Space & CTRL + Enter  | Opens a contextmenu if available |
 
 ### Subject
 | Shortcut                     | Function                    |
@@ -45,7 +45,7 @@
 | CTRL + X                     | Cuts the currently focused subject |
 | CTRL + V                     | Pastes the currently focused subject |
 | CTRL + E                     | Clears the currently focused subject |
-| CTRL + R \| DEL              | Deletes the currently focused subject |
+| CTRL + R & DELETE            | Deletes the currently focused subject |
 | CTRL + PLUS                  | Adds a new Subject Below |
 | CTRL + SHIFT + PLUS          | Adds a new Subject Above |
 | CTRL + ARROWKEY              | Moves a subject in the arrow direction |
