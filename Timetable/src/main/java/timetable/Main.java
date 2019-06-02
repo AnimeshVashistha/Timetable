@@ -47,6 +47,7 @@ public class Main extends Application {
         scene.getStylesheets().add("/styles/Styles.css");
         scene.setOnKeyPressed(event -> {
             if (event.isControlDown()) {
+                gui.controlDown = true;
                 if (event.getCode() == KeyCode.TAB) {
                     gui.switchTab();
                 } else if (event.getCode() == KeyCode.D) {
@@ -80,6 +81,12 @@ public class Main extends Application {
                 if (event.getCode() == KeyCode.ESCAPE) {
                     gui.hideAllMenus();
                 }
+            }
+        });
+        scene.setOnKeyReleased(event -> {
+            if (event.isControlDown()) {
+            } else {
+                gui.controlDown = false;
             }
         });
         scene.widthProperty().addListener(event -> {

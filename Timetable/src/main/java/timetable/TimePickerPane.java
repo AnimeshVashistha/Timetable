@@ -138,6 +138,12 @@ public class TimePickerPane extends SomePane {
                 hide();
             } else if (event.getCode().equals(KeyCode.ESCAPE)) {
                 hide();
+            } else{
+                for(int i = 0; i < 10; i++){
+                    if(event.getCode().toString().contains(Integer.toString(i))){
+                        setHours(i);
+                    }
+                }
             }
         });
 

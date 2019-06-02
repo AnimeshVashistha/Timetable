@@ -230,12 +230,22 @@ public class TimetableManager {
     }
 
     public void copyCurrentClipboard() {
-        clipBoard = getCurrentTable().getSubject(sIndexI, sIndexJ);
+        clipBoard = getCurrentTable().getSubject(sIndexI, sIndexJ).duplicate();
+    }
+
+    public void copy(int i, int j) {
+        clipBoard = getCurrentTable().getSubject(i, j).duplicate();
     }
 
     public void pasteCurrentClipboard() {
         if (clipBoard != null) {
             getCurrentTable().setSubject(clipBoard, sIndexI, sIndexJ);
+        }
+    }
+
+    public void paste(int i, int j) {
+        if (clipBoard != null) {
+            getCurrentTable().setSubject(clipBoard, i, j);
         }
     }
 

@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Locale;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -215,6 +219,8 @@ public class GUI {
     double subjectInnerX;
     double subjectInnerY;
 
+    boolean controlDown = false;
+
     public GUI(JSONObject data) {
 
         openData(data);
@@ -278,6 +284,12 @@ public class GUI {
         menuName.setPromptText("Name");
         menuName.getStyleClass().add("customTextfield");
         menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
+        menuName.addEventFilter(KeyEvent.ANY, event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+                event.consume();
+                hideAllMenus();
+            }
+        });
         settings = new JFXButton("Settings");
         settings.getStyleClass().add("notRoundedButton");
         settings.setPrefWidth(500);
@@ -468,20 +480,38 @@ public class GUI {
         subjectName = new JFXTextField();
         subjectName.setPrefWidth(500);
         subjectName.setPrefHeight(100);
-        subjectName.setPromptText("Name");
         subjectName.getStyleClass().add("customTextfield");
+        subjectName.setPromptText("Subject");
+        subjectName.addEventFilter(KeyEvent.ANY, event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+                event.consume();
+                hideAllMenus();
+            }
+        });
         subjectRoom = new JFXTextField();
         subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectRoom.setPrefWidth(500);
         subjectRoom.setPrefHeight(100);
         subjectRoom.getStyleClass().add("customTextfield");
         subjectRoom.setPromptText("Room");
+        subjectRoom.addEventFilter(KeyEvent.ANY, event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+                event.consume();
+                hideAllMenus();
+            }
+        });
         subjectTeacher = new JFXTextField();
         subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
         subjectTeacher.setPrefWidth(500);
         subjectTeacher.setPrefHeight(100);
         subjectTeacher.getStyleClass().add("customTextfield");
         subjectTeacher.setPromptText("Teacher");
+        subjectTeacher.addEventFilter(KeyEvent.ANY, event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+                event.consume();
+                hideAllMenus();
+            }
+        });
         subjectMenu.add(subjectName);
         subjectMenu.add(subjectRoom);
         subjectMenu.add(subjectTeacher);
@@ -765,7 +795,7 @@ public class GUI {
 
     public void resize() {
         new Timeline(
-                new KeyFrame(Duration.millis(1), event -> resizeFonts())
+                new KeyFrame(Duration.millis(5), event -> resizeFonts())
         ).play();
     }
 
@@ -1506,7 +1536,6 @@ public class GUI {
                             subjectMenu.hide.stop();
                             subjectMenu.show(selectedSubject);
                         } else if (tm.getCurrentTable().isDayDisplayed(i)) {
-                            subjects[i][j].setText("hi there!");
                             is2 = i;
                             js2 = j;
                             onSubject = true;
@@ -1516,7 +1545,12 @@ public class GUI {
                 }
             }
             if (onSubject) {
-                tm.getCurrentTable().switchSubjects(is1, js1, is2, js2);
+                if (controlDown) {
+                    tm.copy(is1, js1);
+                    tm.paste(is2, js2);
+                } else {
+                    tm.getCurrentTable().switchSubjects(is1, js1, is2, js2);
+                }
                 initNewTimetable();
             }
             subjectPreview.setVisible(false);

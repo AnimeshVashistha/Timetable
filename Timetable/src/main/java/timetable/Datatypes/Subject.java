@@ -59,4 +59,8 @@ public class Subject implements Serializable {
         this.teacher = teacher;
     }
 
+    public Subject duplicate() {
+        return new Subject(subject, room, teacher);
+    }
+
 }
