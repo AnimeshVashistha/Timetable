@@ -1,10 +1,19 @@
 # Timetable
 
-## Content
+## Table of Content
 
 - [Screenshots](#screenshots) <br>
+  - [Homescreen Dark](#homescreen-dark) <br>
+  - [Homescreen Light](#homescreen-light) <br>
 - [Information](#information) <br>
+  - [Dependencies](#dependencies) <br>
+  - [Features](#features) <br> 
+  - [Information](#information) <br>
+  - [Visions](#visions) <br>
+  - [Notes](#notes) <br>
 - [Shortcuts](#shortcuts)
+  - [General](#general) <br>
+  - [Subject](#subject) <br>
 
 ## Screenshots
 ### Homescreen Dark
@@ -28,6 +37,7 @@
 
 ### Visions
 - Google Drive Support
+- Configurable Pauses
 
 ### Notes
 - There are still some bugs when changing colors but these are caused by the JFoenix Components and will be resolved in their next release. In the meantime a restart of the application will fix most of them.
