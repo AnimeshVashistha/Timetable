@@ -65,6 +65,9 @@ public class TimePickerPane extends SomePane {
 
     SimpleTime simpleTime;
 
+    boolean firstNumber = true;
+    int input = 0;
+
     public TimePickerPane(Pane parent) {
         super(parent);
 
@@ -114,34 +117,53 @@ public class TimePickerPane extends SomePane {
             }
         });
         hourButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode().equals(KeyCode.UP)) {
-                if (event.isControlDown()) {
+            if (event.isControlDown()) {
+                if (event.getCode().equals(KeyCode.UP)) {
                     setHours((simpleTime.getHours() + 3 - simpleTime.getHours() % 3) % 24);
-                } else {
-                    setHours((simpleTime.getHours() + 1) % 24);
-                }
-                event.consume();
-            } else if (event.getCode().equals(KeyCode.DOWN)) {
-                if (event.isControlDown()) {
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.DOWN)) {
                     if (simpleTime.getHours() % 3 == 0) {
                         setHours(Math.floorMod((simpleTime.getHours() - 3), 24));
                     } else {
                         setHours(Math.floorMod((simpleTime.getHours() - simpleTime.getHours() % 3), 24));
                     }
-                } else {
-                    setHours(Math.floorMod((simpleTime.getHours() - 1), 24));
+                    event.consume();
                 }
+            } else if (event.isShiftDown()) {
+                getDone().requestFocus();
                 event.consume();
-            } else if (event.getCode().equals(KeyCode.LEFT)) {
-                event.consume();
-            } else if (event.getCode().equals(KeyCode.ENTER)) {
-                hide();
-            } else if (event.getCode().equals(KeyCode.ESCAPE)) {
-                hide();
-            } else{
-                for(int i = 0; i < 10; i++){
-                    if(event.getCode().toString().contains(Integer.toString(i))){
-                        setHours(i);
+            } else {
+                if (event.getCode().equals(KeyCode.UP)) {
+                    setHours((simpleTime.getHours() + 1) % 24);
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.DOWN)) {
+                    setHours(Math.floorMod((simpleTime.getHours() - 1), 24));
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.LEFT)) {
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.TAB)) {
+                    minuteButton.requestFocus();
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.ENTER)) {
+                    hide();
+                } else if (event.getCode().equals(KeyCode.ESCAPE)) {
+                    hide();
+                } else {
+                    for (int i = 0; i < 10; i++) {
+                        if (event.getCode().toString().contains(Integer.toString(i))) {
+                            if (firstNumber) {
+                                input = i;
+                                setHours(i);
+                                firstNumber = false;
+                            } else {
+                                input *= 10;
+                                input += i;
+                                input %= 24;
+                                firstNumber = true;
+                                setHours(input);
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -200,30 +222,57 @@ public class TimePickerPane extends SomePane {
             }
         });
         minuteButton.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode().equals(KeyCode.UP)) {
-                if (event.isControlDown()) {
+            if (event.isControlDown()) {
+                if (event.getCode().equals(KeyCode.UP)) {
                     setMinutes((simpleTime.getMinutes() + 5 - simpleTime.getMinutes() % 5) % 60);
-                } else {
-                    setMinutes((simpleTime.getMinutes() + 1) % 60);
-                }
-                event.consume();
-            } else if (event.getCode().equals(KeyCode.DOWN)) {
-                if (event.isControlDown()) {
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.DOWN)) {
                     if (simpleTime.getMinutes() % 5 == 0) {
                         setMinutes(Math.floorMod((simpleTime.getMinutes() - 5), 60));
                     } else {
                         setMinutes(Math.floorMod((simpleTime.getMinutes() - simpleTime.getMinutes() % 5), 60));
                     }
-                } else {
-                    setMinutes(Math.floorMod((simpleTime.getMinutes() - 1), 60));
+                    event.consume();
                 }
-                event.consume();
-            } else if (event.getCode().equals(KeyCode.RIGHT)) {
-                event.consume();
-            } else if (event.getCode().equals(KeyCode.ENTER)) {
-                hide();
-            } else if (event.getCode().equals(KeyCode.ESCAPE)) {
-                hide();
+            } else if (event.isShiftDown()) {
+                if (event.getCode().equals(KeyCode.TAB)) {
+                    hourButton.requestFocus();
+                    event.consume();
+                }
+            } else {
+                if (event.getCode().equals(KeyCode.UP)) {
+                    setMinutes((simpleTime.getMinutes() + 1) % 60);
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.DOWN)) {
+                    setMinutes(Math.floorMod((simpleTime.getMinutes() - 1), 60));
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.RIGHT)) {
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.TAB)) {
+                    getDone().requestFocus();
+                    event.consume();
+                } else if (event.getCode().equals(KeyCode.ENTER)) {
+                    hide();
+                } else if (event.getCode().equals(KeyCode.ESCAPE)) {
+                    hide();
+                } else {
+                    for (int i = 0; i < 10; i++) {
+                        if (event.getCode().toString().contains(Integer.toString(i))) {
+                            if (firstNumber) {
+                                input = i;
+                                setMinutes(i);
+                                firstNumber = false;
+                            } else {
+                                input *= 10;
+                                input += i;
+                                input %= 60;
+                                firstNumber = true;
+                                setMinutes(input);
+                            }
+                            break;
+                        }
+                    }
+                }
             }
         });
 
@@ -279,6 +328,15 @@ public class TimePickerPane extends SomePane {
         RowConstraints r3 = new RowConstraints();
         r3.setPercentHeight(14.3);
         getPane().getRowConstraints().addAll(r1, r2, r3);
+
+        getDone().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.isShiftDown()) {
+                if (event.getCode().equals(KeyCode.TAB)) {
+                    minuteButton.requestFocus();
+                    event.consume();
+                }
+            }
+        });
     }
 
     public void showOnCoordinates(double x, double y, JFXButton source, SimpleTime simpleTime) {
@@ -586,6 +644,7 @@ public class TimePickerPane extends SomePane {
         minuteButton.setStyle("-fx-background-color:" + GUI.bg3);
         hourButton.getStyleClass().add("selectedLeftTimeButton");
         hourButton.setStyle("-fx-background-color:" + GUI.bg1);
+        firstNumber = true;
     }
 
     public void selectMinutes() {
@@ -598,6 +657,7 @@ public class TimePickerPane extends SomePane {
         hourButton.setStyle("-fx-background-color:" + GUI.bg3);
         minuteButton.getStyleClass().add("selectedRightTimeButton");
         minuteButton.setStyle("-fx-background-color:" + GUI.bg1);
+        firstNumber = true;
     }
 
     public double calculateAngle(double x1, double y1, double x2, double y2) {

@@ -1561,31 +1561,41 @@ public class GUI {
     public void subjectKeyReleased(KeyEvent event) {
         getSelectedSubject(event);
         if (event.isControlDown()) {
-            if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
-                subjectContextMenu.show(selectedSubject);
-            } else if (event.getCode() == KeyCode.UP) {
-                moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
-            } else if (event.getCode() == KeyCode.DOWN) {
-                moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
-            } else if (event.getCode() == KeyCode.LEFT) {
-                moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
-            } else if (event.getCode() == KeyCode.RIGHT) {
-                moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
-            } else if (event.getCode() == KeyCode.C) {
-                copy(event);
-            } else if (event.getCode() == KeyCode.X) {
-                cut(event);
-            } else if (event.getCode() == KeyCode.V) {
-                paste(event);
-            } else if (event.getCode() == KeyCode.E) {
-                tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
-                initNewTimetable();
-            } else if (event.getCode() == KeyCode.R) {
-                tm.getCurrentTable().deleteSubject(tm.getsIndexI(), tm.getsIndexJ());
-                initNewTimetable();
+            if (event.isShiftDown()) {
+                if (event.getCode() == KeyCode.PLUS) {
+                    tm.addSubjectAbove();
+                    initNewTimetable();
+                }
+            } else {
+                if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
+                    subjectContextMenu.show(selectedSubject);
+                } else if (event.getCode() == KeyCode.UP) {
+                    moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
+                } else if (event.getCode() == KeyCode.DOWN) {
+                    moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
+                } else if (event.getCode() == KeyCode.LEFT) {
+                    moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
+                } else if (event.getCode() == KeyCode.RIGHT) {
+                    moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
+                } else if (event.getCode() == KeyCode.C) {
+                    copy(event);
+                } else if (event.getCode() == KeyCode.X) {
+                    cut(event);
+                } else if (event.getCode() == KeyCode.V) {
+                    paste(event);
+                } else if (event.getCode() == KeyCode.E) {
+                    tm.clearSubject();
+                    initNewTimetable();
+                } else if (event.getCode() == KeyCode.R) {
+                    tm.deleteSubject();
+                    initNewTimetable();
+                } else if (event.getCode() == KeyCode.PLUS) {
+                    tm.addSubjectBelow();
+                    initNewTimetable();
+                }
             }
         } else if (event.getCode() == KeyCode.DELETE) {
-            tm.getCurrentTable().clearSubject(tm.getsIndexI(), tm.getsIndexJ());
+            tm.deleteSubject();
             initNewTimetable();
         }
     }
