@@ -1,5 +1,11 @@
 # Timetable
 
+## Content
+
+- [Screenshots](#screenshots) <br>
+- [Information](#information) <br>
+- [Shortcuts](#shortcuts)
+
 ## Screenshots
 ### Homescreen Dark
 ![Homescreen dark](https://github.com/Saecki/Timetable/blob/master/Timetable-home-dark.png)
