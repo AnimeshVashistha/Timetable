@@ -8,7 +8,6 @@
 - [Information](#information) <br>
   - [Dependencies](#dependencies) <br>
   - [Features](#features) <br> 
-  - [Information](#information) <br>
   - [Visions](#visions) <br>
   - [Notes](#notes) <br>
 - [Shortcuts](#shortcuts)
