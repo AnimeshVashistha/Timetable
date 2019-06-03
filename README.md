@@ -61,6 +61,6 @@
 | CTRL + V                          | Pastes the currently focused subject |
 | CTRL + E                          | Clears the currently focused subject |
 | CTRL + R or <br> DELETE           | Deletes the currently focused subject |
-| CTRL + PLUS                       | Adds a new Subject Below |
-| CTRL + SHIFT + PLUS               | Adds a new Subject Above |
+| CTRL + PLUS                       | Adds a new subject below |
+| CTRL + SHIFT + PLUS               | Adds a new subject above |
 | CTRL + ARROWKEY                   | Moves a subject in the arrow direction | 
