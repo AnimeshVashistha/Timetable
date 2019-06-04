@@ -28,6 +28,11 @@ public class Main extends Application {
     Scene scene;
     Timeline saveData;
 
+    /**
+     * launching the javafx application
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }

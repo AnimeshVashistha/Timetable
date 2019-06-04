@@ -47,11 +47,19 @@ import timetable.Datatypes.Timetable;
 public class GUI {
 
     //constants for animation and scaling of the application
-    static final int ANIMATION_DURATION = 300;
+    static final int ANIMATION_DURATION = 250;
     static final int ANIMATION_DISTANCE = 50;
     static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
     static final double GAP_SIZE = 2;
     static final double FONT_FACTOR = 0.22;
+
+    //strings for json file    
+    static final String COLOR_INDEX = "colorIndex";
+    static final String CUSTOM_COLOR = "customColor";
+    static final String CUSTOM_COLORS = "customColors";
+    static final String AC_1 = "ac1";
+    static final String AC_2 = "ac2";
+    static final String DARK_MODE = "darkMode";
 
     //RGB HEX strings for light theme
     static final String lightfg1 = "#FFFFFF";
@@ -81,7 +89,7 @@ public class GUI {
     static final String[] ac1s = {"#66CC55", "#EE9933", "#DD3344", "#5599DD"};
     static final String[] ac2s = {"#55BB44", "#EE8822", "#C42233", "#4488CC"};
 
-    //
+    //day names
     static final String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     static final String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
@@ -104,6 +112,7 @@ public class GUI {
     static boolean customColor = false;
     static int colorIndex = 0;
 
+    //current day names
     static String[] dayNames = ENGLISH_DAY_NAMES;
 
     TimetableManager tm;
@@ -251,7 +260,7 @@ public class GUI {
 
         tm = new TimetableManager(data);
 
-        initNewTimetable();
+        displayCurrentTimetable();
 
         menus = new ArrayList<Hideable>();
 
@@ -268,7 +277,7 @@ public class GUI {
             writeMenuData();
         };
         writeMenuData = (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.ENTER) {
+            if (event.getCode().equals(KeyCode.ENTER)) {
                 menu.hide();
             }
         };
@@ -291,7 +300,7 @@ public class GUI {
         menuName.getStyleClass().add("customTextfield");
         menuName.setOnKeyReleased(writeMenuData);
         menuName.addEventFilter(KeyEvent.ANY, event -> {
-            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+            if (event.isControlDown() && event.getCode().equals(KeyCode.H)) {
                 event.consume();
                 hideAllMenus();
             }
@@ -366,17 +375,17 @@ public class GUI {
             } else {
                 tm.getCurrentTablePair().setB(new Timetable(tm.getCurrentTablePair()));
             }
-            initNewTimetable();
+            displayCurrentTimetable();
         });
         duplicateA = new JFXButton("Duplicate A");
         duplicateA.setOnAction(event -> {
             tm.getCurrentTablePair().duplicateA();
-            initNewTimetable();
+            displayCurrentTimetable();
         });
         duplicateB = new JFXButton("Duplicate B");
         duplicateB.setOnAction(event -> {
             tm.getCurrentTablePair().duplicateB();
-            initNewTimetable();
+            displayCurrentTimetable();
             resize();
         });
         contextMenu.addButton(clearTimetable);
@@ -386,7 +395,7 @@ public class GUI {
         //day menu
         dayMenuOnShow = (Event event) -> {
             scaleDayMenu();
-            updateDayContextMenuData();
+            updateDayMenuData();
         };
         dayMenuOnHide = (Event event) -> {
             writeDayData();
@@ -439,7 +448,7 @@ public class GUI {
         //time menu
         timeMenuOnHide = (Event event) -> {
             tm.getCurrentTable().setTime(timeMenu.getTime(), tm.gettIndexI());
-            initNewTimetable();
+            displayCurrentTimetable();
         };
         timeMenu = new TimePickerPane(bg);
         menus.add(timeMenu);
@@ -480,7 +489,7 @@ public class GUI {
             autoCompletePane.hide();
         };
         writeSubjectData = (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.ENTER) {
+            if (event.getCode().equals(KeyCode.ENTER)) {
                 subjectMenu.hide();
             }
         };
@@ -494,7 +503,7 @@ public class GUI {
         subjectName.getStyleClass().add("customTextfield");
         subjectName.setPromptText("Subject");
         subjectName.addEventFilter(KeyEvent.ANY, event -> {
-            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+            if (event.isControlDown() && event.getCode().equals(KeyCode.H)) {
                 event.consume();
                 hideAllMenus();
             }
@@ -506,7 +515,7 @@ public class GUI {
         subjectRoom.getStyleClass().add("customTextfield");
         subjectRoom.setPromptText("Room");
         subjectRoom.addEventFilter(KeyEvent.ANY, event -> {
-            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+            if (event.isControlDown() && event.getCode().equals(KeyCode.H)) {
                 event.consume();
                 hideAllMenus();
             }
@@ -518,7 +527,7 @@ public class GUI {
         subjectTeacher.getStyleClass().add("customTextfield");
         subjectTeacher.setPromptText("Teacher");
         subjectTeacher.addEventFilter(KeyEvent.ANY, event -> {
-            if (event.isControlDown() && event.getCode() == KeyCode.H) {
+            if (event.isControlDown() && event.getCode().equals(KeyCode.H)) {
                 event.consume();
                 hideAllMenus();
             }
@@ -604,13 +613,11 @@ public class GUI {
         resize();
     }
 
-    static final String COLOR_INDEX = "colorIndex";
-    static final String CUSTOM_COLOR = "customColor";
-    static final String CUSTOM_COLORS = "customColors";
-    static final String AC_1 = "ac1";
-    static final String AC_2 = "ac2";
-    static final String DARK_MODE = "darkMode";
-
+    /**
+     * returns a json object with application data
+     *
+     * @return data
+     */
     public JSONObject getDataToSave() {
         JSONObject data = new JSONObject();
 
@@ -628,6 +635,11 @@ public class GUI {
         return data;
     }
 
+    /**
+     * opens data from a json object
+     *
+     * @param data
+     */
     public void openData(JSONObject data) {
         if (data != null) {
             try {
@@ -674,6 +686,9 @@ public class GUI {
         }
     }
 
+    /**
+     * initializes the controls of the homescreen
+     */
     public void initControlArrays() {
 
         //name
@@ -799,12 +814,18 @@ public class GUI {
         }
     }
 
+    /**
+     * resizes
+     */
     public void resize() {
         new Timeline(
                 new KeyFrame(Duration.millis(5), event -> resizeFonts())
         ).play();
     }
 
+    /**
+     * resizes the fonts of the homescreen contols
+     */
     public void resizeFonts() {
         double w = times[0].getWidth();
         double h = times[0].getHeight();
@@ -833,7 +854,10 @@ public class GUI {
         subjectPreview.setFont(font3);
     }
 
-    public void initNewTimetable() {
+    /**
+     * displays the currently selected timetable
+     */
+    public void displayCurrentTimetable() {
         subjectGrid.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
         subjectGrid.getChildren().remove(tabBox);
         subjectGrid.getRowConstraints().clear();
@@ -887,6 +911,9 @@ public class GUI {
     //
     //################################colors################################
     //
+    /**
+     * updates all colors
+     */
     public void updateColors() {
 
         settingsMenu.updateColors();
@@ -986,6 +1013,11 @@ public class GUI {
         subjectPreview.setTextFill(Color.web(text));
     }
 
+    /**
+     * sets a default accent color
+     *
+     * @param index
+     */
     public void setAccentColor(int index) {
         colorIndex = index;
         customColor = false;
@@ -993,6 +1025,11 @@ public class GUI {
         ac2 = ac2s[index];
     }
 
+    /**
+     * sets a custom accent color
+     *
+     * @param index
+     */
     public void setCustomAccentColor(int index) {
         colorIndex = index;
         customColor = true;
@@ -1003,6 +1040,12 @@ public class GUI {
         ac2 = toRGBCode(ac);
     }
 
+    /**
+     * returns a string with the hex rgb values of the given color
+     *
+     * @param color
+     * @return HEX RGB string
+     */
     public static String toRGBCode(Color color) {
         return String.format("#%02X%02X%02X",
                 (int) (color.getRed() * 255),
@@ -1011,6 +1054,9 @@ public class GUI {
         );
     }
 
+    /**
+     * toggles the colormode between dark and light
+     */
     public void toggleColorMode() {
         if (darkMode) {
             setLightColors();
@@ -1019,6 +1065,9 @@ public class GUI {
         }
     }
 
+    /**
+     * sets light colors
+     */
     public void setLightColors() {
         fg1 = lightfg1;
         fg2 = lightfg2;
@@ -1033,6 +1082,9 @@ public class GUI {
         darkMode = false;
     }
 
+    /**
+     * sets dark colors
+     */
     public void setDarkColors() {
         fg1 = darkfg1;
         fg2 = darkfg2;
@@ -1050,12 +1102,20 @@ public class GUI {
     //
     //################################menus################################
     //
+    /**
+     * imediatly hides all menus
+     */
     public void cancelMenus() {
         for (Hideable h : menus) {
             h.cancel();
         }
     }
 
+    /**
+     * hides all menus apart from the given ones
+     *
+     * @param hidables
+     */
     public void hideOtherMenus(Hideable... hidables) {
         for (Hideable h1 : menus) {
             boolean hide = true;
@@ -1071,6 +1131,9 @@ public class GUI {
         }
     }
 
+    /**
+     * hides all menus
+     */
     public void hideAllMenus() {
         for (Hideable h : menus) {
             h.hide();
@@ -1080,6 +1143,9 @@ public class GUI {
     //
     //################################tabs################################
     //
+    /**
+     * selects the A tab
+     */
     public void selectTabA() {
         hideAllMenus();
         tm.setIsA(true);
@@ -1087,9 +1153,12 @@ public class GUI {
         tabB.setStyle("-fx-background-color:" + bg3);
         tabA.getStyleClass().add("selectedLeftTabButton");
         tabA.setStyle("-fx-background-color:" + bg1);
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
+    /**
+     * selects the B tab
+     */
     public void selectTabB() {
         hideAllMenus();
         tm.setIsA(false);
@@ -1097,9 +1166,12 @@ public class GUI {
         tabA.setStyle("-fx-background-color:" + bg3);
         tabB.getStyleClass().add("selectedRightTabButton");
         tabB.setStyle("-fx-background-color:" + bg1);
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
+    /**
+     * switches between tab A and B
+     */
     public void switchTab() {
         if (tm.IsA()) {
             selectTabB();
@@ -1111,6 +1183,9 @@ public class GUI {
     //
     //################################settingsMenu################################
     //
+    /**
+     * shows the settings menu
+     */
     public void settingsMenu() {
         settingsMenu.show(
                 menu.getPane().getWidth() + 2,
@@ -1123,11 +1198,18 @@ public class GUI {
     //
     //################################menu################################
     //
+    /**
+     * shows the sidebar menu
+     */
     public void menu() {
         menu.show(name.getButton());
     }
 
-    public void scaleMenu() {
+    /**
+     * scales the menus components depending on the height of the homescreen
+     * buttons
+     */
+    private void scaleMenu() {
         double h = times[0].getHeight();
         menu.getPane().setMargin(menuName, new Insets(0, 0, h * 0.1, 0));
         menuName.setPadding(new Insets(h * 0.4, h * 0.4, 0, h * 0.4));
@@ -1139,26 +1221,40 @@ public class GUI {
         timetablePane.scale(h, menu.getPane().getPrefWidth());
     }
 
-    public void updateMenuData() {
+    /**
+     * updates the textfield text in the menu to the currently selected
+     * timetable
+     */
+    private void updateMenuData() {
         menuName.setText(tm.getCurrentTablePair().getName());
     }
 
-    public void writeMenuData() {
+    /**
+     * updates the name of the current timetable to the inputed one
+     */
+    private void writeMenuData() {
         tm.getCurrentTablePair().setName(menuName.getText());
         name.setText(menuName.getText());
     }
 
-    public void updateMenuTimetables() {
+    /**
+     * updates the list of displayed timetables inside the sidebar menu
+     */
+    private void updateMenuTimetables() {
         timetablePane.update(tm.getTimetablePairs(), timetableButtonPressed, tm.getTimeTableIndex());
     }
 
-    public void timetableButtonPressed(ActionEvent event) {
+    /**
+     *
+     * @param event
+     */
+    private void timetableButtonPressed(ActionEvent event) {
         int size = timetablePane.getPane().getChildren().size();
         for (int i = 0; i < size; i++) {
             if (event.getSource().equals(timetablePane.getPane().getChildren().get(i))) {
                 writeMenuData();
                 tm.setCurrentTablePair(i);
-                initNewTimetable();
+                displayCurrentTimetable();
                 updateMenuData();
                 updateMenuTimetables();
                 scaleMenu();
@@ -1166,25 +1262,36 @@ public class GUI {
         }
     }
 
+    /**
+     * adds a timetable and displayes it
+     */
     public void addTimetable() {
         tm.addTimetablePair();
         updateMenuTimetables();
         scaleMenu();
-        initNewTimetable();
+        displayCurrentTimetable();
         updateMenuData();
     }
 
+    /**
+     * deletes the current timetable
+     */
     public void deleteTimetable() {
         tm.deleteCurrentTimetablePair();
         updateMenuTimetables();
         scaleMenu();
-        initNewTimetable();
+        displayCurrentTimetable();
         updateMenuData();
     }
 
     //
     //################################contextMenu################################
     //
+    /**
+     * if the name was rightclicked the context menu is shown
+     *
+     * @param event
+     */
     public void namePressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             contextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), times[0]);
@@ -1192,8 +1299,14 @@ public class GUI {
         }
     }
 
+    /**
+     * if control is down and space or enter were pressed the context menu is
+     * shown
+     *
+     * @param event
+     */
     public void nameKeyReleased(KeyEvent event) {
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+        if (event.isControlDown() && (event.getCode().equals(KeyCode.SPACE) || event.getCode().equals(KeyCode.ENTER))) {
             contextMenu.showOnCoordinates(name.getLayoutX(), name.getLayoutY(), times[0]);
             hideOtherMenus(contextMenu);
         }
@@ -1202,12 +1315,21 @@ public class GUI {
     //
     //################################dayMenu################################
     //
+    /**
+     * shows the day menu
+     *
+     * @param event
+     */
     public void dayMenu(ActionEvent event) {
         getSelectedDay(event);
         dayMenu.show(selectedDay);
         hideOtherMenus(dayMenu);
     }
 
+    /**
+     * scales the day menu components depending on the height of the homescreen
+     * buttons
+     */
     public void scaleDayMenu() {
         double h = selectedDay.getHeight();
         for (int i = 0; i < dayToggles.length; i++) {
@@ -1226,19 +1348,30 @@ public class GUI {
         dayMenu.getDone().setFont(new Font(h * FONT_FACTOR));
     }
 
-    public void updateDayContextMenuData() {
+    /**
+     * updates the togglebuttons of the day menu
+     */
+    public void updateDayMenuData() {
         for (int i = 0; i < dayToggles.length; i++) {
             dayToggles[i].setSelected(tm.getCurrentTable().isDayDisplayed(i));
         }
     }
 
+    /**
+     * sets the days of the current table displayed depending on the state of
+     * the togglebuttons
+     */
     public void writeDayData() {
         for (int i = 0; i < dayToggles.length; i++) {
             tm.getCurrentTable().setDayDisplayed(dayToggles[i].isSelected(), i);
         }
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
+    /**
+     * if just 1 togglebutton is selected it gets diabled otherwise all get
+     * enabled
+     */
     public void dayToggled() {
         int activatedButtons = 0;
         int index = 0;
@@ -1260,19 +1393,30 @@ public class GUI {
     //
     //################################dayContextMenu################################
     //
+    /**
+     * clears the currently focused column
+     */
     private void clearColumn() {
         tm.clearColumn();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
+    /**
+     * deletes the currently focused column
+     */
     private void deleteColumn() {
         tm.deleteColumn();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     //
     //################################days################################
     //
+    /**
+     * if the button was rightclicked the day context menu is shown
+     *
+     * @param event
+     */
     private void dayPressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedDay(event);
@@ -1282,7 +1426,7 @@ public class GUI {
     }
 
     private void dayKeyReleased(KeyEvent event) {
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+        if (event.isControlDown() && (event.getCode().equals(KeyCode.SPACE) || event.getCode().equals(KeyCode.ENTER))) {
             getSelectedDay(event);
             dayContextMenu.show(selectedDay);
             hideOtherMenus(dayContextMenu);
@@ -1313,22 +1457,22 @@ public class GUI {
     //
     private void clearRow() {
         tm.clearRow();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     private void deleteRow() {
         tm.deleteRow();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     private void addRowAbove() {
         tm.addRowAbove();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     private void addRowBelow() {
         tm.addRowBelow();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     //
@@ -1343,7 +1487,7 @@ public class GUI {
     }
 
     private void timeKeyReleased(KeyEvent event) {
-        if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+        if (event.isControlDown() && (event.getCode().equals(KeyCode.SPACE) || event.getCode().equals(KeyCode.ENTER))) {
             getSelectedTime(event);
             timeContextMenu.show(selectedTime);
             hideOtherMenus(timeContextMenu);
@@ -1415,13 +1559,13 @@ public class GUI {
     }
 
     private void autocompleteSubject(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
+        if (event.getCode().equals(KeyCode.ENTER)) {
             enterPressed();
-        } else if (event.getCode() == KeyCode.UP) {
+        } else if (event.getCode().equals(KeyCode.UP)) {
             autoCompletePane.upPressed();
-        } else if (event.getCode() == KeyCode.DOWN) {
+        } else if (event.getCode().equals(KeyCode.DOWN)) {
             autoCompletePane.downPressed();
-        } else if (event.getCode() == KeyCode.ESCAPE) {
+        } else if (event.getCode().equals(KeyCode.ESCAPE)) {
             //just here so handleInput() doesn't get called ._.
         } else {
             handleInput();
@@ -1464,22 +1608,22 @@ public class GUI {
     //
     public void clear() {
         tm.clearSubject();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     public void delete() {
         tm.deleteSubject();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     public void addAbove() {
         tm.addSubjectAbove();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     public void addBelow() {
         tm.addSubjectBelow();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     //
@@ -1566,7 +1710,7 @@ public class GUI {
                 } else {
                     tm.getCurrentTable().switchSubjects(is1, js1, is2, js2);
                 }
-                initNewTimetable();
+                displayCurrentTimetable();
             }
             subjectPreview.setVisible(false);
             firstDrag = true;
@@ -1577,41 +1721,41 @@ public class GUI {
         getSelectedSubject(event);
         if (event.isControlDown()) {
             if (event.isShiftDown()) {
-                if (event.getCode() == KeyCode.PLUS) {
+                if (event.getCode().equals(KeyCode.PLUS)) {
                     tm.addSubjectAbove();
-                    initNewTimetable();
+                    displayCurrentTimetable();
                 }
             } else {
-                if (event.getCode() == KeyCode.SPACE || event.getCode() == KeyCode.ENTER) {
+                if (event.getCode().equals(KeyCode.SPACE) || event.getCode().equals(KeyCode.ENTER)) {
                     subjectContextMenu.show(selectedSubject);
-                } else if (event.getCode() == KeyCode.UP) {
+                } else if (event.getCode().equals(KeyCode.UP)) {
                     moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
-                } else if (event.getCode() == KeyCode.DOWN) {
+                } else if (event.getCode().equals(KeyCode.DOWN)) {
                     moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
-                } else if (event.getCode() == KeyCode.LEFT) {
+                } else if (event.getCode().equals(KeyCode.LEFT)) {
                     moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
-                } else if (event.getCode() == KeyCode.RIGHT) {
+                } else if (event.getCode().equals(KeyCode.RIGHT)) {
                     moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
-                } else if (event.getCode() == KeyCode.C) {
+                } else if (event.getCode().equals(KeyCode.C)) {
                     copy(event);
-                } else if (event.getCode() == KeyCode.X) {
+                } else if (event.getCode().equals(KeyCode.X)) {
                     cut(event);
-                } else if (event.getCode() == KeyCode.V) {
+                } else if (event.getCode().equals(KeyCode.V)) {
                     paste(event);
-                } else if (event.getCode() == KeyCode.E) {
+                } else if (event.getCode().equals(KeyCode.E)) {
                     tm.clearSubject();
-                    initNewTimetable();
-                } else if (event.getCode() == KeyCode.R) {
+                    displayCurrentTimetable();
+                } else if (event.getCode().equals(KeyCode.R)) {
                     tm.deleteSubject();
-                    initNewTimetable();
-                } else if (event.getCode() == KeyCode.PLUS) {
+                    displayCurrentTimetable();
+                } else if (event.getCode().equals(KeyCode.PLUS)) {
                     tm.addSubjectBelow();
-                    initNewTimetable();
+                    displayCurrentTimetable();
                 }
             }
-        } else if (event.getCode() == KeyCode.DELETE) {
+        } else if (event.getCode().equals(KeyCode.DELETE)) {
             tm.deleteSubject();
-            initNewTimetable();
+            displayCurrentTimetable();
         }
     }
 
@@ -1623,7 +1767,7 @@ public class GUI {
     private void copy(Event event) {
         getSelectedSubject(event);
         tm.copyCurrentClipboard();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     /**
@@ -1635,7 +1779,7 @@ public class GUI {
         getSelectedSubject(event);
         tm.copyCurrentClipboard();
         tm.clearSubject();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     /**
@@ -1646,7 +1790,7 @@ public class GUI {
     private void paste(Event event) {
         getSelectedSubject(event);
         tm.pasteCurrentClipboard();
-        initNewTimetable();
+        displayCurrentTimetable();
     }
 
     private void getSelectedSubject(Event event) {
@@ -1670,7 +1814,7 @@ public class GUI {
      */
     public void moveSubjectUp(int i, int j) {
         tm.getCurrentTable().moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
-        initNewTimetable();
+        displayCurrentTimetable();
         if (j > 0) {
             subjects[i][j - 1].requestFocus();
         }
@@ -1684,7 +1828,7 @@ public class GUI {
      */
     public void moveSubjectRight(int i, int j) {
         tm.getCurrentTable().moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
-        initNewTimetable();
+        displayCurrentTimetable();
         int days = 0;
         for (int d = 0; d < tm.getCurrentTable().getDays().length; d++) {
             if (tm.getCurrentTable().isDayDisplayed(d)) {
@@ -1704,7 +1848,7 @@ public class GUI {
      */
     public void moveSubjectDown(int i, int j) {
         tm.getCurrentTable().moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
-        initNewTimetable();
+        displayCurrentTimetable();
         if (j < tm.getCurrentTable().getLessons()) {
             subjects[i][j + 1].requestFocus();
         }
@@ -1718,7 +1862,7 @@ public class GUI {
      */
     public void moveSubjectLeft(int i, int j) {
         tm.getCurrentTable().moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
-        initNewTimetable();
+        displayCurrentTimetable();
         if (i > 0) {
             subjects[i - 1][j].requestFocus();
         }

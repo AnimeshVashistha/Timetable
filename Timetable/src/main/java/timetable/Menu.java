@@ -299,7 +299,7 @@ public class Menu implements Hideable {
         applyToA.getStyleClass().add("roundedButton");
         applyToA.setOnAction(event -> {
             gui.tm.getCurrentTablePair().getA().initTimes();
-            gui.initNewTimetable();
+            gui.displayCurrentTimetable();
         });
         timeBox.getChildren().add(applyToA);
 
@@ -307,7 +307,7 @@ public class Menu implements Hideable {
         applyToB.getStyleClass().add("roundedButton");
         applyToB.setOnAction(event -> {
             gui.tm.getCurrentTablePair().getB().initTimes();
-            gui.initNewTimetable();
+            gui.displayCurrentTimetable();
         });
         timeBox.getChildren().add(applyToB);
 
@@ -316,7 +316,7 @@ public class Menu implements Hideable {
         applyToBoth.setOnAction(event -> {
             gui.tm.getCurrentTablePair().getA().initTimes();
             gui.tm.getCurrentTablePair().getB().initTimes();
-            gui.initNewTimetable();
+            gui.displayCurrentTimetable();
         });
         timeBox.getChildren().add(applyToBoth);
 
