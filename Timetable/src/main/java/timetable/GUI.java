@@ -11,10 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -50,12 +46,14 @@ import timetable.Datatypes.Timetable;
  */
 public class GUI {
 
-    static final int ANIMATION_DURATION = 200;
+    //constants for animation and scaling of the application
+    static final int ANIMATION_DURATION = 300;
     static final int ANIMATION_DISTANCE = 50;
-    static final double GAP_SIZE = 2;
     static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
+    static final double GAP_SIZE = 2;
     static final double FONT_FACTOR = 0.22;
 
+    //RGB HEX strings for light theme
     static final String lightfg1 = "#FFFFFF";
     static final String lightfg2 = "#888888";
     static final String lightbg1 = "#EEEEEE";
@@ -67,6 +65,7 @@ public class GUI {
     static final String lighttransparent = "#00000000";
     static final String lightsemiTransparent = "#00000055";
 
+    //RGB HEX strings for dark theme
     static final String darkfg1 = "#BBBBBB";
     static final String darkfg2 = "#555555";
     static final String darkbg1 = "#111111";
@@ -78,12 +77,15 @@ public class GUI {
     static final String darktransparent = "#00000000";
     static final String darksemiTransparent = "#BBBBBB55";
 
+    //RGB HEX strings for default accent colors
     static final String[] ac1s = {"#66CC55", "#EE9933", "#DD3344", "#5599DD"};
     static final String[] ac2s = {"#55BB44", "#EE8822", "#C42233", "#4488CC"};
 
+    //
     static final String[] ENGLISH_DAY_NAMES = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
     static final String[] GERMAN_DAY_NAMES = {"Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 
+    //RGB HEX strings for current theme
     static String ac1 = ac1s[0];
     static String ac2 = ac2s[0];
     static String[] customAcs = {"#888888", "#888888", "#888888", "#888888"};
@@ -97,13 +99,12 @@ public class GUI {
     static String text = lighttext;
     static String transparent = lighttransparent;
     static String semiTransparent = lightsemiTransparent;
+    //global variables indicating current theme
     static boolean darkMode = false;
     static boolean customColor = false;
     static int colorIndex = 0;
 
     static String[] dayNames = ENGLISH_DAY_NAMES;
-
-    Menu settingsMenu;
 
     TimetableManager tm;
 
@@ -139,6 +140,7 @@ public class GUI {
     JFXButton selectedTime;
     JFXButton selectedSubject;
 
+    //list of menus that implement the hidable interface
     List<Hideable> menus;
 
     //menu
@@ -154,6 +156,9 @@ public class GUI {
     JFXButton deleteTimetable;
     ScrollPane menuScrollPane;
     TimetablePane timetablePane;
+
+    //settingsMenu
+    Menu settingsMenu;
 
     //context menu
     OptionsPane contextMenu;
@@ -223,6 +228,7 @@ public class GUI {
 
     public GUI(JSONObject data) {
 
+        //opening application data
         openData(data);
         if (darkMode) {
             setDarkColors();
@@ -283,7 +289,7 @@ public class GUI {
         menuName.setPrefWidth(500);
         menuName.setPromptText("Name");
         menuName.getStyleClass().add("customTextfield");
-        menuName.addEventHandler(KeyEvent.KEY_RELEASED, writeMenuData);
+        menuName.setOnKeyReleased(writeMenuData);
         menuName.addEventFilter(KeyEvent.ANY, event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.H) {
                 event.consume();
@@ -294,7 +300,7 @@ public class GUI {
         settings.getStyleClass().add("notRoundedButton");
         settings.setPrefWidth(500);
         settings.setPrefHeight(150);
-        settings.addEventHandler(ActionEvent.ACTION, event -> {
+        settings.setOnAction(event -> {
             if (settingsMenu.isHidden()) {
                 settingsMenu();
             } else {
@@ -305,14 +311,14 @@ public class GUI {
         addTimetable.getStyleClass().add("notRoundedButton");
         addTimetable.setPrefWidth(500);
         addTimetable.setPrefHeight(150);
-        addTimetable.addEventHandler(ActionEvent.ACTION, event -> {
+        addTimetable.setOnAction(event -> {
             addTimetable();
         });
         deleteTimetable = new JFXButton("Delete Timetable");
         deleteTimetable.getStyleClass().add("notRoundedButton");
         deleteTimetable.setPrefWidth(500);
         deleteTimetable.setPrefHeight(150);
-        deleteTimetable.addEventHandler(ActionEvent.ACTION, event -> {
+        deleteTimetable.setOnAction(event -> {
             deleteTimetable();
         });
         menuScrollPane = new ScrollPane();
@@ -345,11 +351,16 @@ public class GUI {
         menu.add(deleteTimetable);
         menu.add(menuScrollPane);
 
+        //settings menu
+        settingsMenu = new Menu(this);
+        menus.add(settingsMenu);
+        menuBackgroundPane.getChildren().add(settingsMenu.getPane());
+
         //context menu
         contextMenu = new OptionsPane(bg);
         menus.add(contextMenu);
         clearTimetable = new JFXButton("Clear Timetable");
-        clearTimetable.addEventHandler(ActionEvent.ACTION, event -> {
+        clearTimetable.setOnAction(event -> {
             if (tm.IsA()) {
                 tm.getCurrentTablePair().setA(new Timetable(tm.getCurrentTablePair()));
             } else {
@@ -358,12 +369,12 @@ public class GUI {
             initNewTimetable();
         });
         duplicateA = new JFXButton("Duplicate A");
-        duplicateA.addEventHandler(ActionEvent.ACTION, event -> {
+        duplicateA.setOnAction(event -> {
             tm.getCurrentTablePair().duplicateA();
             initNewTimetable();
         });
         duplicateB = new JFXButton("Duplicate B");
-        duplicateB.addEventHandler(ActionEvent.ACTION, event -> {
+        duplicateB.setOnAction(event -> {
             tm.getCurrentTablePair().duplicateB();
             initNewTimetable();
             resize();
@@ -415,11 +426,11 @@ public class GUI {
         dayContextMenu = new OptionsPane(bg);
         menus.add(dayContextMenu);
         clearColumn = new JFXButton("Clear Column");
-        clearColumn.addEventHandler(ActionEvent.ACTION, event -> {
+        clearColumn.setOnAction(event -> {
             clearColumn();
         });
         deleteColumn = new JFXButton("Delete Column");
-        deleteColumn.addEventHandler(ActionEvent.ACTION, event -> {
+        deleteColumn.setOnAction(event -> {
             deleteColumn();
         });
         dayContextMenu.addButton(clearColumn);
@@ -438,19 +449,19 @@ public class GUI {
         timeContextMenu = new OptionsPane(bg);
         menus.add(timeContextMenu);
         clearRow = new JFXButton("Clear Row");
-        clearRow.addEventHandler(ActionEvent.ACTION, event -> {
+        clearRow.setOnAction(event -> {
             clearRow();
         });
         deleteRow = new JFXButton("Delete Row");
-        deleteRow.addEventHandler(ActionEvent.ACTION, event -> {
+        deleteRow.setOnAction(event -> {
             deleteRow();
         });
         addRowAbove = new JFXButton("Add Row Above");
-        addRowAbove.addEventHandler(ActionEvent.ACTION, event -> {
+        addRowAbove.setOnAction(event -> {
             addRowAbove();
         });
         addRowBelow = new JFXButton("Add Row Below");
-        addRowBelow.addEventHandler(ActionEvent.ACTION, event -> {
+        addRowBelow.setOnAction(event -> {
             addRowBelow();
         });
         timeContextMenu.addButton(clearRow);
@@ -489,7 +500,7 @@ public class GUI {
             }
         });
         subjectRoom = new JFXTextField();
-        subjectRoom.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
+        subjectRoom.setOnKeyReleased(writeSubjectData);
         subjectRoom.setPrefWidth(500);
         subjectRoom.setPrefHeight(100);
         subjectRoom.getStyleClass().add("customTextfield");
@@ -501,7 +512,7 @@ public class GUI {
             }
         });
         subjectTeacher = new JFXTextField();
-        subjectTeacher.addEventHandler(KeyEvent.KEY_RELEASED, writeSubjectData);
+        subjectTeacher.setOnKeyReleased(writeSubjectData);
         subjectTeacher.setPrefWidth(500);
         subjectTeacher.setPrefHeight(100);
         subjectTeacher.getStyleClass().add("customTextfield");
@@ -525,38 +536,38 @@ public class GUI {
         };
         autoCompletePane = new AutocompletePane(bg);
         menus.add(autoCompletePane);
-        subjectName.addEventHandler(KeyEvent.KEY_RELEASED, subjectMenuKeyPressed);
+        subjectName.setOnKeyReleased(subjectMenuKeyPressed);
         autoCompletePane.setOnClick(autocompleteOnClick);
 
         //subject context menu
         subjectContextMenu = new OptionsPane(bg);
         menus.add(subjectContextMenu);
         copy = new JFXButton("Copy");
-        copy.addEventHandler(ActionEvent.ACTION, event -> {
+        copy.setOnAction(event -> {
             copy(event);
         });
         cut = new JFXButton("Cut");
-        cut.addEventHandler(ActionEvent.ACTION, event -> {
+        cut.setOnAction(event -> {
             cut(event);
         });
         paste = new JFXButton("Paste");
-        paste.addEventHandler(ActionEvent.ACTION, event -> {
+        paste.setOnAction(event -> {
             paste(event);
         });
         clear = new JFXButton("Clear");
-        clear.addEventHandler(ActionEvent.ACTION, event -> {
+        clear.setOnAction(event -> {
             clear();
         });
         delete = new JFXButton("Delete");
-        delete.addEventHandler(ActionEvent.ACTION, event -> {
+        delete.setOnAction(event -> {
             delete();
         });
         addAbove = new JFXButton("Add Above");
-        addAbove.addEventHandler(ActionEvent.ACTION, event -> {
+        addAbove.setOnAction(event -> {
             addAbove();
         });
         addBelow = new JFXButton("Add Below");
-        addBelow.addEventHandler(ActionEvent.ACTION, event -> {
+        addBelow.setOnAction(event -> {
             addBelow();
         });
         subjectContextMenu.addButton(copy);
@@ -587,11 +598,6 @@ public class GUI {
         } else {
             selectTabB();
         }
-
-        //settings menu
-        settingsMenu = new Menu(this);
-        menus.add(settingsMenu);
-        menuBackgroundPane.getChildren().add(settingsMenu.getPane());
 
         updateColors();
 
@@ -685,9 +691,9 @@ public class GUI {
         name.getStyleClass().add("menuButton");
         name.setMinSize(100, 40);
         name.setPrefSize(500, 500);
-        name.getButton().addEventHandler(ActionEvent.ACTION, nameAction);
-        name.getButton().addEventHandler(MouseEvent.MOUSE_PRESSED, namePressed);
-        name.getButton().addEventHandler(KeyEvent.KEY_RELEASED, nameKeyReleased);
+        name.getButton().setOnAction(nameAction);
+        name.getButton().setOnMousePressed(namePressed);
+        name.getButton().setOnKeyReleased(nameKeyReleased);
         subjectGrid.add(name, 0, 0, 1, 2);
 
         //tabs
@@ -733,8 +739,8 @@ public class GUI {
             day.setMinSize(100, 40);
             day.setPrefSize(500, 500);
             day.addEventHandler(ActionEvent.ANY, dayAction);
-            day.addEventHandler(MouseEvent.MOUSE_PRESSED, dayPressed);
-            day.addEventHandler(KeyEvent.KEY_RELEASED, dayKeyReleased);
+            day.setOnMousePressed(dayPressed);
+            day.setOnKeyReleased(dayKeyReleased);
             days[i] = day;
         }
 
@@ -755,8 +761,8 @@ public class GUI {
             time.setMinSize(100, 40);
             time.setPrefSize(500, 500);
             time.addEventHandler(ActionEvent.ANY, timeAction);
-            time.addEventHandler(MouseEvent.MOUSE_PRESSED, timePressed);
-            time.addEventHandler(KeyEvent.KEY_RELEASED, timeKeyReleased);
+            time.setOnMousePressed(timePressed);
+            time.setOnKeyReleased(timeKeyReleased);
             times[i] = time;
         }
 
@@ -783,11 +789,11 @@ public class GUI {
                 subject.getStyleClass().add("roundedButton");
                 subject.setMinSize(100, 40);
                 subject.setPrefSize(500, 500);
-                subject.addEventHandler(ActionEvent.ANY, subjectAction);
-                subject.addEventHandler(MouseEvent.MOUSE_PRESSED, subjectPressed);
-                subject.addEventHandler(MouseEvent.MOUSE_DRAGGED, subjectDragged);
-                subject.addEventHandler(MouseEvent.MOUSE_RELEASED, subjectReleased);
-                subject.addEventHandler(KeyEvent.KEY_RELEASED, subjectKeyReleased);
+                subject.setOnAction(subjectAction);
+                subject.setOnMousePressed(subjectPressed);
+                subject.setOnMouseDragged(subjectDragged);
+                subject.setOnMouseReleased(subjectReleased);
+                subject.setOnKeyReleased(subjectKeyReleased);
                 subjects[i][j] = subject;
             }
         }
@@ -878,6 +884,9 @@ public class GUI {
         resize();
     }
 
+    //
+    //################################colors################################
+    //
     public void updateColors() {
 
         settingsMenu.updateColors();
@@ -1038,6 +1047,9 @@ public class GUI {
         darkMode = true;
     }
 
+    //
+    //################################menus################################
+    //
     public void cancelMenus() {
         for (Hideable h : menus) {
             h.cancel();
@@ -1065,6 +1077,9 @@ public class GUI {
         }
     }
 
+    //
+    //################################tabs################################
+    //
     public void selectTabA() {
         hideAllMenus();
         tm.setIsA(true);
@@ -1245,12 +1260,12 @@ public class GUI {
     //
     //################################dayContextMenu################################
     //
-    public void clearColumn() {
+    private void clearColumn() {
         tm.clearColumn();
         initNewTimetable();
     }
 
-    public void deleteColumn() {
+    private void deleteColumn() {
         tm.deleteColumn();
         initNewTimetable();
     }
@@ -1258,7 +1273,7 @@ public class GUI {
     //
     //################################days################################
     //
-    public void dayPressed(MouseEvent event) {
+    private void dayPressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedDay(event);
             dayContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedDay);
@@ -1266,7 +1281,7 @@ public class GUI {
         }
     }
 
-    public void dayKeyReleased(KeyEvent event) {
+    private void dayKeyReleased(KeyEvent event) {
         if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
             getSelectedDay(event);
             dayContextMenu.show(selectedDay);
@@ -1287,7 +1302,7 @@ public class GUI {
     //
     //################################timeMenu################################
     //
-    public void timeMenu(ActionEvent event) {
+    private void timeMenu(ActionEvent event) {
         getSelectedTime(event);
         timeMenu.show(selectedTime, tm.getCurrentTable().getTime(tm.gettIndexI()));
         hideOtherMenus(timeMenu);
@@ -1296,22 +1311,22 @@ public class GUI {
     //
     //################################timeContextMenu################################
     //
-    public void clearRow() {
+    private void clearRow() {
         tm.clearRow();
         initNewTimetable();
     }
 
-    public void deleteRow() {
+    private void deleteRow() {
         tm.deleteRow();
         initNewTimetable();
     }
 
-    public void addRowAbove() {
+    private void addRowAbove() {
         tm.addRowAbove();
         initNewTimetable();
     }
 
-    public void addRowBelow() {
+    private void addRowBelow() {
         tm.addRowBelow();
         initNewTimetable();
     }
@@ -1319,7 +1334,7 @@ public class GUI {
     //
     //################################times################################
     //
-    public void timePressed(MouseEvent event) {
+    private void timePressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             getSelectedTime(event);
             timeContextMenu.showOnCoordinates(event.getSceneX(), event.getSceneY(), selectedTime);
@@ -1327,7 +1342,7 @@ public class GUI {
         }
     }
 
-    public void timeKeyReleased(KeyEvent event) {
+    private void timeKeyReleased(KeyEvent event) {
         if (event.isControlDown() && event.getCode() == KeyCode.SPACE || event.isControlDown() && event.getCode() == KeyCode.ENTER) {
             getSelectedTime(event);
             timeContextMenu.show(selectedTime);
@@ -1349,12 +1364,12 @@ public class GUI {
     //
     //################################subjectMenu################################
     //
-    public void subjectMenu(ActionEvent event) {
+    private void subjectMenu(ActionEvent event) {
         getSelectedSubject(event);
         subjectMenu.show(selectedSubject);
     }
 
-    public void scaleSubjectMenu() {
+    private void scaleSubjectMenu() {
         double h = selectedSubject.getHeight();
         subjectMenu.getPane().setMargin(subjectName, new Insets(0, 0, h * 0.1, 0));
         subjectMenu.getPane().setMargin(subjectRoom, new Insets(0, 0, h * 0.1, 0));
@@ -1369,7 +1384,7 @@ public class GUI {
         subjectMenu.getDone().setFont(new Font(h * FONT_FACTOR));
     }
 
-    public void updateSubjectMenuData() {
+    private void updateSubjectMenuData() {
         subjectName.setText(tm.getCurrentTable().getSubjectText(tm.getsIndexI(), tm.getsIndexJ()));
         subjectRoom.setText(tm.getCurrentTable().getRoomText(tm.getsIndexI(), tm.getsIndexJ()));
         subjectTeacher.setText(tm.getCurrentTable().getTeacherText(tm.getsIndexI(), tm.getsIndexJ()));
@@ -1381,7 +1396,7 @@ public class GUI {
         subjectTeacher.setText(s.getTeacher());
     }
 
-    public void writeSubjectData() {
+    private void writeSubjectData() {
         selectedSubject.setText(subjectName.getText() + "\n" + subjectRoom.getText());
         tm.getCurrentTable().setSubjectText(subjectName.getText(), tm.getsIndexI(), tm.getsIndexJ());
         tm.getCurrentTable().setRoomText(subjectRoom.getText(), tm.getsIndexI(), tm.getsIndexJ());
@@ -1391,7 +1406,7 @@ public class GUI {
     //
     //################################autoCompletePane################################
     //
-    public void autocompleteLabelClicked(MouseEvent event) {
+    private void autocompleteLabelClicked(MouseEvent event) {
         for (int i = 0; i < autoCompletePane.getPane().getChildren().size(); i++) {
             if (event.getSource() == autoCompletePane.getPane().getChildren().get(i)) {
                 writeAutocomplete(i / 3);
@@ -1399,7 +1414,7 @@ public class GUI {
         }
     }
 
-    public void autocompleteSubject(KeyEvent event) {
+    private void autocompleteSubject(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             enterPressed();
         } else if (event.getCode() == KeyCode.UP) {
@@ -1470,7 +1485,7 @@ public class GUI {
     //
     //################################subjects################################
     //
-    public void subjectPressed(MouseEvent event) {
+    private void subjectPressed(MouseEvent event) {
         if (event.isSecondaryButtonDown()) {
             primaryButton = false;
             getSelectedSubject(event);
@@ -1485,7 +1500,7 @@ public class GUI {
         }
     }
 
-    public void subjectDragged(MouseEvent event) {
+    private void subjectDragged(MouseEvent event) {
         if (primaryButton) {
             if (firstDrag) {
                 hideAllMenus();
@@ -1508,7 +1523,7 @@ public class GUI {
         }
     }
 
-    public void subjectReleased(MouseEvent event) {
+    private void subjectReleased(MouseEvent event) {
         if (primaryButton) {
             boolean onSubject = false;
             int is1 = 0;
@@ -1558,7 +1573,7 @@ public class GUI {
         }
     }
 
-    public void subjectKeyReleased(KeyEvent event) {
+    private void subjectKeyReleased(KeyEvent event) {
         getSelectedSubject(event);
         if (event.isControlDown()) {
             if (event.isShiftDown()) {
@@ -1600,20 +1615,35 @@ public class GUI {
         }
     }
 
-    public void copy(Event event) {
+    /**
+     * copies the currently focused subject to clipboard
+     *
+     * @param event
+     */
+    private void copy(Event event) {
         getSelectedSubject(event);
         tm.copyCurrentClipboard();
         initNewTimetable();
     }
 
-    public void cut(Event event) {
+    /**
+     * cuts the currently focused subject to clipboard
+     *
+     * @param event
+     */
+    private void cut(Event event) {
         getSelectedSubject(event);
         tm.copyCurrentClipboard();
         tm.clearSubject();
         initNewTimetable();
     }
 
-    public void paste(Event event) {
+    /**
+     * pastes the clipboard to the currently focused subject
+     *
+     * @param event
+     */
+    private void paste(Event event) {
         getSelectedSubject(event);
         tm.pasteCurrentClipboard();
         initNewTimetable();
@@ -1632,6 +1662,12 @@ public class GUI {
         }
     }
 
+    /**
+     * moves the subject at the indexes up
+     *
+     * @param i
+     * @param j
+     */
     public void moveSubjectUp(int i, int j) {
         tm.getCurrentTable().moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
         initNewTimetable();
@@ -1640,22 +1676,12 @@ public class GUI {
         }
     }
 
-    public void moveSubjectDown(int i, int j) {
-        tm.getCurrentTable().moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
-        initNewTimetable();
-        if (j < tm.getCurrentTable().getLessons()) {
-            subjects[i][j + 1].requestFocus();
-        }
-    }
-
-    public void moveSubjectLeft(int i, int j) {
-        tm.getCurrentTable().moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
-        initNewTimetable();
-        if (i > 0) {
-            subjects[i - 1][j].requestFocus();
-        }
-    }
-
+    /**
+     * moves the subject at the indexes right
+     *
+     * @param i
+     * @param j
+     */
     public void moveSubjectRight(int i, int j) {
         tm.getCurrentTable().moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
         initNewTimetable();
@@ -1667,6 +1693,34 @@ public class GUI {
         }
         if (i < days) {
             subjects[i + 1][j].requestFocus();
+        }
+    }
+
+    /**
+     * moves the subject at the indexes down
+     *
+     * @param i
+     * @param j
+     */
+    public void moveSubjectDown(int i, int j) {
+        tm.getCurrentTable().moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
+        initNewTimetable();
+        if (j < tm.getCurrentTable().getLessons()) {
+            subjects[i][j + 1].requestFocus();
+        }
+    }
+
+    /**
+     * moves the subject at the indexes left
+     *
+     * @param i
+     * @param j
+     */
+    public void moveSubjectLeft(int i, int j) {
+        tm.getCurrentTable().moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
+        initNewTimetable();
+        if (i > 0) {
+            subjects[i - 1][j].requestFocus();
         }
     }
 

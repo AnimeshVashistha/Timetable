@@ -32,39 +32,54 @@ public class Main extends Application {
         launch(args);
     }
 
+    /**
+     * initializes a new datamanager, gui and a scene
+     *
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
+
+        //initializing a new datamanager with the os specific application data path
         dm = new DataManager(getAppData() + "Timetable" + File.separator + "timetables.json");
 
+        //reading application data
         JSONObject data = dm.readData();
 
+        //initializing a new gui and passing the application data
         gui = new GUI(data);
+        //setting cache hints for better performance
         gui.getPane().setCache(true);
         gui.getPane().setCacheHint(CacheHint.SPEED);
+        //passing a hostsevice instance to settings for opening s browser
         gui.getSettings().setHostServices(getHostServices());
 
+        //initializing a new scene and passing the parent
         scene = new Scene(gui.getPane());
+        //adding css stylesheets
         scene.getStylesheets().add("/styles/Styles.css");
+        //adding keypressed event handler
         scene.setOnKeyPressed(event -> {
             if (event.isControlDown()) {
                 gui.controlDown = true;
-                if (event.getCode() == KeyCode.TAB) {
+                if (event.getCode().equals(KeyCode.TAB)) {
                     gui.switchTab();
-                } else if (event.getCode() == KeyCode.D) {
+                } else if (event.getCode().equals(KeyCode.D)) {
                     gui.toggleColorMode();
                     gui.updateColors();
                     if (!gui.settingsMenu.isHidden()) {
                         gui.settingsMenu.colorMode.setSelected(!gui.settingsMenu.colorMode.isSelected());
                     }
-                } else if (event.getCode() == KeyCode.H) {
+                } else if (event.getCode().equals(KeyCode.H)) {
                     gui.hideAllMenus();
-                } else if (event.getCode() == KeyCode.M) {
+                } else if (event.getCode().equals(KeyCode.M)) {
                     if (gui.menu.isHidden()) {
                         gui.menu();
                     }
-                } else if (event.getCode() == KeyCode.N) {
+                } else if (event.getCode().equals(KeyCode.N)) {
                     gui.addTimetable();
-                } else if (event.getCode() == KeyCode.S) {
+                } else if (event.getCode().equals(KeyCode.S)) {
                     if (gui.menu.isHidden()) {
                         gui.menu();
                         new Timeline(
@@ -78,51 +93,65 @@ public class Main extends Application {
                     }
                 }
             } else {
-                if (event.getCode() == KeyCode.ESCAPE) {
+                if (event.getCode().equals(KeyCode.ESCAPE)) {
                     gui.hideAllMenus();
                 }
             }
         });
+        //adding a keyreleased event handler
         scene.setOnKeyReleased(event -> {
-            if (event.isControlDown()) {
-            } else {
+            if (!event.isControlDown()) {
                 gui.controlDown = false;
             }
         });
+        //adding scene resizing event handler
         scene.widthProperty().addListener(event -> {
-            resize();
+            resized();
         });
         scene.heightProperty().addListener(event -> {
-            resize();
+            resized();
         });
 
+        //initializing a timeline for periodically saving application data
         saveData = new Timeline(
                 new KeyFrame(Duration.seconds(30), n -> {
                     saveData();
                 })
         );
         saveData.setCycleCount(Timeline.INDEFINITE);
-
+        //starting the timeline
         saveData.play();
 
+        //setting the title, icon, scene and minimum size
         stage.setTitle("Timetable");
         stage.getIcons().add(new Image("/images/Timetable.png"));
         stage.setScene(scene);
         stage.setMinWidth(600);
         stage.setMinHeight(400);
+        //showing the window
         stage.show();
     }
 
+    /**
+     * saving appliation data
+     */
     @Override
     public void stop() {
         saveData();
     }
 
-    public void resize() {
+    /**
+     * cancels all menus and resizes the content
+     */
+    public void resized() {
         gui.cancelMenus();
         gui.resize();
     }
 
+    /**
+     * collects data and settings from the gui and timetablemanager puts them in
+     * a jsonobject and writes that object to a file
+     */
     public void saveData() {
         JSONObject data = new JSONObject();
         data.put(TIMETABLE_MANAGER, gui.tm.getDataToSave());
@@ -130,6 +159,11 @@ public class Main extends Application {
         dm.writeData(data);
     }
 
+    /**
+     * returns the os specific prefered path for storing application data
+     *
+     * @return application data path
+     */
     public static String getAppData() {
         String path = "";
         String OS = System.getProperty("os.name").toUpperCase();
