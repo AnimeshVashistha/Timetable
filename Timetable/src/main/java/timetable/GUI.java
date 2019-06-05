@@ -47,7 +47,7 @@ import timetable.Datatypes.Timetable;
 public class GUI {
 
     //constants for animation and scaling of the application
-    static final int ANIMATION_DURATION = 250;
+    static final int ANIMATION_DURATION = 200;
     static final int ANIMATION_DISTANCE = 50;
     static final double FOCUS_ANIMATION_OFFSET_FACTOR = 0.6;
     static final double GAP_SIZE = 2;
@@ -1718,42 +1718,54 @@ public class GUI {
     }
 
     private void subjectKeyReleased(KeyEvent event) {
-        getSelectedSubject(event);
         if (event.isControlDown()) {
             if (event.isShiftDown()) {
                 if (event.getCode().equals(KeyCode.PLUS)) {
+                    getSelectedSubject(event);
                     tm.addSubjectAbove();
                     displayCurrentTimetable();
                 }
             } else {
                 if (event.getCode().equals(KeyCode.SPACE) || event.getCode().equals(KeyCode.ENTER)) {
+                    getSelectedSubject(event);
                     subjectContextMenu.show(selectedSubject);
                 } else if (event.getCode().equals(KeyCode.UP)) {
+                    getSelectedSubject(event);
                     moveSubjectUp(tm.getsIndexI(), tm.getsIndexJ());
                 } else if (event.getCode().equals(KeyCode.DOWN)) {
+                    getSelectedSubject(event);
                     moveSubjectDown(tm.getsIndexI(), tm.getsIndexJ());
                 } else if (event.getCode().equals(KeyCode.LEFT)) {
+                    getSelectedSubject(event);
                     moveSubjectLeft(tm.getsIndexI(), tm.getsIndexJ());
                 } else if (event.getCode().equals(KeyCode.RIGHT)) {
+                    getSelectedSubject(event);
                     moveSubjectRight(tm.getsIndexI(), tm.getsIndexJ());
                 } else if (event.getCode().equals(KeyCode.C)) {
+                    getSelectedSubject(event);
                     copy(event);
                 } else if (event.getCode().equals(KeyCode.X)) {
+                    getSelectedSubject(event);
                     cut(event);
                 } else if (event.getCode().equals(KeyCode.V)) {
+                    getSelectedSubject(event);
                     paste(event);
                 } else if (event.getCode().equals(KeyCode.E)) {
+                    getSelectedSubject(event);
                     tm.clearSubject();
                     displayCurrentTimetable();
                 } else if (event.getCode().equals(KeyCode.R)) {
+                    getSelectedSubject(event);
                     tm.deleteSubject();
                     displayCurrentTimetable();
                 } else if (event.getCode().equals(KeyCode.PLUS)) {
+                    getSelectedSubject(event);
                     tm.addSubjectBelow();
                     displayCurrentTimetable();
                 }
             }
         } else if (event.getCode().equals(KeyCode.DELETE)) {
+            getSelectedSubject(event);
             tm.deleteSubject();
             displayCurrentTimetable();
         }
@@ -1794,6 +1806,7 @@ public class GUI {
     }
 
     private void getSelectedSubject(Event event) {
+        System.out.println("now");
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
                 if (event.getSource() == subjects[i][j]) {
