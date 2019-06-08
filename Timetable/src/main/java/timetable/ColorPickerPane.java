@@ -11,7 +11,10 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import static timetable.GUI.ANIMATION_DISTANCE;
@@ -23,6 +26,7 @@ import static timetable.GUI.ANIMATION_DURATION;
  */
 public class ColorPickerPane extends SomePane {
 
+    Label preview;
     JFXSlider[] sliders;
 
     TranslateTransition SlideIn;
@@ -34,6 +38,8 @@ public class ColorPickerPane extends SomePane {
 
     EventHandler<Event> onHide;
     Button hideEvent = new Button();
+
+    Color color;
 
     public ColorPickerPane(Pane parent) {
         super(parent);
@@ -64,6 +70,11 @@ public class ColorPickerPane extends SomePane {
         hide.getChildren().add(FadeOut);
         hide.setOnFinished(event -> getPane().setVisible(false));
 
+        preview = new Label();
+        preview.setPrefSize(500, 500);
+        preview.getStyleClass().add("roundedLabel");
+        getPane().add(preview, 0, 0);
+
         sliders = new JFXSlider[3];
         for (int i = 0; i < sliders.length; i++) {
             JFXSlider s = new JFXSlider();
@@ -71,11 +82,16 @@ public class ColorPickerPane extends SomePane {
             s.valueProperty().addListener(event -> {
                 displayColor();
             });
+            sliders[i] = s;
+            getPane().add(s, 0, i + 1);
         }
+
+        getPane().getChildren().remove(getDone());
+        getPane().add(getDone(), 0, 4);
 
     }
 
-    public void showOnCoordinates(double x, double y, JFXButton source) {
+    public void showOnCoordinates(double x, double y, JFXButton source, Color color) {
         setSource(source);
 
         int size = getPane().getChildren().size();
@@ -83,10 +99,10 @@ public class ColorPickerPane extends SomePane {
         double w = source.getHeight();
         double h = source.getHeight();
 
-        show(x, y, w, h);
+        show(x, y, w, h, color);
     }
 
-    public void show(JFXButton source) {
+    public void show(JFXButton source, Color color) {
         setSource(source);
 
         int size = getPane().getChildren().size();
@@ -96,10 +112,10 @@ public class ColorPickerPane extends SomePane {
         double w = source.getHeight();
         double h = source.getHeight();
 
-        show(x, y, w, h);
+        show(x, y, w, h, color);
     }
 
-    private void show(double x, double y, double w, double h) {
+    private void show(double x, double y, double w, double h, Color color) {
         int size = getPane().getChildren().size();
 
         setHidden(false);
@@ -108,6 +124,11 @@ public class ColorPickerPane extends SomePane {
         getPane().setPrefHeight(h * size * getHeightFactor());
         getPane().setLayoutX(x);
         getPane().setLayoutY(y);
+
+        this.color = color;
+
+        updateSliderValues();
+        displayColor();
 
         getDone().setFont(new Font(getSource().getHeight() * getFontFactor()));
 
@@ -166,9 +187,26 @@ public class ColorPickerPane extends SomePane {
         this.onHide = onHide;
         hideEvent.addEventHandler(EventType.ROOT, onHide);
     }
-    
-    public void displayColor(){
-        
+
+    public void updateColor() {
+        updateBaseColor();
+        displayColor();
+        getPane().setStyle("-fx-background-color:" + GUI.bg3);
+        for (JFXSlider s : sliders) {
+            GUI.applyColorsToSlider(s);
+        }
+    }
+
+    public void displayColor() {
+        color = Color.hsb(sliders[0].getValue() / 255, sliders[1].getValue() / 255, sliders[2].getValue() / 255);
+        System.out.print(GUI.toRGBCode(color));
+        preview.setStyle("-fx-background-color:" + GUI.toRGBCode(color));
+    }
+
+    public void updateSliderValues() {
+        sliders[0].setValue(color.getHue() * 255);
+        sliders[1].setValue(color.getSaturation() * 255);
+        sliders[2].setValue(color.getBrightness() * 255);
     }
 
 }

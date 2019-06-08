@@ -192,6 +192,7 @@ public class Menu implements Hideable {
         customColorLabel = new Label("Custom Colors");
         settings.add(customColorLabel, 0, 4);
 
+        colorPicker = new ColorPickerPane(content);
         customColorBox = new HBox();
         settings.add(customColorBox, 0, 5, 3, 1);
 
@@ -204,7 +205,9 @@ public class Menu implements Hideable {
                 setCustomAccentColor(event);
             });
             b.setOnMousePressed(event -> {
-
+                if (event.isSecondaryButtonDown()) {
+                    colorPicker.show(b, Color.web(gui.customAcs[gui.colorIndex]));
+                }
             });
             b.focusedProperty().addListener(event -> {
                 focusColorButton(b);
@@ -528,7 +531,7 @@ public class Menu implements Hideable {
         for (int i = 0; i < sliderPanes.length; i++) {
             sliderLabels[i].setTextFill(Color.web(gui.text));
             sliderValues[i].setTextFill(Color.web(gui.text));
-            applyColorsToSlider(sliders[i]);
+            GUI.applyColorsToSlider(sliders[i]);
         }
         applyToA.setStyle("-fx-background-color:" + gui.bg4);
         applyToA.setTextFill(Color.web(gui.text));
@@ -539,25 +542,6 @@ public class Menu implements Hideable {
 
         info.setStyle("-fx-background-color:" + gui.bg4);
         info.setTextFill(Color.web(gui.text));
-    }
-
-    public void applyColorsToSlider(JFXSlider slider) {
-        StackPane sliderTrack = (StackPane) slider.lookup(".track");
-        if (sliderTrack != null) {
-            sliderTrack.setStyle("-fx-background-color:" + gui.bg4);
-        }
-        StackPane sliderColorTrack = (StackPane) slider.lookup(".colored-track");
-        if (sliderColorTrack != null) {
-            sliderColorTrack.setStyle("-fx-background-color:" + gui.ac2);
-        }
-        StackPane sliderThumb = (StackPane) slider.lookup(".thumb");
-        if (sliderThumb != null) {
-            sliderThumb.setStyle("-fx-background-color:" + gui.ac1);
-        }
-        StackPane sliderAnimatedThumb = (StackPane) slider.lookup(".animated-thumb");
-        if (sliderAnimatedThumb != null) {
-            sliderAnimatedThumb.setStyle("-fx-background-color:" + gui.ac2);
-        }
     }
 
     public void setAccentColor(ActionEvent event) {

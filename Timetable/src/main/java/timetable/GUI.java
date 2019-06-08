@@ -1,6 +1,7 @@
 package timetable;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import java.time.LocalDate;
@@ -32,6 +33,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -1055,6 +1057,29 @@ public class GUI {
     }
 
     /**
+     * applys the current theme colors to the given slider
+     * @param slider 
+     */
+    public static void applyColorsToSlider(JFXSlider slider) {
+        StackPane sliderTrack = (StackPane) slider.lookup(".track");
+        if (sliderTrack != null) {
+            sliderTrack.setStyle("-fx-background-color:" + GUI.bg4);
+        }
+        StackPane sliderColorTrack = (StackPane) slider.lookup(".colored-track");
+        if (sliderColorTrack != null) {
+            sliderColorTrack.setStyle("-fx-background-color:" + GUI.ac2);
+        }
+        StackPane sliderThumb = (StackPane) slider.lookup(".thumb");
+        if (sliderThumb != null) {
+            sliderThumb.setStyle("-fx-background-color:" + GUI.ac1);
+        }
+        StackPane sliderAnimatedThumb = (StackPane) slider.lookup(".animated-thumb");
+        if (sliderAnimatedThumb != null) {
+            sliderAnimatedThumb.setStyle("-fx-background-color:" + GUI.ac2);
+        }
+    }
+
+    /**
      * toggles the colormode between dark and light
      */
     public void toggleColorMode() {
@@ -1806,7 +1831,6 @@ public class GUI {
     }
 
     private void getSelectedSubject(Event event) {
-        System.out.println("now");
         for (int i = 0; i < subjects.length; i++) {
             for (int j = 0; j < subjects[0].length; j++) {
                 if (event.getSource() == subjects[i][j]) {
