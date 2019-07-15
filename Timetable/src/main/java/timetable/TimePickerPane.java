@@ -377,7 +377,7 @@ public class TimePickerPane extends SomePane {
 
         arrangeComponents(w * getWidthFactor(), h * size * getHeightFactor());
 
-        getDone().setFont(new Font(getSource().getHeight() * getFontFactor()));
+        getDone().setFont(new Font(h * getFontFactor()));
 
         if (onShow != null) {
             showEvent.fire();

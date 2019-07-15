@@ -10,10 +10,10 @@ import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -25,6 +25,8 @@ import static timetable.GUI.ANIMATION_DURATION;
  * @author Tobias
  */
 public class ColorPickerPane extends SomePane {
+
+    static final int[] sliderMax = {350, 1, 1};
 
     Label preview;
     JFXSlider[] sliders;
@@ -44,8 +46,8 @@ public class ColorPickerPane extends SomePane {
     public ColorPickerPane(Pane parent) {
         super(parent);
 
-        setWidthFactor(3);
-        setHeightFactor(1.05);
+        setWidthFactor(2.5);
+        setHeightFactor(0.6);
 
         SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
         SlideIn.setFromY(ANIMATION_DISTANCE);
@@ -71,14 +73,14 @@ public class ColorPickerPane extends SomePane {
         hide.setOnFinished(event -> getPane().setVisible(false));
 
         preview = new Label();
-        preview.setPrefSize(500, 500);
+        preview.setPrefSize(500, 200);
         preview.getStyleClass().add("roundedLabel");
         getPane().add(preview, 0, 0);
 
         sliders = new JFXSlider[3];
         for (int i = 0; i < sliders.length; i++) {
             JFXSlider s = new JFXSlider();
-            s.setMax(255);
+            s.setMax(sliderMax[i]);
             s.valueProperty().addListener(event -> {
                 displayColor();
             });
@@ -125,12 +127,14 @@ public class ColorPickerPane extends SomePane {
         getPane().setLayoutX(x);
         getPane().setLayoutY(y);
 
+        resize(w * getWidthFactor(), h * size * getHeightFactor());
+
+        getDone().setFont(new Font(h * getFontFactor()));
+
         this.color = color;
 
         updateSliderValues();
         displayColor();
-
-        getDone().setFont(new Font(getSource().getHeight() * getFontFactor()));
 
         Timeline reposition = new Timeline(new KeyFrame(Duration.millis(1), n -> {
             repositon();
@@ -188,25 +192,40 @@ public class ColorPickerPane extends SomePane {
         hideEvent.addEventHandler(EventType.ROOT, onHide);
     }
 
+    public void resize(double w, double h) {
+
+        Insets padding = new Insets(h * 0.05);
+
+        for (JFXSlider s : sliders) {
+            s.setPadding(padding);
+            s.setTranslateX(((h * 0.005) - 1) * w / 3);
+            s.setMaxWidth((w) / (h * 0.005));
+            s.setScaleX(h * 0.005);
+            s.setScaleY(h * 0.005);
+        }
+    }
+
     public void updateColor() {
         updateBaseColor();
-        displayColor();
-        getPane().setStyle("-fx-background-color:" + GUI.bg3);
         for (JFXSlider s : sliders) {
             GUI.applyColorsToSlider(s);
         }
     }
 
     public void displayColor() {
-        color = Color.hsb(sliders[0].getValue() / 255, sliders[1].getValue() / 255, sliders[2].getValue() / 255);
-        System.out.print(GUI.toRGBCode(color));
-        preview.setStyle("-fx-background-color:" + GUI.toRGBCode(color));
+        Color c = Color.hsb(sliders[0].getValue(), sliders[1].getValue(), sliders[2].getValue());
+        preview.setStyle("-fx-background-color:" + GUI.toRGBCode(c));
     }
 
     public void updateSliderValues() {
-        sliders[0].setValue(color.getHue() * 255);
-        sliders[1].setValue(color.getSaturation() * 255);
-        sliders[2].setValue(color.getBrightness() * 255);
+        sliders[0].setValue(color.getHue());
+        sliders[1].setValue(color.getSaturation());
+        sliders[2].setValue(color.getBrightness());
+    }
+
+    public String getRGBCode() {
+        color = Color.hsb(sliders[0].getValue(), sliders[1].getValue(), sliders[2].getValue());
+        return GUI.toRGBCode(color);
     }
 
 }

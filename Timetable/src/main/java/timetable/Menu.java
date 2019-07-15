@@ -3,6 +3,8 @@ package timetable;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXToggleButton;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.ParallelTransition;
@@ -31,7 +33,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -59,6 +60,8 @@ public class Menu implements Hideable {
     ScrollPane scrollPane;
     AnchorPane content;
     GridPane settings;
+
+    List<Hideable> menus;
 
     Label settingsLabel;
 
@@ -111,6 +114,8 @@ public class Menu implements Hideable {
 
     boolean hidden = true;
 
+    int customColorIndex = 0;
+
     public Menu(GUI gui) {
 
         this.gui = gui;
@@ -153,6 +158,8 @@ public class Menu implements Hideable {
         content.setBottomAnchor(settings, 0d);
         content.setLeftAnchor(settings, 0d);
 
+        menus = new ArrayList();
+
         settingsLabel = new Label("Settings");
         settings.add(settingsLabel, 0, 0, 2, 1);
 
@@ -167,6 +174,13 @@ public class Menu implements Hideable {
         //accent color
         colorSection = new Label("Color");
         settings.add(colorSection, 0, 1);
+
+        colorPicker = new ColorPickerPane(content);
+        menus.add(colorPicker);
+        colorPicker.setOnHide(event -> {
+            gui.customAcs[customColorIndex] = colorPicker.getRGBCode();
+            updateColors();
+        });
 
         defaultColorLabel = new Label("Default Colors");
         settings.add(defaultColorLabel, 0, 2);
@@ -192,7 +206,6 @@ public class Menu implements Hideable {
         customColorLabel = new Label("Custom Colors");
         settings.add(customColorLabel, 0, 4);
 
-        colorPicker = new ColorPickerPane(content);
         customColorBox = new HBox();
         settings.add(customColorBox, 0, 5, 3, 1);
 
@@ -200,13 +213,23 @@ public class Menu implements Hideable {
         for (int i = 0; i < defaultColorButtons.length; i++) {
             JFXButton b = new JFXButton();
             b.getStyleClass().add("roundedButton");
-            b.setStyle("-fx-background-color:" + GUI.customAcs[i]);
             b.setOnAction(event -> {
                 setCustomAccentColor(event);
             });
             b.setOnMousePressed(event -> {
                 if (event.isSecondaryButtonDown()) {
-                    colorPicker.show(b, Color.web(gui.customAcs[gui.colorIndex]));
+                    for (int j = 0; j < customColorButtons.length; j++) {
+                        if (event.getSource() == customColorButtons[j]) {
+                            customColorIndex = j;
+                            colorPicker.showOnCoordinates(
+                                    customColorBox.getLayoutX() + b.getLayoutX(),
+                                    customColorBox.getLayoutY() + b.getLayoutY(),
+                                    b,
+                                    Color.web(gui.customAcs[j])
+                            );
+                            break;
+                        }
+                    }
                 }
             });
             b.focusedProperty().addListener(event -> {
@@ -238,6 +261,7 @@ public class Menu implements Hideable {
         settings.add(timeSection, 0, 8);
 
         timePicker = new TimePickerPane(content);
+        menus.add(timePicker);
         timePicker.setOnHide(event -> {
             startTime.setText(timePicker.getTime().format());
             gui.tm.getCurrentTablePair().setStartTime(timePicker.getTime());
@@ -402,6 +426,7 @@ public class Menu implements Hideable {
         if (!hidden) {
             hidden = true;
             hide.play();
+            hideAllMenus();
         }
     }
 
@@ -410,6 +435,7 @@ public class Menu implements Hideable {
         if (!hidden) {
             hidden = true;
             pane.setVisible(false);
+            cancelAllMenus();
         }
     }
 
@@ -478,7 +504,7 @@ public class Menu implements Hideable {
             sliderLabels[i].setPadding(padding);
             sliderValues[i].setFont(font3);
             sliderValues[i].setPadding(padding);
-            sliders[i].setMaxWidth((3) / (0.012));
+            sliders[i].setMaxWidth(3 / (0.012));
             sliders[i].setTranslateX((h * 0.012 - 1) * h);
             sliders[i].setScaleX(h * 0.012);
             sliders[i].setScaleY(h * 0.012);
@@ -508,14 +534,16 @@ public class Menu implements Hideable {
         }
 
         colorSection.setTextFill(Color.web(gui.text));
+        colorPicker.updateColor();
         defaultColorLabel.setTextFill(Color.web(gui.text));
         highlightColorButton(gui.colorIndex, gui.customColor);
         for (JFXButton b : defaultColorButtons) {
             b.setRipplerFill(Color.web(gui.text));
         }
         customColorLabel.setTextFill(Color.web(gui.text));
-        for (JFXButton b : customColorButtons) {
-            b.setRipplerFill(Color.web(gui.text));
+        for (int i = 0; i < customColorButtons.length; i++) {
+            customColorButtons[i].setStyle("-fx-background-color:" + GUI.customAcs[i]);
+            customColorButtons[i].setRipplerFill(Color.web(gui.text));
         }
         colorModeLabel.setTextFill(Color.web(gui.text));
         colorMode.setToggleColor(Color.web(gui.ac1));
@@ -639,6 +667,18 @@ public class Menu implements Hideable {
         int ll = gui.tm.getCurrentTablePair().getLessonLength();
         sliders[3].setValue(ll);
         sliderValues[3].setText(String.format("%02d", ll));
+    }
+
+    public void hideAllMenus() {
+        for (Hideable h : menus) {
+            h.hide();
+        }
+    }
+
+    public void cancelAllMenus() {
+        for (Hideable h : menus) {
+            h.cancel();
+        }
     }
 
     public AnchorPane getPane() {

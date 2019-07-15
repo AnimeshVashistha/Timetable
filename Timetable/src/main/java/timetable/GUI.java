@@ -630,8 +630,6 @@ public class GUI {
             colors.add(s);
         }
         data.put(CUSTOM_COLORS, colors);
-        data.put(AC_1, ac1);
-        data.put(AC_2, ac2);
         data.put(DARK_MODE, darkMode);
 
         return data;
@@ -667,15 +665,10 @@ public class GUI {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                try {
-                    ac1 = (String) jo.get(AC_1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    ac2 = (String) jo.get(AC_2);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (customColor) {
+                    setCustomAccentColor(colorIndex);
+                } else {
+                    setAccentColor(colorIndex);
                 }
                 try {
                     darkMode = (boolean) jo.get(DARK_MODE);
@@ -1058,7 +1051,8 @@ public class GUI {
 
     /**
      * applys the current theme colors to the given slider
-     * @param slider 
+     *
+     * @param slider
      */
     public static void applyColorsToSlider(JFXSlider slider) {
         StackPane sliderTrack = (StackPane) slider.lookup(".track");
