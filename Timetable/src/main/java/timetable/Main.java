@@ -27,7 +27,7 @@ public class Main extends Application {
     GUI gui;
     Scene scene;
     Timeline saveData;
-
+    
     /**
      * launching the javafx application
      *
@@ -57,7 +57,7 @@ public class Main extends Application {
         //setting cache hints for better performance
         gui.getPane().setCache(true);
         gui.getPane().setCacheHint(CacheHint.SPEED);
-        //passing a hostsevice instance to settings for opening s browser
+        //passing a hostservice instance to settings for opening a browser
         gui.getSettings().setHostServices(getHostServices());
 
         //initializing a new scene and passing the parent
@@ -177,7 +177,7 @@ public class Main extends Application {
         } else if (OS.contains("MAC")) {
             path = System.getProperty("user.home") + "/Library/";
         } else if (OS.contains("NUX")) {
-            path = System.getProperty("user.home");
+            path = System.getProperty("user.home") + File.separator + ".config";
         } else {
             path = System.getProperty("user.dir");
         }
