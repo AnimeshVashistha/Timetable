@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.layout.GridPane;

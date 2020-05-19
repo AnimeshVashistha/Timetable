@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
@@ -39,8 +39,8 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import timetable.Datatypes.Subject;
-import timetable.Datatypes.Timetable;
+import saecki.timetable.datatypes.Timetable;
+import saecki.timetable.datatypes.Subject;
 
 /**
  *
@@ -850,7 +850,7 @@ public class GUI {
     }
 
     /**
-     * displays the currently selected timetable
+     * displays the currently selected saecki.timetable
      */
     public void displayCurrentTimetable() {
         subjectGrid.getChildren().removeIf(node -> (node.getClass() == JFXButton.class));
@@ -1242,14 +1242,14 @@ public class GUI {
 
     /**
      * updates the textfield text in the menu to the currently selected
-     * timetable
+     * saecki.timetable
      */
     private void updateMenuData() {
         menuName.setText(tm.getCurrentTablePair().getName());
     }
 
     /**
-     * updates the name of the current timetable to the inputed one
+     * updates the name of the current saecki.timetable to the inputed one
      */
     private void writeMenuData() {
         tm.getCurrentTablePair().setName(menuName.getText());
@@ -1282,7 +1282,7 @@ public class GUI {
     }
 
     /**
-     * adds a timetable and displayes it
+     * adds a saecki.timetable and displayes it
      */
     public void addTimetable() {
         tm.addTimetablePair();
@@ -1293,7 +1293,7 @@ public class GUI {
     }
 
     /**
-     * deletes the current timetable
+     * deletes the current saecki.timetable
      */
     public void deleteTimetable() {
         tm.deleteCurrentTimetablePair();

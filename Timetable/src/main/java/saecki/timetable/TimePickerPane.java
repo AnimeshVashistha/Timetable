@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
@@ -23,10 +23,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import timetable.Datatypes.SimpleTime;
-import static timetable.GUI.ANIMATION_DISTANCE;
-import static timetable.GUI.ANIMATION_DURATION;
-import static timetable.GUI.FOCUS_ANIMATION_OFFSET_FACTOR;
+import saecki.timetable.datatypes.SimpleTime;
 
 /**
  *
@@ -74,18 +71,18 @@ public class TimePickerPane extends SomePane {
         setWidthFactor(3);
         setHeightFactor(1.05);
 
-        SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
-        SlideIn.setFromY(ANIMATION_DISTANCE);
+        SlideIn = new TranslateTransition(Duration.millis(GUI.ANIMATION_DURATION));
+        SlideIn.setFromY(GUI.ANIMATION_DISTANCE);
         SlideIn.setToY(0);
 
-        FadeIn = new FadeTransition(Duration.millis(ANIMATION_DURATION));
+        FadeIn = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        SlideOut = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
-        SlideOut.setToY(ANIMATION_DISTANCE);
+        SlideOut = new TranslateTransition(Duration.millis(GUI.ANIMATION_DURATION));
+        SlideOut.setToY(GUI.ANIMATION_DISTANCE);
 
-        FadeOut = new FadeTransition(Duration.millis(ANIMATION_DURATION));
+        FadeOut = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(getPane());
@@ -384,7 +381,7 @@ public class TimePickerPane extends SomePane {
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(ANIMATION_DURATION * FOCUS_ANIMATION_OFFSET_FACTOR),
+                Duration.millis(GUI.ANIMATION_DURATION * GUI.FOCUS_ANIMATION_OFFSET_FACTOR),
                 n -> hourButton.requestFocus()));
         focus.play();
 

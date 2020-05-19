@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -6,7 +6,7 @@ import javafx.animation.Timeline;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import static timetable.GUI.ANIMATION_DURATION;
+import static saecki.timetable.GUI.ANIMATION_DURATION;
 
 /**
  *

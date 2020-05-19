@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
@@ -15,8 +15,8 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import static timetable.GUI.ANIMATION_DISTANCE;
-import static timetable.GUI.ANIMATION_DURATION;
+import static saecki.timetable.GUI.ANIMATION_DISTANCE;
+import static saecki.timetable.GUI.ANIMATION_DURATION;
 
 /**
  *

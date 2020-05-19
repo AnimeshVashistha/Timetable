@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.KeyFrame;
@@ -12,8 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import static timetable.GUI.ANIMATION_DURATION;
-import static timetable.GUI.FOCUS_ANIMATION_OFFSET_FACTOR;
 
 /**
  *
@@ -43,10 +41,10 @@ public class SidebarPane extends SomePane {
         setBottomButtonStyle("roundedBottomRightButton");
         setWidthFactor(1.2);
 
-        SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
+        SlideIn = new TranslateTransition(Duration.millis(GUI.ANIMATION_DURATION));
         SlideIn.setToX(0);
 
-        SlideOut = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
+        SlideOut = new TranslateTransition(Duration.millis(GUI.ANIMATION_DURATION));
 
         show = new ParallelTransition(getPane());
         show.getChildren().add(SlideIn);
@@ -81,7 +79,7 @@ public class SidebarPane extends SomePane {
         }
 
         Timeline focus = new Timeline(new KeyFrame(
-                Duration.millis(ANIMATION_DURATION * FOCUS_ANIMATION_OFFSET_FACTOR),
+                Duration.millis(GUI.ANIMATION_DURATION * GUI.FOCUS_ANIMATION_OFFSET_FACTOR),
                 n -> toFocus.requestFocus()));
         focus.play();
 

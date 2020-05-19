@@ -1,4 +1,4 @@
-package timetable.Datatypes;
+package saecki.timetable.datatypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;

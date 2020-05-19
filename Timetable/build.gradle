@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
+group 'saecki'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.jfoenix:jfoenix:9.0.9")
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
+}
+
+javafx {
+    modules = ['javafx.controls', 'javafx.graphics']
+    version = "11.0.2"
+}
+
+mainClassName = 'saecki.timetable.Main'

@@ -1,13 +1,13 @@
-package timetable;
+package saecki.timetable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import timetable.Datatypes.Subject;
-import timetable.Datatypes.Timetable;
-import timetable.Datatypes.TimetablePair;
+import saecki.timetable.datatypes.Subject;
+import saecki.timetable.datatypes.Timetable;
+import saecki.timetable.datatypes.TimetablePair;
 
 /**
  *

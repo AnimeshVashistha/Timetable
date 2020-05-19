@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 /**
  *

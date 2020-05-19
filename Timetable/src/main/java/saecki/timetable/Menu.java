@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
@@ -36,8 +36,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import static timetable.GUI.ANIMATION_DISTANCE;
-import static timetable.GUI.ANIMATION_DURATION;
+import static saecki.timetable.GUI.ANIMATION_DISTANCE;
+import static saecki.timetable.GUI.ANIMATION_DURATION;
 
 /**
  *

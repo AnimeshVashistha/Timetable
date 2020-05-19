@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import java.io.File;
 import java.io.FileReader;
@@ -8,10 +8,10 @@ import java.io.Reader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import timetable.Datatypes.SimpleTime;
-import timetable.Datatypes.Subject;
-import timetable.Datatypes.Timetable;
-import timetable.Datatypes.TimetablePair;
+import saecki.timetable.datatypes.SimpleTime;
+import saecki.timetable.datatypes.Subject;
+import saecki.timetable.datatypes.Timetable;
+import saecki.timetable.datatypes.TimetablePair;
 
 /**
  *

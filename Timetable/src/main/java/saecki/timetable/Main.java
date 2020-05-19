@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import java.io.File;
 import javafx.animation.KeyFrame;
@@ -12,7 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
-import static timetable.GUI.ANIMATION_DURATION;
+import static saecki.timetable.GUI.ANIMATION_DURATION;
 
 /**
  *

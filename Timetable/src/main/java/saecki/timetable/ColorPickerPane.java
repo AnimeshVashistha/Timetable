@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
@@ -17,8 +17,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import static timetable.GUI.ANIMATION_DISTANCE;
-import static timetable.GUI.ANIMATION_DURATION;
 
 /**
  *
@@ -49,18 +47,18 @@ public class ColorPickerPane extends SomePane {
         setWidthFactor(2.5);
         setHeightFactor(0.6);
 
-        SlideIn = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
-        SlideIn.setFromY(ANIMATION_DISTANCE);
+        SlideIn = new TranslateTransition(Duration.millis(GUI.ANIMATION_DURATION));
+        SlideIn.setFromY(GUI.ANIMATION_DISTANCE);
         SlideIn.setToY(0);
 
-        FadeIn = new FadeTransition(Duration.millis(ANIMATION_DURATION));
+        FadeIn = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        SlideOut = new TranslateTransition(Duration.millis(ANIMATION_DURATION));
-        SlideOut.setToY(ANIMATION_DISTANCE);
+        SlideOut = new TranslateTransition(Duration.millis(GUI.ANIMATION_DURATION));
+        SlideOut.setToY(GUI.ANIMATION_DISTANCE);
 
-        FadeOut = new FadeTransition(Duration.millis(ANIMATION_DURATION));
+        FadeOut = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(getPane());

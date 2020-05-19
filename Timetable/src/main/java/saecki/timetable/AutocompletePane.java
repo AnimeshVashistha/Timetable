@@ -1,4 +1,4 @@
-package timetable;
+package saecki.timetable;
 
 import com.jfoenix.controls.JFXTextField;
 import java.util.List;
@@ -15,8 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import timetable.Datatypes.Subject;
-import static timetable.GUI.ANIMATION_DURATION;
+import saecki.timetable.datatypes.Subject;
 
 /**
  *
@@ -54,17 +53,17 @@ public class AutocompletePane implements Hideable {
         this.parent = parent;
         parent.getChildren().add(pane);
 
-        ScaleUp = new ScaleTransition(Duration.millis(ANIMATION_DURATION));
+        ScaleUp = new ScaleTransition(Duration.millis(GUI.ANIMATION_DURATION));
         ScaleUp.setToY(1);
 
-        FadeIn = new FadeTransition(Duration.millis(ANIMATION_DURATION));
+        FadeIn = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION));
         FadeIn.setFromValue(0);
         FadeIn.setToValue(1);
 
-        ScaleDown = new ScaleTransition(Duration.millis(ANIMATION_DURATION));
+        ScaleDown = new ScaleTransition(Duration.millis(GUI.ANIMATION_DURATION));
         ScaleDown.setToY(0);
 
-        FadeOut = new FadeTransition(Duration.millis(ANIMATION_DURATION));
+        FadeOut = new FadeTransition(Duration.millis(GUI.ANIMATION_DURATION));
         FadeOut.setToValue(0);
 
         show = new ParallelTransition(pane);

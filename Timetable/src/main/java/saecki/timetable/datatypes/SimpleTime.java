@@ -2,7 +2,7 @@
  * This is property of Tobias Schmitz GmbH Eitorf
  * 
  */
-package timetable.Datatypes;
+package saecki.timetable.datatypes;
 
 import java.io.Serializable;
 
